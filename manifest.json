@@ -10,8 +10,8 @@
     "display_override": ["standalone"],
     "icons": [
         {
-            "src": "./topvak-logo.png",
-            "type": "image/png",
+            "src": "./wasbeerlogo.jpg",
+            "type": "image/jpg",
             "sizes": "700x700"
         }   
     ]
