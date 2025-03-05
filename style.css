@@ -1,0 +1,90 @@
+html,
+body {
+    font-family: "Inter", sans-serif;
+}
+
+.hour,
+.minute {
+    font-weight: bold;
+}
+
+.activity {
+    text-align: left;
+}
+
+.current-activity {
+    background-color: yellow;
+}
+
+.center-container {
+    display: flex;
+    justify-content: center;
+
+    flex-wrap: wrap;
+    flex-direction: row;
+
+}
+
+.center-container>* {
+    max-width: 80%;
+    flex-grow: 1;
+}
+
+.container {
+    display: block;
+    margin: auto;
+    width: 100%;
+    flex-wrap: wrap;
+    text-align: center;
+
+    justify-content: center;
+    align-content: center;
+}
+
+.container>* {
+    flex-grow: 1;
+
+}
+
+.container-current-time_value {
+    font-size: 24pt;
+    font-weight: bold;
+    margin-top: 1.5rem;
+}
+
+.container-current-time_label {
+    font-size: 16pt;
+}
+
+.activity-time {
+    font-weight: bold;
+}
+
+.container-time {
+    margin-bottom: 2rem;
+}
+
+.current-activity-description {
+    width: 100%;
+    text-align: center;
+
+    margin: 1.5rem;
+    font-size: 24pt;
+}
+
+.container-activity-from-to {
+    font-size: 20pt;
+}
+
+
+.cell {
+    padding: 0.25rem;
+}
+
+thead {
+    text-align: left;
+}
+
+#schedule-table {
+    border-collapse: collapse;
+}

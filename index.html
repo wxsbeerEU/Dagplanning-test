@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule</title>
+    <link rel="manifest" href="./manifest.json">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <div class="center-container container-time">
+        <div class="container container-current-time">
+            <div class="container-current-time_label">het is nu</div>
+            <div id="currentTime" class="container-current-time_value">huidige tijd</div>
+        </div>
+        <div id="currentActivity" class="current-activity-description">de huidige activiteit</div>
+
+        <div class="container container-activity-from-to">
+            <div>
+                <span>van <span id="currentActivityFrom" class="activity-time">begin</span> tot <span
+                        id="currentActivityTo" class="activity-time">einduur</span></span>
+            </div>
+        </div>
+    </div>
+    <div class="center-container">
+        <table border="1" id="schedule-table">
+            <thead>
+                <tr>
+                    <th class="cell">Tijd</th>
+                    <th class="cell">Activiteit</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be dynamically generated here -->
+            </tbody>
+        </table>
+    </div>
+</body>
+<script src="./script.js"/>
+<script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js')
+            .then(registration => {
+                console.log('Excellent, registered with scope:', registration.scope);
+            })
+            .catch(error => {
+                console.error('Service worker registration failed:', error);
+            });
+    }
+</script>
+
+</html>
