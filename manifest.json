@@ -1,7 +1,7 @@
 {
-    "name": "Topvakantie Schema",
-    "short_name": "Schema",
-    "description": "Top Vakantie ter duinen schema",
+    "name": "Dagplanning  Italië",
+    "short_name": "Dagplanning",
+    "description": "Topvakantie dagplanning Italië",
     "scope": "./",
     "start_url": "./",
     "background_color": "#ffffff",
