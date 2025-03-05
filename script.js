@@ -1,5 +1,5 @@
 const schedule = [
-    { time: '8:00', activity: 'niet vroeger douchen' },
+    { time: '8:00', activity: 'Niet vroeger douchen - miro is mooi' },
     { time: '8:15', activity: 'wekken' },
     { time: '8:30', activity: 'eten' },
     { time: '9:15', activity: 'verzamelen arena - lesmoment 1' },
