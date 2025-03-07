@@ -1,23 +1,20 @@
 const schedule = [
-    { time: '8:00', activity: 'Niet vroeger douchen' },
-    { time: '8:15', activity: 'Wekken' },
-    { time: '8:30', activity: 'Eten' },
-    { time: '9:15', activity: 'Verzamelen arena - lesmoment 1' },
-    { time: '10:45', activity: 'Pauze - bar' },
+    { time: '8:15', activity: 'Opstaan' },
+    { time: '8:30', activity: 'Ochtendeten' },
+    { time: '9:15', activity: 'Lesmoment 1' },
+    { time: '10:45', activity: 'Pauze' },
     { time: '11:05', activity: 'Lesmoment 2' },
-    { time: '12:30', activity: 'Middageten en vrij' },
-    { time: '13:45', activity: 'Verzamelen arena - lesmoment 3' },
-    { time: '15:15', activity: 'Pauze - verzamelen' },
-    { time: '15:20', activity: 'Verzamelen bronne - start nammidagactiviteiten' },
-    { time: '17:45', activity: 'Vrij' },
-    { time: '18:30', activity: 'Avondeten - vrij' },
-    { time: '19:45', activity: 'Verzamelen arena - start avondactiviteiten' },
-    { time: '21:30', activity: 'Vrij - bar' },
+    { time: '12:30', activity: 'Middageten - Vrije tijd' },
+    { time: '13:45', activity: 'Lesmoment 3' },
+    { time: '15:15', activity: 'Pauze' },
+    { time: '15:20', activity: 'Namiddagactiviteit' },
+    { time: '17:45', activity: 'Vrije tijd' },
+    { time: '18:30', activity: 'Avondeten - Vrije tijd' },
+    { time: '19:45', activity: 'Avondactiviteit' },
+    { time: '21:30', activity: 'Vrije tijd - Bar' },
     { time: '22:00', activity: 'Niet meer douchen' },
-    { time: '22:00', activity: 'Slapen gaan 1e graad roze bandje' },
-    { time: '22:15', activity: 'Slapen gaan 2e graad blauw bandje' },
-    { time: '22:30', activity: 'Slapen gaan 3e graad groen bandje' },
-    { time: '23:00', activity: 'Lichten uit en in bed blijven' }
+    { time: '22:00', activity: 'Iedereen gaan slapen' },
+    { time: '22:30', activity: 'Lichten uit en in bed blijven kkr sukkels' }
 ];
 
 let betterschedule = [];
