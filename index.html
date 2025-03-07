@@ -18,14 +18,14 @@
     <div class="center-container container-time">
         <div class="container container-current-time">
             <div class="container-current-time_label">Het is nu:</div>
-            <div id="currentTime" class="container-current-time_value">Huidige tijd</div>
+            <div id="currentTime" class="container-current-time_value">--:--:--</div>
         </div>
-        <div id="currentActivity" class="current-activity-description">De huidige activiteit</div>
+        <div id="currentActivity" class="current-activity-description">Geen geplande activiteit</div>
 
         <div class="container container-activity-from-to">
             <div>
-                <span>van <span id="currentActivityFrom" class="activity-time">Begin</span> tot <span
-                        id="currentActivityTo" class="activity-time">Einduur</span></span>
+                <span>van <span id="currentActivityFrom" class="activity-time">--:--</span> tot <span
+                        id="currentActivityTo" class="activity-time">--:--</span></span>
             </div>
         </div>
     </div>
@@ -43,15 +43,15 @@
         </table>
     </div>
 </body>
-<script src="./script.js"/>
+<script src="./script.js"></script>
 <script>
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js')
             .then(registration => {
-                console.log('Excellent, registered with scope:', registration.scope);
+                console.log('Service worker geregistreerd met scope:', registration.scope);
             })
             .catch(error => {
-                console.error('Service worker registration failed:', error);
+                console.error('Service worker registratie mislukt:', error);
             });
     }
 </script>
