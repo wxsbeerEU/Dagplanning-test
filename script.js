@@ -17,6 +17,7 @@ const schedule = [
     { time: '22:00', activity: 'Slapen gaan 1e graad roze bandje' },
     { time: '22:15', activity: 'Slapen gaan 2e graad blauw bandje' },
     { time: '22:30', activity: 'Slapen gaan 3e graad groen bandje' }
+    { time: '23:00', activity: 'Lichten uit en in bed blijven' }
 ];
 
 let betterschedule = [];
