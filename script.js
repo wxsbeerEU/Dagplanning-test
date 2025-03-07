@@ -13,8 +13,8 @@ const schedule = [
     { time: '19:45', activity: 'Avondactiviteit' },
     { time: '21:30', activity: 'Vrije tijd - Bar' },
     { time: '22:00', activity: 'Niet meer douchen' },
-    { time: '22:00', activity: 'Iedereen gaan slapen' },
-    { time: '22:30', activity: 'Lichten uit en in bed blijven kkr sukkels' }
+    { time: '22:00', activity: 'Iedereen naar de kamers' },
+    { time: '22:30', activity: 'Lichten uit - Slapen' }
 ];
 
 let betterschedule = [];
