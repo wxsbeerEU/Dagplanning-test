@@ -11,7 +11,7 @@
 
     <div class="app-container">
         
-        <!-- Cyber Logo Header (blijft altijd zichtbaar bovenaan) -->
+        <!-- Cyber Logo Header -->
         <header class="brand-header">
             <div class="logo-wrapper">
                 <img src="topvakantie-logo2.png" alt="Topvakantie Logo" class="logo-img">
@@ -29,6 +29,12 @@
                     <span class="btn-icon">📅</span>
                     <span class="btn-text">Dagplanning</span>
                 </button>
+
+                <!-- Nieuwe Knop naar Animatoren -->
+                <button class="cyber-btn" onclick="switchScreen('animatoren-screen')">
+                    <span class="btn-icon">😎</span>
+                    <span class="btn-text">Wie zijn de animatoren?</span>
+                </button>
                 
                 <button class="cyber-btn disabled" disabled>
                     <span class="btn-icon">🎮</span>
@@ -39,11 +45,8 @@
 
         <!-- ================= PLANNING SCHERM ================= -->
         <section id="planning-screen" class="screen-section">
-            
-            <!-- Knop om terug naar het hoofdmenu te gaan -->
             <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar Hub</button>
 
-            <!-- Live Status Card -->
             <div class="live-card">
                 <div id="currentTime">00:00:00</div>
                 <div class="current-status-label">Nu bezig met</div>
@@ -53,13 +56,46 @@
                 </div>
             </div>
 
-            <!-- Planning Tabel Container -->
             <div class="schedule-container">
                 <table class="schedule-table" id="schedule-table">
-                    <tbody>
-                        <!-- Wordt dynamisch ingeladen via script.js -->
-                    </tbody>
+                    <tbody></tbody>
                 </table>
+            </div>
+        </section>
+
+        <!-- ================= ANIMATOREN SCHERM ================= -->
+        <section id="animatoren-screen" class="screen-section">
+            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar Hub</button>
+
+            <div class="animatoren-container">
+                
+                <!-- Animator 1 (Voorbeeld) -->
+                <div class="animator-card">
+                    <div class="animator-photo-wrapper">
+                        <!-- Vervang 'animator1.jpg' later door de echte foto -->
+                        <img src="animator1.jpg" alt="Animator" class="animator-photo">
+                    </div>
+                    <div class="animator-info">
+                        <div class="info-row"><span class="info-label">Naam:</span> <span class="info-value">Tom</span></div>
+                        <div class="info-row"><span class="info-label">Functie:</span> <span class="info-value">Hoofdanimator</span></div>
+                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">Gitaar bij het kampvuur 🔥</span></div>
+                    </div>
+                </div>
+
+                <!-- Animator 2 (Voorbeeld) -->
+                <div class="animator-card">
+                    <div class="animator-photo-wrapper">
+                        <img src="animator2.jpg" alt="Animator" class="animator-photo">
+                    </div>
+                    <div class="animator-info">
+                        <div class="info-row"><span class="info-label">Naam:</span> <span class="info-value">Lisa</span></div>
+                        <div class="info-row"><span class="info-label">Functie:</span> <span class="info-value">Animator</span></div>
+                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">Koningin van het bosspel 🌲</span></div>
+                    </div>
+                </div>
+
+                <!-- Je kunt hierboven extra animatoren kopiëren en plakken -->
+
             </div>
         </section>
         
