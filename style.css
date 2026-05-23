@@ -1,90 +1,141 @@
-html,
+:root {
+    --bg-color: #0f172a;
+    --card-bg: #1e293b;
+    --accent-color: #38bdf8;
+    --accent-gradient: linear-gradient(135deg, #38bdf8, #0ea5e9);
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --highlight-bg: rgba(56, 189, 248, 0.15);
+}
+
 body {
-    font-family: "Inter", sans-serif;
-}
-
-.hour,
-.minute {
-    font-weight: bold;
-}
-
-.activity {
-    text-align: left;
-}
-
-.current-activity {
-    background-color: grey;
-}
-
-.center-container {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    margin: 0;
+    padding: 16px;
     display: flex;
-    justify-content: center;
-
-    flex-wrap: wrap;
-    flex-direction: row;
-
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box;
 }
 
-.center-container>* {
-    max-width: 80%;
-    flex-grow: 1;
-}
-
-.container {
-    display: block;
-    margin: auto;
+.app-container {
     width: 100%;
-    flex-wrap: wrap;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.live-card {
+    background: var(--card-bg);
+    border-radius: 24px;
+    padding: 24px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.05);
     text-align: center;
-
-    justify-content: center;
-    align-content: center;
+    position: relative;
+    overflow: hidden;
 }
 
-.container>* {
-    flex-grow: 1;
-
+.live-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; height: 4px;
+    background: var(--accent-gradient);
 }
 
-.container-current-time_value {
-    font-size: 24pt;
-    font-weight: bold;
-    margin-top: 1.5rem;
+#currentTime {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 12px;
 }
 
-.container-current-time_label {
-    font-size: 16pt;
+.current-status-label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
 }
 
-.activity-time {
-    font-weight: bold;
+#currentActivity {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 4px 0;
 }
 
-.container-time {
-    margin-bottom: 2rem;
+.current-time-range {
+    font-size: 0.95rem;
+    color: var(--accent-color);
+    font-weight: 500;
 }
 
-.current-activity-description {
+.schedule-container {
+    background: var(--card-bg);
+    border-radius: 24px;
+    padding: 16px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.schedule-table {
     width: 100%;
-    text-align: center;
-
-    margin: 1.5rem;
-    font-size: 24pt;
+    border-collapse: separate;
+    border-spacing: 0 8px;
 }
 
-.container-activity-from-to {
-    font-size: 20pt;
+.activity-row {
+    transition: all 0.3s ease;
+    border-radius: 12px;
 }
-
 
 .cell {
-    padding: 0.25rem;
+    padding: 14px 16px;
+    background: rgba(255, 255, 255, 0.02);
 }
 
-thead {
-    text-align: left;
+.cell-time {
+    border-top-left-radius: 14px;
+    border-bottom-left-radius: 14px;
+    font-weight: 700;
+    color: var(--text-muted);
+    width: 70px;
+    white-space: nowrap;
 }
 
-#schedule-table {
-    border-collapse: collapse;
+.cell-activity {
+    border-top-right-radius: 14px;
+    border-bottom-right-radius: 14px;
+    color: var(--text-main);
+    font-weight: 500;
+}
+
+.activity-row.current-activity {
+    transform: scale(1.02);
+}
+
+.activity-row.current-activity .cell {
+    background: var(--highlight-bg);
+    border-top: 1px solid rgba(56, 189, 248, 0.3);
+    border-bottom: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.activity-row.current-activity .cell-time {
+    color: var(--accent-color);
+    border-left: 4px solid var(--accent-color);
+    border-top-left-radius: 14px;
+    border-bottom-left-radius: 14px;
+}
+
+.activity-row.current-activity .cell-activity {
+    font-weight: 700;
+    color: #fff;
 }
