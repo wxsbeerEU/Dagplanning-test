@@ -34,6 +34,11 @@
                 <button id="tab-moni" class="tab-btn" onclick="switchTab('moni')">Moni</button>
             </div>
 
+            <div class="welcome-card">
+                <h2>Cyber Kamp 2026</h2>
+                <p>Welcome to the Grid</p>
+            </div>
+
             <nav class="menu-grid">
                 <button class="cyber-btn deelnemers-content moni-content" onclick="switchScreen('scheduleScreen')">
                     <span class="btn-icon">📅</span>
@@ -60,9 +65,19 @@
                     <span class="btn-text">Cyber Game</span>
                 </button>
 
-                <button class="cyber-btn moni-content hidden-tab-content" onclick="alert('Hier komt jouw Moni-prikbord of extra info!')">
+                <button class="cyber-btn disabled deelnemers-content moni-content">
                     <span class="btn-icon">🔒</span>
-                    <span class="btn-text">Moni Dashboard</span>
+                    <span class="btn-text">Next Level (Locked)</span>
+                </button>
+
+                <button class="cyber-btn moni-content hidden-tab-content" onclick="switchScreen('adminScreen')">
+                    <span class="btn-icon">⚙️</span>
+                    <span class="btn-text">Moni Dashboard (Admin)</span>
+                </button>
+                
+                <button class="cyber-btn moni-content hidden-tab-content" onclick="alert('Geheime Moni Notities: Vergeet de zaklampen niet voor het avondspel!')">
+                    <span class="btn-icon">📝</span>
+                    <span class="btn-text">Moni Briefing</span>
                 </button>
             </nav>
 
@@ -146,7 +161,7 @@
             <div class="maps-container">
                 <iframe 
                     class="google-maps-iframe"
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2517.472740927763!2d3.8761001!3d50.7850029!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47c3a4f66dbb71ab%3A0x6b8eb7c6f018e69e!2sDe%20Heerlijkheid%20van%20Marialoop!5e0!3m2!1snl!2sbe!4v1710000000000!5m2!1snl!2sbe" 
+                    src="about:blank" 
                     allowfullscreen="" 
                     loading="lazy" 
                     referrerpolicy="no-referrer-when-downgrade">
@@ -185,6 +200,57 @@
                     <input type="text" class="cyber-input" placeholder="Jouw antwoord...">
                     <button class="action-btn">Versturen</button>
                 </div>
+
+                <div class="leaderboard-box">
+                    <div class="leaderboard-header">
+                        <span>🏆 Scorebord</span>
+                        <button class="refresh-btn" onclick="alert('Scores worden bijgewerkt...')">Update 🔄</button>
+                    </div>
+                    <div class="leaderboard-row">
+                        <span>1. Neon Riders</span>
+                        <strong>150 pts</strong>
+                    </div>
+                    <div class="leaderboard-row">
+                        <span>2. Cyber Cops</span>
+                        <strong>120 pts</strong>
+                    </div>
+                    <div class="leaderboard-row">
+                        <span>3. Bit Busters</span>
+                        <strong>95 pts</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="adminScreen" class="screen-section">
+            <button class="back-btn" onclick="switchScreen('mainScreen')">⬅ Terug</button>
+            <div class="welcome-card">
+                <h2>Moni Control Panel</h2>
+                <p>Beheer hier de teamscores</p>
+            </div>
+
+            <div class="regels-container">
+                <div class="admin-row">
+                    <span>Neon Riders</span>
+                    <div class="admin-btn-group">
+                        <button class="admin-btn-min" onclick="alert('Score verminderd')">-10</button>
+                        <button class="admin-btn-plus" onclick="alert('Score verhoogd')">+10</button>
+                    </div>
+                </div>
+                <div class="admin-row">
+                    <span>Cyber Cops</span>
+                    <div class="admin-btn-group">
+                        <button class="admin-btn-min" onclick="alert('Score verminderd')">-10</button>
+                        <button class="admin-btn-plus" onclick="alert('Score verhoogd')">+10</button>
+                    </div>
+                </div>
+                <div class="admin-row">
+                    <span>Bit Busters</span>
+                    <div class="admin-btn-group">
+                        <button class="admin-btn-min" onclick="alert('Score verminderd')">-10</button>
+                        <button class="admin-btn-plus" onclick="alert('Score verhoogd')">+10</button>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -199,7 +265,6 @@
             </div>
         </div>
     </div>
-
 
     <script src="script.js"></script>
 </body>
