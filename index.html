@@ -34,11 +34,6 @@
                     <span class="btn-text">Dagplanning</span>
                 </button>
 
-                <button class="cyber-btn ouders-content hidden-tab-content" onclick="window.open('JE_DEELBARE_GOOGLE_DRIVE_LINK', '_blank')">
-                    <span class="btn-icon">📸</span>
-                    <span class="btn-text">Fotoalbum van de Week</span>
-                </button>
-
                 <button class="cyber-btn deelnemers-content" onclick="window.open('HIER_JE_SPOTIFY_LINK', '_blank')">
                     <span class="btn-icon">🎵</span>
                     <span class="btn-text">Kamphits (Spotify)</span>
@@ -52,6 +47,11 @@
                 <button class="cyber-btn ouders-content hidden-tab-content" onclick="switchScreen('regels-screen')">
                     <span class="btn-icon">📜</span>
                     <span class="btn-text">Regels van de week</span>
+                </button>
+
+                <button class="cyber-btn ouders-content hidden-tab-content" onclick="switchScreen('fotos-screen')">
+                    <span class="btn-icon">📸</span>
+                    <span class="btn-text">Fotoblog / Album</span>
                 </button>
 
                 <button class="cyber-btn deelnemers-content ouders-content" onclick="switchScreen('locatie-screen')">
@@ -169,29 +169,29 @@
             </div>
         </section>
 
+        <section id="fotos-screen" class="screen-section">
+            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar hoofdscherm</button>
+
+            <div class="welcome-card">
+                <h3>📸 Fotoblog van de week</h3>
+                <p>Hieronder vind je de foto's van Week 5 in Koksijde. Klik op een map van de gewenste dag om de foto's te bekijken.</p>
+            </div>
+
+            <div class="maps-container">
+                <iframe 
+                    src="https://drive.google.com/embeddedfolderview?id=HIER_JE_DRIVE_FOLDER_ID#grid" 
+                    class="google-maps-iframe" 
+                    style="height: 500px; border: none;"
+                    allowfullscreen="" 
+                    loading="lazy">
+                </iframe>
+            </div>
+        </section>
+
         <section id="locatie-screen" class="screen-section">
             <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar hoofdscherm</button>
 
             <div class="maps-container">
                 <iframe 
                     class="google-maps-iframe"
-                    src="https://maps.google.com/maps?q=Hotelschool%20Ter%20Duinen,%20Houtsaegerlaan%2040,%208670%20Koksijde&t=&z=15&ie=UTF8&iwloc=&output=embed" 
-                    allowfullscreen="" 
-                    loading="lazy">
-                </iframe>
-
-                <div class="address-card">
-                    <span class="address-icon">🏢</span>
-                    <div class="address-text">
-                        <strong>Hotelschool Ter Duinen</strong><br>
-                        Houtsaegerlaan 40, 8670 Koksijde
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-    </div>
-
-    <script src="script.js?v=3"></script>
-</body>
-</html>
+                    src="
