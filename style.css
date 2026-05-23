@@ -627,3 +627,41 @@ body {
     border-radius: 6px;
     font-weight: bold;
 }
+/* ================= TABS STYLING ================= */
+.tab-container {
+    display: flex;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tab-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 9px;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Actieve tab krijgt een vette oplichtende look */
+.tab-btn.active {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+}
+
+/* Verbergt de knoppen die niet bij het actieve tabblad horen */
+.hidden-tab-content {
+    display: none !important;
+}
