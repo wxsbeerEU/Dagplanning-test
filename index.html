@@ -36,7 +36,7 @@
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            padding-bottom: 70px; /* Ruimte voor de navigatiebalk onderaan */
+            padding-bottom: 70px;
         }
 
         header {
@@ -55,7 +55,6 @@
             margin: 0 auto;
         }
 
-        /* Schermen wisselen */
         .screen-section {
             display: none;
         }
@@ -64,7 +63,6 @@
             display: block;
         }
 
-        /* Kaarten en UI elementen */
         .card {
             background-color: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -77,7 +75,6 @@
             display: none !important;
         }
 
-        /* Knoppen en invoervelden */
         .btn {
             display: inline-block;
             background-color: var(--border-color);
@@ -256,18 +253,18 @@
 
                 <h3>📊 Live Rangschikking</h3>
                 <div id="play-leaderboard-container" style="margin-top: 15px;">
-                    <!-- Het scorebord blijft hier live updaten tijdens het spelen -->
+                    <!-- Wordt synchroon bijgewerkt -->
                 </div>
             </div>
 
-            <!-- VIEW C: GEHEIM ADMIN PANEL (LOGIN MET "ADMIN123") -->
+            <!-- VIEW C: GEHEIM ADMIN PANEL -->
             <div id="game-admin-view" class="hidden">
                 <div class="card">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                         <h3>🛠️ Spelleiding Panel</h3>
                         <button onclick="logoutAdmin()" class="btn" style="padding: 6px 12px; font-size: 14px;">Log uit</button>
                     </div>
-                    <p style="color: var(--text-muted); margin-bottom: 20px;">Pas hier handmatig scores van teams aan (bijvoorbeeld voor bonusopdrachten).</p>
+                    <p style="color: var(--text-muted); margin-bottom: 20px;">Pas hier handmatig scores van teams aan.</p>
                     
                     <div id="admin-teams-list">
                         <!-- Lijst met alle teams en +/- knoppen -->
@@ -293,11 +290,10 @@
         </button>
     </nav>
 
-    <!-- Koppel jouw logica script -->
     <script src="./script.js"></script>
     
     <script>
-        // Extra script om te zorgen dat het scorebord op beide plekken getoond kan worden
+        // Zorgt ervoor dat het scorebord live meeschuift naar de speler-view
         const observer = new MutationObserver(() => {
             const source = document.getElementById('leaderboard-list');
             const target = document.getElementById('play-leaderboard-container');
