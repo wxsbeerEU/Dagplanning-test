@@ -168,7 +168,7 @@ function switchScreen(screenId) {
 //                           SUPABASE CONFIGURATIE
 // ==========================================================================
 const SUPABASE_URL = "https://jshmsmubgpzfstphasoo.supabase.co";
-const SUPABASE_ANON_KEY = "PLAK_HIER_JOUW_LANGE_ANON_PUBLIC_KEY"; 
+const SUPABASE_ANON_KEY = "sb_publishable_B4O8EAtcYJt04j1ilJ26mg_psPQT3kG"; 
 
 // Voorkom dubbele declaratie crash
 let supabaseClient;
