@@ -196,6 +196,79 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ==========================================================================
+//                   GEHEIME CODES / REBUS ANTWOORDEN LIJST
+// ==========================================================================
+// Hier kun je oneindig veel antwoorden en hun puntenwaarde aan toevoegen.
+// Schrijf de antwoorden ALTIJD in kleine letters (zonder hoofdletters).
+const gameAnswers = {
+    "cyber": 10,
+    "firewall": 15,
+    "hacker": 20,
+    "computervirus": 15,
+    "wachtwoord": 10,
+    "monitoren": 25
+};
+
+// ==========================================================================
+//                      OPLOSSING CONTROLEREN
+// ==========================================================================
+async function submitSecretCode() {
+    if (!supabaseClient) return;
+
+    const inputField = document.getElementById('secret-code-input');
+    if (!inputField) return;
+    
+    const userTyped = inputField.value.trim().toLowerCase();
+
+    if (!userTyped) {
+        alert("Typ eerst een oplossing in het vak!");
+        return;
+    }
+
+    // Controleer of de ingetypte tekst voorkomt in onze antwoordenlijst
+    if (gameAnswers.hasOwnProperty(userTyped)) {
+        const pointsWon = gameAnswers[userTyped];
+
+        // 1. Check in de database of dit team deze specifieke code al eens heeft ingediend
+        const { data: alreadySolved, error: checkError } = await supabaseClient
+            .from('solved_codes')
+            .select('*')
+            .eq('team_name', currentTeamName)
+            .eq('code', userTyped)
+            .maybeSingle();
+
+        if (alreadySolved) {
+            alert("❌ Dit antwoord hebben jullie al eens ingeleverd! Zoek snel naar een andere rebus.");
+            inputField.value = "";
+            return;
+        }
+
+        // 2. Registreer dat het team deze code heeft opgelost
+        await supabaseClient
+            .from('solved_codes')
+            .insert([{ team_name: currentTeamName, code: userTyped }]);
+
+        // 3. Bereken nieuwe score en update de app lokaal
+        currentTeamScore += pointsWon;
+        const scoreDisplay = document.getElementById('display-team-score');
+        if (scoreDisplay) scoreDisplay.innerText = currentTeamScore;
+
+        // 4. Update de score live in de hoofd-tabel van Supabase
+        await supabaseClient
+            .from('teams')
+            .update({ score: currentTeamScore })
+            .eq('team_name', currentTeamName);
+
+        alert(`🎉 Schot in de roos! "${userTyped}" was correct. +${pointsWon} punten!`);
+        inputField.value = ""; // Maak het veld weer leeg
+        loadLeaderboard(); // Update het scorebord direct
+
+    } else {
+        alert("❌ Helaas, die code of oplossing is niet juist. Kijk nog eens goed naar de rebus of controleer op typfouten!");
+    }
+}
+
+// ==========================================================================
 //                       TEAM REGISTRATIE / LOGIN
 // ==========================================================================
 async function registerOrLoginTeam() {
@@ -257,37 +330,6 @@ async function registerOrLoginTeam() {
     document.getElementById('game-play-view').classList.remove('hidden');
     
     loadLeaderboard();
-}
-
-// ==========================================================================
-//                          REBUS CONTROLEREN
-// ==========================================================================
-async function checkRebus(rebusNumber, correctAnswer, points) {
-    if (!supabaseClient) return;
-
-    const inputField = document.getElementById(`rebus-${rebusNumber}-input`);
-    const userAnswer = inputField.value.trim().toLowerCase();
-
-    if (userAnswer === correctAnswer) {
-        alert(`🎉 Correct! +${points} punten voor jullie team!`);
-        
-        // Bereken nieuwe score en update lokaal
-        currentTeamScore += points;
-        document.getElementById('display-team-score').innerText = currentTeamScore;
-
-        // Verberg de rebuskaart zodat ze hem niet nog een keer kunnen invullen
-        document.getElementById(`rebus-${rebusNumber}-container`).classList.add('hidden');
-
-        // Update de score live in Supabase
-        await supabaseClient
-            .from('teams')
-            .update({ score: currentTeamScore })
-            .eq('team_name', currentTeamName);
-
-        loadLeaderboard();
-    } else {
-        alert("❌ Helaas, dat antwoord is niet juist. Probeer het nog eens!");
-    }
 }
 
 // ==========================================================================
