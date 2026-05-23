@@ -164,20 +164,20 @@ function switchScreen(screenId) {
     }
 }
 
-// ================= TABBLADEN STRATEGIE MET CODEVEILIGING =================
+// ================= TABBLADEN STRATEGIE MET CUSTOM POP-UP =================
 function switchTab(targetTab) {
-    // Als men naar het ouderscherm wil, vragen we eerst om de code
+    // Als men naar het ouderscherm wil, openen we de custom pop-up en stoppen we de switch
     if (targetTab === 'ouders') {
-        const invoerCode = prompt("Voer de toegangscode voor ouders in:");
-        
-        // Controleer of de ingevoerde code juist is
-        if (invoerCode !== '1234') { 
-            alert("Onjuiste code! Dit scherm is alleen toegankelijk voor ouders.");
-            return; // Stop de functie onmiddellijk, er wordt niet gewisseld
-        }
+        openCodeModal();
+        return; 
     }
 
-    // Schakel de actieve styling van de tab-knoppen om
+    // Als men naar deelnemers switcht, voeren we de switch direct uit
+    executeTabSwitch(targetTab);
+}
+
+// Functie die de echte verandering op het scherm regelt
+function executeTabSwitch(targetTab) {
     const tabDeelnemers = document.getElementById('tab-deelnemers');
     const tabOuders = document.getElementById('tab-ouders');
     
@@ -189,7 +189,6 @@ function switchTab(targetTab) {
         activeTabEl.classList.add('active');
     }
 
-    // Filter de menu-knoppen op basis van de geselecteerde doelgroep
     const alleKnoppen = document.querySelectorAll('.cyber-btn');
     alleKnoppen.forEach(knop => {
         if (knop.classList.contains(`${targetTab}-content`)) {
@@ -198,6 +197,53 @@ function switchTab(targetTab) {
             knop.classList.add('hidden-tab-content');
         }
     });
+}
+
+// Custom Pop-up Acties
+function openCodeModal() {
+    const modal = document.getElementById('codeModal');
+    const input = document.getElementById('modalCodeInput');
+    if (modal) modal.classList.remove('hidden');
+    if (input) {
+        input.value = ''; // Maak veld leeg
+        input.focus();    // Zet cursor direct klaar
+    }
+}
+
+function closeCodeModal() {
+    const modal = document.getElementById('codeModal');
+    if (modal) modal.classList.add('hidden');
+    
+    // Zorg dat de tabs visueel correct terugspringen op Deelnemers
+    const tabDeelnemers = document.getElementById('tab-deelnemers');
+    const tabOuders = document.getElementById('tab-ouders');
+    if (tabDeelnemers) tabDeelnemers.classList.add('active');
+    if (tabOuders) tabOuders.classList.remove('active');
+}
+
+function submitParentCode() {
+    const input = document.getElementById('modalCodeInput');
+    const modal = document.getElementById('codeModal');
+    
+    // HIER PAS JE JOUW CODE AAN (Nu ingesteld op '1234')
+    if (input && input.value === '1234') {
+        if (modal) modal.classList.add('hidden');
+        executeTabSwitch('ouders'); // Code klopt, voer nu de tab-wissel uit!
+    } else {
+        // Geen lelijke alert meer; we maken het invoerveld rood en leeg voor een nieuwe poging
+        if (input) {
+            input.style.borderColor = '#ff4a4a';
+            input.value = '';
+            input.placeholder = "Onjuiste code! Probeer opnieuw...";
+            input.focus();
+            
+            // Herstel de borderkleur zodra de gebruiker weer begint te typen
+            input.addEventListener('input', () => {
+                input.style.borderColor = '';
+                input.placeholder = "Wachtwoord...";
+            }, { once: true });
+        }
+    }
 }
 
 // Zorg dat bij het laden van de pagina meteen de juiste knoppen klaarstaan
