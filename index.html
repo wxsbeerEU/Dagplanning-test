@@ -10,6 +10,15 @@
 <body>
 
     <div class="app-container">
+        
+        <!-- Nieuw: Cyber Logo Header bovenaan de app -->
+        <header class="brand-header">
+            <div class="logo-wrapper">
+                <img src="topvakantie-logo-png.png" alt="Topvakantie Logo" class="logo-img">
+            </div>
+        </header>
+
+        <!-- Live Status Card -->
         <div class="live-card">
             <div id="currentTime">00:00:00</div>
             <div class="current-status-label">Nu bezig met</div>
@@ -19,12 +28,15 @@
             </div>
         </div>
 
+        <!-- Planning Tabel Container -->
         <div class="schedule-container">
             <table class="schedule-table" id="schedule-table">
                 <tbody>
-                    </tbody>
+                    <!-- Wordt dynamisch ingeladen via script.js -->
+                </tbody>
             </table>
         </div>
+        
     </div>
 
     <script src="script.js"></script>
