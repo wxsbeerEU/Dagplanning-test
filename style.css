@@ -70,9 +70,17 @@ body {
     /* Geeft het logo zelf een lichte cyber-achtige drop shadow */
     filter: drop-shadow(0 2px 8px rgba(56, 189, 248, 0.3));
 
-    /* --- NIEUW: Vervaagt de linker- en rechterzijkant voor een smooth overgang --- */
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
-    mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+    /* --- NIEUW: Extra diepe vervaging aan alle 4 de zijden --- */
+    -webkit-mask-image: 
+        linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%),
+        linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+    mask-image: 
+        linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%),
+        linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+    
+    /* Zorgt ervoor dat beide kleurverlopen (links/rechts + boven/onder) met elkaar vermenigvuldigd worden */
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
 }
 
 /* --- LIVE CARD --- */
