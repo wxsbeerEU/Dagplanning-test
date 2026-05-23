@@ -25,7 +25,7 @@
 
             <div class="tab-container">
                 <button id="tab-deelnemers" class="tab-btn active" onclick="switchTab('deelnemers')">🎒 Deelnemers</button>
-                <button id="tab-ouders" class="tab-btn" onclick="switchTab('ouders')">👨‍👩‍👧‍👦 Ouders</button>
+                <button id="tab-ouders" class="tab-btn" onclick="switchTab('moni')">👨‍👩‍👧‍👦 Monitors</button>
             </div>
 
             <div class="menu-grid">
@@ -208,19 +208,17 @@
                 </div>
             </div>
         </section>
-
         <div id="codeModal" class="custom-modal hidden">
             <div class="modal-content">
-                <h3>👨‍👩‍👧‍👦 Ouder Toegang</h3>
-                <p>Voer de geheime code in om de ouder-pagina te ontgrendelen:</p>
-                <input type="password" id="modalCodeInput" class="cyber-input" placeholder="Wachtwoord..." autocomplete="off">
+                <h3>Moni gedeelte</h3>
+                <p>Voer de toegangscode voor Moni's in:</p>
+                <input type="password" id="modalCodeInput" class="cyber-input" placeholder="Wachtwoord..." onkeydown="if(event.key === 'Enter') submitMoniCode()">
                 <div class="modal-buttons">
                     <button class="modal-btn cancel-btn" onclick="closeCodeModal()">Annuleren</button>
-                    <button class="modal-btn confirm-btn" onclick="submitParentCode()">Verifieer</button>
+                    <button class="modal-btn confirm-btn" onclick="submitMoniCode()">Verifieer</button>
                 </div>
             </div>
         </div>
-        
     </div>
 
     <script src="script.js?v=3"></script>
