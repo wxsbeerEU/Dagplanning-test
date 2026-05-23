@@ -1,59 +1,32 @@
 <!DOCTYPE html>
 <html lang="nl">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schedule</title>
-    <link rel="manifest" href="./manifest.json">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="./style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dagplanning</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-    <div class="center-container container-time">
-        <div class="container container-current-time">
-            <div class="container-current-time_label">Het is nu:</div>
-            <div id="currentTime" class="container-current-time_value">Huidige tijd</div>
-        </div>
-        <div id="currentActivity" class="current-activity-description">De huidige activiteit</div>
 
-        <div class="container container-activity-from-to">
-            <div>
-                <span>van <span id="currentActivityFrom" class="activity-time">Begin</span> tot <span
-                        id="currentActivityTo" class="activity-time">Einduur</span></span>
+    <div class="app-container">
+        <div class="live-card">
+            <div id="currentTime">00:00:00</div>
+            <div class="current-status-label">Nu bezig met</div>
+            <div id="currentActivity">Geen activiteit</div>
+            <div class="current-time-range">
+                <span id="currentActivityFrom">00:00</span> - <span id="currentActivityTo">00:00</span>
             </div>
         </div>
-    </div>
-    <div class="center-container">
-        <table border="1" id="schedule-table">
-            <thead>
-                <tr>
-                    <th class="cell">Tijd</th>
-                    <th class="cell">Activiteit</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Rows will be dynamically generated here -->
-            </tbody>
-        </table>
-    </div>
-</body>
-<script src="./script.js"/>
-<script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js')
-            .then(registration => {
-                console.log('Excellent, registered with scope:', registration.scope);
-            })
-            .catch(error => {
-                console.error('Service worker registration failed:', error);
-            });
-    }
-</script>
 
+        <div class="schedule-container">
+            <table class="schedule-table" id="schedule-table">
+                <tbody>
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
 </html>
