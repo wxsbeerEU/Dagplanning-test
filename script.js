@@ -152,37 +152,34 @@ updateCurrentTime();
 
 // Functie om te wisselen tussen de schermen
 function switchScreen(screenId) {
-    // Verberg alle schermen
     document.querySelectorAll('.screen-section').forEach(screen => {
         screen.classList.remove('active-screen');
     });
     
-    // Toon het gekozen scherm
     const targetScreen = document.getElementById(screenId);
     if (targetScreen) {
         targetScreen.classList.add('active-screen');
     }
 }
 
-// ================= TABBLADEN STRATEGIE MET CUSTOM POP-UP =================
+// ================= TABBLADEN STRATEGIE MET CUSTOM POP-UP (MONI) =================
 function switchTab(targetTab) {
-    // Als men naar het ouderscherm wil, openen we de custom pop-up en stoppen we de switch
-    if (targetTab === 'ouders') {
+    // Als men naar het Moni-scherm wil, openen we de custom pop-up
+    if (targetTab === 'moni') {
         openCodeModal();
         return; 
     }
 
-    // Als men naar deelnemers switcht, voeren we de switch direct uit
+    // Deelnemers switcht direct
     executeTabSwitch(targetTab);
 }
 
-// Functie die de echte verandering op het scherm regelt
 function executeTabSwitch(targetTab) {
     const tabDeelnemers = document.getElementById('tab-deelnemers');
-    const tabOuders = document.getElementById('tab-ouders');
+    const tabMoni = document.getElementById('tab-moni');
     
     if (tabDeelnemers) tabDeelnemers.classList.remove('active');
-    if (tabOuders) tabOuders.classList.remove('active');
+    if (tabMoni) tabMoni.classList.remove('active');
     
     const activeTabEl = document.getElementById(`tab-${targetTab}`);
     if (activeTabEl) {
@@ -205,8 +202,8 @@ function openCodeModal() {
     const input = document.getElementById('modalCodeInput');
     if (modal) modal.classList.remove('hidden');
     if (input) {
-        input.value = ''; // Maak veld leeg
-        input.focus();    // Zet cursor direct klaar
+        input.value = ''; 
+        input.focus();    
     }
 }
 
@@ -214,30 +211,28 @@ function closeCodeModal() {
     const modal = document.getElementById('codeModal');
     if (modal) modal.classList.add('hidden');
     
-    // Zorg dat de tabs visueel correct terugspringen op Deelnemers
+    // Reset visualisatie naar Deelnemers bij annuleren
     const tabDeelnemers = document.getElementById('tab-deelnemers');
-    const tabOuders = document.getElementById('tab-ouders');
+    const tabMoni = document.getElementById('tab-moni');
     if (tabDeelnemers) tabDeelnemers.classList.add('active');
-    if (tabOuders) tabOuders.classList.remove('active');
+    if (tabMoni) tabMoni.classList.remove('active');
 }
 
-function submitParentCode() {
+function submitMoniCode() {
     const input = document.getElementById('modalCodeInput');
     const modal = document.getElementById('codeModal');
     
-    // HIER PAS JE JOUW CODE AAN (Nu ingesteld op '1234')
+    // MONI CODE (Nu ingesteld op '1234')
     if (input && input.value === '1234') {
         if (modal) modal.classList.add('hidden');
-        executeTabSwitch('ouders'); // Code klopt, voer nu de tab-wissel uit!
+        executeTabSwitch('moni'); 
     } else {
-        // Geen lelijke alert meer; we maken het invoerveld rood en leeg voor een nieuwe poging
         if (input) {
             input.style.borderColor = '#ff4a4a';
             input.value = '';
             input.placeholder = "Onjuiste code! Probeer opnieuw...";
             input.focus();
             
-            // Herstel de borderkleur zodra de gebruiker weer begint te typen
             input.addEventListener('input', () => {
                 input.style.borderColor = '';
                 input.placeholder = "Wachtwoord...";
