@@ -6,8 +6,6 @@
     <title>Topvakantie Hub</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
-    <!-- Supabase Library inladen zodat JavaScript met je database kan praten -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -48,10 +46,9 @@
                     <span class="btn-text">Waar zijn we?</span>
                 </button>
 
-                <!-- De game knop is nu actief! -->
-                <button class="cyber-btn" onclick="switchScreen('game-screen')">
+                <button class="cyber-btn disabled" disabled>
                     <span class="btn-icon">🎮</span>
-                    <span class="btn-text">Cyber Game</span>
+                    <span class="btn-text">Game (Coming Soon)</span>
                 </button>
             </div>
         </section>
@@ -106,73 +103,30 @@
             </div>
         </section>
 
+        <!-- ================= LOCATIE SCHERM ================= -->
        <!-- ================= LOCATIE SCHERM ================= -->
         <section id="locatie-screen" class="screen-section">
             <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar Hub</button>
 
             <div class="maps-container">
+                <!-- BELANGRIJK: Vervang hieronder 'Geraardsbergen' door het exacte adres van jouw kamp! -->
+                <!-- Google Maps gelinkt naar Hotelschool Ter Duinen -->
                 <iframe 
                     class="google-maps-iframe"
+                    src="https://maps.google.com/maps?q=Geraardsbergen&t=&z=14&ie=UTF8&iwloc=&output=embed" 
                     src="https://maps.google.com/maps?q=Hotelschool%20Ter%20Duinen,%20Houtsaegerlaan%2040,%208670%20Koksijde&t=&z=15&ie=UTF8&iwloc=&output=embed" 
                     allowfullscreen="" 
                     loading="lazy">
-                 iframe>
+                </iframe>
+
                 <div class="address-card">
                     <span class="address-icon">🏢</span>
-                    <div class="address-text"><strong>Hotelschool Ter Duinen</strong><br>Houtsaegerlaan 40, 8670 Koksijde</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ================= GAME SCHERM ================= -->
-        <section id="game-screen" class="screen-section">
-            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar Hub</button>
-
-            <!-- SUB-SCHERM 1: TEAM REGISTRATIE -->
-            <div id="game-login-view" class="game-view">
-                <div class="live-card">
-                    <div class="current-status-label">Voer je teamnaam in om te starten</div>
-                    <input type="text" id="team-name-input" class="cyber-input" placeholder="Bijv. De Turbo Duinen...">
-                    <button class="action-btn" onclick="registerOrLoginTeam()">Start Missie</button>
-                </div>
-            </div>
-
-            <!-- SUB-SCHERM 2: HET SPEL (UNIVERSEEL INVULVELD) -->
-            <div id="game-play-view" class="game-view hidden">
-                <div class="team-status-bar" style="display: flex; justify-content: space-between; margin-bottom: 15px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px;">
-                    <span>Team: <strong id="display-team-name" style="color: #58a6ff;">...</strong></span>
-                    <span>Score: <strong id="display-team-score" style="color: #58a6ff;">0</strong> pts</span>
-                </div>
-
-                <!-- Het nieuwe universele invulveld in jouw eigen rebus-stijl -->
-                <div class="rebus-card" style="text-align: center;">
-                    <h3>Code of Oplossing Gevonden? 🔍</h3>
-                    <p class="rebus-hint">💡 Tip: Heb je ergens op het terrein een rebus gekraakt of een geheime code ontcijferd? Typ het antwoord hieronder in.</p>
-                    <input type="text" id="secret-code-input" class="cyber-input" placeholder="Typ hier de oplossing...">
-                    <button class="action-btn" onclick="submitSecretCode()">Code Controleren</button>
-                </div>
-            </div>
-
-            <!-- SUB-SCHERM 3: ADMIN BEDIENING -->
-            <div id="game-admin-view" class="game-view hidden">
-                <div class="live-card" style="border-color: #ef4444;">
-                    <div class="current-status-label" style="color: #ef4444; font-weight: bold;">⚠️ ADMIN CONTROL PANEL</div>
-                    <p style="font-size: 0.85rem; margin-bottom: 10px;">Pas live scores aan voor valsspelers of bonussen.</p>
-                    <button class="back-btn" style="margin: 0 auto 15px auto; display: block;" onclick="logoutAdmin()">Log uit Admin</button>
-                </div>
-                <div id="admin-teams-list" class="regels-container">
-                    <!-- Teams worden hier live ingeladen met + en - knoppen -->
-                </div>
-            </div>
-
-            <!-- LIVE SCOREBORD (Altijd zichtbaar onder het spel) -->
-            <div class="leaderboard-box" style="margin-top: 20px;">
-                <div class="leaderboard-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                    <span>🏆 LIVE SCOREBORD</span>
-                    <button class="refresh-btn" style="background: none; border: none; color: #58a6ff; cursor: pointer;" onclick="loadLeaderboard()">🔄 Update</button>
-                </div>
-                <div id="leaderboard-list">
-                    <p style="text-align: center; color: gray;">Laden van scores...</p>
+                    <div class="address-text">
+                        <strong>Domeinnaam / Kamphuis</strong><br>
+                        Straatnaam 123, 9500 Geraardsbergen
+                        <strong>Hotelschool Ter Duinen</strong><br>
+                        Houtsaegerlaan 40, 8670 Koksijde
+                    </div>
                 </div>
             </div>
         </section>
