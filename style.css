@@ -66,8 +66,13 @@ body {
     height: auto; /* Behoudt automatisch de juiste verhoudingen */
     display: block;
     object-fit: contain;
+    
     /* Geeft het logo zelf een lichte cyber-achtige drop shadow */
     filter: drop-shadow(0 2px 8px rgba(56, 189, 248, 0.3));
+
+    /* --- NIEUW: Vervaagt de linker- en rechterzijkant voor een smooth overgang --- */
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
 }
 
 /* --- LIVE CARD --- */
