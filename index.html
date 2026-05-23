@@ -2,312 +2,183 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kamp Dashboard & Cyber Game</title>
-    
-    <!-- PWA Meta Tags voor GSM-app functionaliteit -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" href="./manifest.json">
-    <link rel="apple-touch-icon" href="icon-192.png">
-    
-    <!-- Supabase Bibliotheek (Cruciaal voor het live scorebord) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Topvakantie Hub</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+    <!-- Supabase Library inladen zodat JavaScript met je database kan praten -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-    <style>
-        :root {
-            --bg-color: #0d1117;
-            --bg-card: #161b22;
-            --border-color: #30363d;
-            --text-color: #c9d1d9;
-            --text-muted: #8b949e;
-            --accent-color: #58a6ff;
-            --accent-success: #2ea44f;
-            --accent-danger: #da3637;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            padding-bottom: 70px;
-        }
-
-        header {
-            background-color: var(--bg-card);
-            padding: 15px;
-            text-align: center;
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .container {
-            padding: 20px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .screen-section {
-            display: none;
-        }
-
-        .active-screen {
-            display: block;
-        }
-
-        .card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .btn {
-            display: inline-block;
-            background-color: var(--border-color);
-            color: var(--text-color);
-            border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 16px;
-            transition: background 0.2s;
-            text-align: center;
-        }
-
-        .btn-primary {
-            background-color: var(--accent-color);
-            color: #ffffff;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--bg-color);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-color);
-            font-size: 16px;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        /* Dagplanning Tabel */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .current-activity {
-            background-color: rgba(88, 166, 255, 0.15);
-            border-left: 4px solid var(--accent-color);
-        }
-
-        /* Scorebord & Admin lay-out */
-        .leaderboard-row, .admin-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px;
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            margin-bottom: 8px;
-        }
-
-        .admin-btn-group button {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-left: 5px;
-        }
-
-        .admin-btn-plus { background-color: var(--accent-success); color: white; }
-        .admin-btn-min { background-color: var(--accent-danger); color: white; }
-
-        /* Navigatiebalk onderaan */
-        .nav-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 60px;
-            background-color: var(--bg-card);
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 100;
-        }
-
-        .nav-item {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 12px;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .nav-item svg {
-            width: 24px;
-            height: 24px;
-            margin-bottom: 4px;
-            fill: currentColor;
-        }
-
-        .nav-item.active {
-            color: var(--accent-color);
-        }
-    </style>
 </head>
 <body>
 
-    <header>
-        <h2>Kamp Dashboard</h2>
-        <p id="currentTime" style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">00:00:00</p>
-    </header>
+    <div class="app-container">
 
-    <div class="container">
+        <!-- Cyber Logo Header -->
+        <header class="brand-header">
+            <div class="logo-wrapper">
+                <img src="topvakantie-logo2.png" alt="Topvakantie Logo" class="logo-img">
+            </div>
+        </header>
 
-        <!-- =================================================================== -->
-        <!-- SCREEN 1: DAGPLANNING                                               -->
-        <!-- =================================================================== -->
-        <section id="schedule-screen" class="screen-section active-screen">
-            <div class="card">
-                <h3>📌 Nu bezig:</h3>
-                <h1 id="currentActivity" style="color: var(--accent-color); margin: 10px 0;">Laden...</h1>
-                <p style="color: var(--text-muted);">Van <span id="currentActivityFrom">-</span> tot <span id="currentActivityTo">-</span></p>
+        <!-- ================= HOOFDSCHERM ================= -->
+        <section id="main-menu" class="screen-section active-screen">
+            <div class="welcome-card">
+                <p>Klik op een van de opties hieronder:</p>
             </div>
 
-            <h3>📅 Volledige Planning</h3>
-            <table id="schedule-table">
-                <tbody>
-                    <!-- Wordt dynamisch opgebouwd via script.js -->
-                </tbody>
-            </table>
+            <div class="menu-grid">
+                <button class="cyber-btn" onclick="switchScreen('planning-screen')">
+                    <span class="btn-icon">📅</span>
+                    <span class="btn-text">Dagplanning</span>
+                </button>
+
+                <button class="cyber-btn" onclick="switchScreen('animatoren-screen')">
+                    <span class="btn-icon">😎</span>
+                    <span class="btn-text">Wie zijn de animatoren?</span>
+                </button>
+
+                <button class="cyber-btn" onclick="switchScreen('regels-screen')">
+                    <span class="btn-icon">📜</span>
+                    <span class="btn-text">Regels van de week</span>
+                </button>
+
+                <!-- Nieuwe Knop naar Waar zijn we -->
+                <button class="cyber-btn" onclick="switchScreen('locatie-screen')">
+                    <span class="btn-icon">📍</span>
+                    <span class="btn-text">Waar zijn we?</span>
+                </button>
+
+                <!-- De game knop is nu actief! -->
+                <button class="cyber-btn" onclick="switchScreen('game-screen')">
+                    <span class="btn-icon">🎮</span>
+                    <span class="btn-text">Cyber Game</span>
+                </button>
+            </div>
         </section>
 
-        <!-- =================================================================== -->
-        <!-- SCREEN 2: CYBER GAME                                                -->
-        <!-- =================================================================== -->
+        <!-- ================= PLANNING SCHERM ================= -->
+        <section id="planning-screen" class="screen-section">
+            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar Hub</button>
+
+            <div class="live-card">
+                <div id="currentTime">00:00:00</div>
+                <div class="current-status-label">Nu bezig met</div>
+                <div id="currentActivity">Geen activiteit</div>
+                <div class="current-time-range">
+                    <span id="currentActivityFrom">00:00</span> - <span id="currentActivityTo">00:00</span>
+                </div>
+            </div>
+
+            <div class="schedule-container">
+                <table class="schedule-table" id="schedule-table">
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ================= ANIMATOREN SCHERM ================= -->
+        <section id="animatoren-screen" class="screen-section">
+            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar Hub</button>
+
+            <div class="animatoren-container">
+                <div class="animator-card">
+                    <div class="animator-photo-wrapper">
+                        <img src="animator1.jpg" alt="Animator" class="animator-photo">
+                    </div>
+                    <div class="animator-info">
+                        <div class="info-row"><span class="info-label">Naam:</span> <span class="info-value">Tom</span></div>
+                        <div class="info-row"><span class="info-label">Functie:</span> <span class="info-value">Hoofdanimator</span></div>
+                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">Gitaar bij het kampvuur 🔥</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= REGELS SCHERM ================= -->
+        <section id="regels-screen" class="screen-section">
+            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar Hub</button>
+
+            <div class="regels-container">
+                <div class="regel-card">
+                    <div class="regel-number">01</div>
+                    <div class="regel-text">Respecteer de rust na het lichten uitdoen (22:30).</div>
+                </div>
+            </div>
+        </section>
+
+       <!-- ================= LOCATIE SCHERM ================= -->
+        <section id="locatie-screen" class="screen-section">
+            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar Hub</button>
+
+            <div class="maps-container">
+                <iframe 
+                    class="google-maps-iframe"
+                    src="https://maps.google.com/maps?q=Hotelschool%20Ter%20Duinen,%20Houtsaegerlaan%2040,%208670%20Koksijde&t=&z=15&ie=UTF8&iwloc=&output=embed" 
+                    allowfullscreen="" 
+                    loading="lazy">
+                 iframe>
+                <div class="address-card">
+                    <span class="address-icon">🏢</span>
+                    <div class="address-text"><strong>Hotelschool Ter Duinen</strong><br>Houtsaegerlaan 40, 8670 Koksijde</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= GAME SCHERM ================= -->
         <section id="game-screen" class="screen-section">
-            
-            <!-- VIEW A: LOGIN / REGISTRATIE -->
-            <div id="game-login-view">
-                <div class="card" style="text-align: center;">
-                    <h3>🔐 Start Cyber Game</h3>
-                    <p style="color: var(--text-muted); margin-bottom: 20px;">Registreer je team of log in met je bestaande teamnaam.</p>
-                    
-                    <input type="text" id="team-name-input" class="form-control" placeholder="Vul je teamnaam in...">
-                    <button onclick="registerOrLoginTeam()" class="btn btn-primary" style="width: 100%;">Deelnemen</button>
-                </div>
+            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar Hub</button>
 
-                <h3>🏆 Huidige Tussenstand</h3>
-                <div id="global-leaderboard" class="card" style="padding: 10px; background: transparent; border: none;">
-                    <div id="leaderboard-list"><!-- Live stand --></div>
+            <!-- SUB-SCHERM 1: TEAM REGISTRATIE -->
+            <div id="game-login-view" class="game-view">
+                <div class="live-card">
+                    <div class="current-status-label">Voer je teamnaam in om te starten</div>
+                    <input type="text" id="team-name-input" class="cyber-input" placeholder="Bijv. De Turbo Duinen...">
+                    <button class="action-btn" onclick="registerOrLoginTeam()">Start Missie</button>
                 </div>
             </div>
 
-            <!-- VIEW B: HET SPEELVELD (NA LOGIN) -->
-            <div id="game-play-view" class="hidden">
-                <div class="card" style="text-align: center; border-left: 4px solid var(--accent-color);">
-                    <p style="color: var(--text-muted); text-transform: uppercase; font-size: 12px; font-weight: bold;">Jullie Team</p>
-                    <h2 id="display-team-name" style="margin: 5px 0;">-</h2>
-                    <h1 style="font-size: 36px; color: var(--accent-color);"><span id="display-team-score">0</span> <span style="font-size: 16px; color: var(--text-color);">punten</span></h1>
+            <!-- SUB-SCHERM 2: HET SPEL (UNIVERSEEL INVULVELD) -->
+            <div id="game-play-view" class="game-view hidden">
+                <div class="team-status-bar" style="display: flex; justify-content: space-between; margin-bottom: 15px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                    <span>Team: <strong id="display-team-name" style="color: #58a6ff;">...</strong></span>
+                    <span>Score: <strong id="display-team-score" style="color: #58a6ff;">0</strong> pts</span>
                 </div>
 
-                <!-- UNIVERSEEL INVULVELD VOOR GEHEIME CODES -->
-                <div class="card" style="text-align: center;">
-                    <h3 style="margin-bottom: 10px;">Oplossing gevonden? 🔍</h3>
-                    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 15px;">Heb je een rebus of geheime code gekraakt? Typ het juiste antwoord hieronder in.</p>
-                    
-                    <input type="text" id="secret-code-input" class="form-control" placeholder="Typ hier de oplossing...">
-                    <button onclick="submitSecretCode()" class="btn btn-primary" style="width: 100%;">Oplossing Controleren</button>
-                </div>
-
-                <h3>📊 Live Rangschikking</h3>
-                <div id="play-leaderboard-container" style="margin-top: 15px;">
-                    <!-- Wordt synchroon bijgewerkt -->
+                <!-- Het nieuwe universele invulveld in jouw eigen rebus-stijl -->
+                <div class="rebus-card" style="text-align: center;">
+                    <h3>Code of Oplossing Gevonden? 🔍</h3>
+                    <p class="rebus-hint">💡 Tip: Heb je ergens op het terrein een rebus gekraakt of een geheime code ontcijferd? Typ het antwoord hieronder in.</p>
+                    <input type="text" id="secret-code-input" class="cyber-input" placeholder="Typ hier de oplossing...">
+                    <button class="action-btn" onclick="submitSecretCode()">Code Controleren</button>
                 </div>
             </div>
 
-            <!-- VIEW C: GEHEIM ADMIN PANEL -->
-            <div id="game-admin-view" class="hidden">
-                <div class="card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <h3>🛠️ Spelleiding Panel</h3>
-                        <button onclick="logoutAdmin()" class="btn" style="padding: 6px 12px; font-size: 14px;">Log uit</button>
-                    </div>
-                    <p style="color: var(--text-muted); margin-bottom: 20px;">Pas hier handmatig scores van teams aan.</p>
-                    
-                    <div id="admin-teams-list">
-                        <!-- Lijst met alle teams en +/- knoppen -->
-                    </div>
+            <!-- SUB-SCHERM 3: ADMIN BEDIENING -->
+            <div id="game-admin-view" class="game-view hidden">
+                <div class="live-card" style="border-color: #ef4444;">
+                    <div class="current-status-label" style="color: #ef4444; font-weight: bold;">⚠️ ADMIN CONTROL PANEL</div>
+                    <p style="font-size: 0.85rem; margin-bottom: 10px;">Pas live scores aan voor valsspelers of bonussen.</p>
+                    <button class="back-btn" style="margin: 0 auto 15px auto; display: block;" onclick="logoutAdmin()">Log uit Admin</button>
+                </div>
+                <div id="admin-teams-list" class="regels-container">
+                    <!-- Teams worden hier live ingeladen met + en - knoppen -->
                 </div>
             </div>
 
+            <!-- LIVE SCOREBORD (Altijd zichtbaar onder het spel) -->
+            <div class="leaderboard-box" style="margin-top: 20px;">
+                <div class="leaderboard-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span>🏆 LIVE SCOREBORD</span>
+                    <button class="refresh-btn" style="background: none; border: none; color: #58a6ff; cursor: pointer;" onclick="loadLeaderboard()">🔄 Update</button>
+                </div>
+                <div id="leaderboard-list">
+                    <p style="text-align: center; color: gray;">Laden van scores...</p>
+                </div>
+            </div>
         </section>
-
+        
     </div>
 
-    <!-- =================================================================== -->
-    <!-- NAVIGATIEBALK ONDERAAN                                              -->
-    <!-- =================================================================== -->
-    <nav class="nav-bar">
-        <button class="nav-item active" id="nav-schedule" onclick="switchScreen('schedule-screen'); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); this.classList.add('active');">
-            <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
-            Dagplanning
-        </button>
-        <button class="nav-item" id="nav-game" onclick="switchScreen('game-screen'); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); this.classList.add('active');">
-            <svg viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
-            Cyber Game
-        </button>
-    </nav>
-
-    <script src="./script.js"></script>
-    
-    <script>
-        // Zorgt ervoor dat het scorebord live meeschuift naar de speler-view
-        const observer = new MutationObserver(() => {
-            const source = document.getElementById('leaderboard-list');
-            const target = document.getElementById('play-leaderboard-container');
-            if (source && target && target.innerHTML !== source.innerHTML) {
-                target.innerHTML = source.innerHTML;
-            }
-        });
-        
-        document.addEventListener("DOMContentLoaded", () => {
-            const list = document.getElementById('leaderboard-list');
-            if (list) {
-                observer.observe(list, { childList: true, subtree: true });
-            }
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
