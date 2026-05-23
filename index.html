@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dagplanning</title>
+    <title>Topvakantie Hub</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -11,31 +11,58 @@
 
     <div class="app-container">
         
-        <!-- Nieuw: Cyber Logo Header bovenaan de app -->
+        <!-- Cyber Logo Header (blijft altijd zichtbaar bovenaan) -->
         <header class="brand-header">
             <div class="logo-wrapper">
                 <img src="topvakantie-logo2.png" alt="Topvakantie Logo" class="logo-img">
             </div>
         </header>
 
-        <!-- Live Status Card -->
-        <div class="live-card">
-            <div id="currentTime">00:00:00</div>
-            <div class="current-status-label">Nu bezig met</div>
-            <div id="currentActivity">Geen activiteit</div>
-            <div class="current-time-range">
-                <span id="currentActivityFrom">00:00</span> - <span id="currentActivityTo">00:00</span>
+        <!-- ================= HOOFDSCHERM ================= -->
+        <section id="main-menu" class="screen-section active-screen">
+            <div class="welcome-card">
+                <h2>Cyber Hub</h2>
+                <p>Kies een module om te starten</p>
             </div>
-        </div>
+            
+            <div class="menu-grid">
+                <button class="cyber-btn" onclick="switchScreen('planning-screen')">
+                    <span class="btn-icon">📅</span>
+                    <span class="btn-text">Dagplanning</span>
+                </button>
+                
+                <button class="cyber-btn disabled" disabled>
+                    <span class="btn-icon">🎮</span>
+                    <span class="btn-text">Game (Coming Soon)</span>
+                </button>
+            </div>
+        </section>
 
-        <!-- Planning Tabel Container -->
-        <div class="schedule-container">
-            <table class="schedule-table" id="schedule-table">
-                <tbody>
-                    <!-- Wordt dynamisch ingeladen via script.js -->
-                </tbody>
-            </table>
-        </div>
+        <!-- ================= PLANNING SCHERM ================= -->
+        <section id="planning-screen" class="screen-section">
+            
+            <!-- Knop om terug naar het hoofdmenu te gaan -->
+            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar Hub</button>
+
+            <!-- Live Status Card -->
+            <div class="live-card">
+                <div id="currentTime">00:00:00</div>
+                <div class="current-status-label">Nu bezig met</div>
+                <div id="currentActivity">Geen activiteit</div>
+                <div class="current-time-range">
+                    <span id="currentActivityFrom">00:00</span> - <span id="currentActivityTo">00:00</span>
+                </div>
+            </div>
+
+            <!-- Planning Tabel Container -->
+            <div class="schedule-container">
+                <table class="schedule-table" id="schedule-table">
+                    <tbody>
+                        <!-- Wordt dynamisch ingeladen via script.js -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
         
     </div>
 
