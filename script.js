@@ -147,7 +147,7 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch(err => console.log("SW error:", err));
 }
 
-// Algemene schermwissel
+// Algemene schermwissel (Nu bovenaan/veilig geplaatst zodat deze ALTIJD declareert)
 function switchScreen(screenId) {
     document.querySelectorAll('.screen-section').forEach(screen => {
         screen.classList.remove('active-screen');
@@ -176,19 +176,27 @@ document.addEventListener("DOMContentLoaded", () => {
 const SUPABASE_URL = "https://jshmsmubgpzfstphasoo.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_B4O8EAtcYJt04j1ilJ26mg_psPQT3kG"; 
 
-// Voorkom dubbele declaratie crash en initialiseer client netjes
-let supabaseClient;
-if (typeof supabase !== 'undefined') {
-    supabaseClient = supabase;
-} else if (window.supabase) {
-    supabaseClient = window.supabase;
-}
+let supabaseClient = null;
 
-if (supabaseClient && typeof supabaseClient.createClient === 'function') {
-    supabaseClient = supabaseClient.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-} else {
-    window.supabaseApp = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
-    supabaseClient = window.supabaseApp;
+// VEILIGHEIDS-CHECK: Mocht de browser opslag blokkeren, vang de fout op zodat de rest blijft werken
+try {
+    let baseSupabase;
+    if (typeof supabase !== 'undefined') {
+        baseSupabase = supabase;
+    } else if (window.supabase) {
+        baseSupabase = window.supabase;
+    }
+
+    if (baseSupabase && typeof baseSupabase.createClient === 'function') {
+        // We forceren auth storage op 'memory' om de Tracking Prevention blokkade te omzeilen
+        supabaseClient = baseSupabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: {
+                persistSession: false // Voorkomt dat Supabase in de geblokkeerde localStorage graaft
+            }
+        });
+    }
+} catch (e) {
+    console.error("Supabase kon niet veilig starten wegens browser restricties:", e);
 }
 
 let currentTeamName = "";
@@ -205,7 +213,10 @@ const gameAnswers = {
 
 // Universele codecontrole functionaliteit
 async function submitSecretCode() {
-    if (!supabaseClient) return;
+    if (!supabaseClient) {
+        alert("Functie tijdelijk niet beschikbaar door tracking-blokkade van je browser.");
+        return;
+    }
 
     const inputField = document.getElementById('secret-code-input');
     if (!inputField) return;
@@ -260,7 +271,7 @@ async function submitSecretCode() {
 // Team registratie / login
 async function registerOrLoginTeam() {
     if (!supabaseClient) {
-        alert("Supabase is niet correct geladen. Controleer je internetverbinding of scripts.");
+        alert("Supabase is geblokkeerd door je browser-beveiliging. Zet 'Tracking Prevention' uit of gebruik een andere browser.");
         return;
     }
 
