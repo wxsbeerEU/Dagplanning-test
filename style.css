@@ -249,8 +249,10 @@ body {
 
 .welcome-card p {
     margin: 0;
-    color: var(--text-muted);
-    font-size: 0.9rem;
+    color: var(--accent-color); /* Maakt de tekst fel cyaanblauw */
+    font-size: 1.1rem;          /* Maakt de tekst net een slag groter */
+    font-weight: 600;           /* Maakt de tekst iets dikker voor betere leesbaarheid */
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.3); /* Geeft een subtiele cyber-gloed aan de letters */
 }
 
 /* Knoppen Grid */
