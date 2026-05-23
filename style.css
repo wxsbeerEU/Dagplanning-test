@@ -303,17 +303,6 @@ body {
     background: rgba(0, 0, 0, 0.2);
 }
 
-/* Speciale styling voor de Spotify-knop */
-.cyber-btn[onclick*="spotify"] {
-    background-color: #1DB954 !important; /* Spotify Groen */
-    color: #FFFFFF !important;
-    border-color: #1aa34a !important;
-}
-
-.cyber-btn[onclick*="spotify"]:active {
-    background-color: #1aa34a !important;
-    transform: scale(0.98);
-}
 
 /* Terugknop styling */
 .back-btn {
