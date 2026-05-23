@@ -336,12 +336,6 @@ body {
     gap: 20px;
     border: 1px solid rgba(255, 255, 255, 0.03);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-    transition: transform 0.2s ease;
-}
-
-.animator-card:hover {
-    transform: translateX(4px); /* Subtiel effect bij aanraken/hoofden */
-    border-color: rgba(56, 189, 248, 0.2);
 }
 
 /* Foto Styling met Cyber Ring */
