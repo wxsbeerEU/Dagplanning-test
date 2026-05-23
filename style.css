@@ -218,6 +218,7 @@ body {
         box-shadow: inset 0 0 15px rgba(56, 189, 248, 0.08);
     }
 }
+
 /* --- SCREEN CONTROLS (Wisselen tussen schermen) --- */
 .screen-section {
     display: none; /* Standaard onzichtbaar */
@@ -302,6 +303,18 @@ body {
     background: rgba(0, 0, 0, 0.2);
 }
 
+/* Speciale styling voor de Spotify-knop */
+.cyber-btn[onclick*="spotify"] {
+    background-color: #1DB954 !important; /* Spotify Groen */
+    color: #FFFFFF !important;
+    border-color: #1aa34a !important;
+}
+
+.cyber-btn[onclick*="spotify"]:active {
+    background-color: #1aa34a !important;
+    transform: scale(0.98);
+}
+
 /* Terugknop styling */
 .back-btn {
     background: none;
@@ -317,6 +330,45 @@ body {
 
 .back-btn:hover {
     background: rgba(56, 189, 248, 0.1);
+}
+
+/* ================= TABS STYLING ================= */
+.tab-container {
+    display: flex;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tab-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 9px;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Actieve tab krijgt een vette oplichtende look */
+.tab-btn.active {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+}
+
+/* Verbergt de knoppen die niet bij het actieve tabblad horen */
+.hidden-tab-content {
+    display: none !important;
 }
 
 /* --- ANIMATOREN SCHERM STYLING --- */
@@ -388,6 +440,7 @@ body {
     color: var(--accent-color); /* Geeft de unieke skill een mooi kleurtje */
     font-weight: 600;
 }
+
 /* --- REGELS SCHERM STYLING --- */
 .regels-container {
     display: flex;
@@ -423,6 +476,7 @@ body {
     font-size: 0.95rem;
     line-height: 1.4;
 }
+
 /* --- LOCATIE SCHERM STYLING --- */
 .maps-container {
     display: flex;
@@ -466,6 +520,7 @@ body {
 .address-text strong {
     color: var(--accent-color); /* Geeft de naam van de locatie je cyber-kleur */
 }
+
 /* --- CYBER GAME STYLING --- */
 .game-view {
     width: 100%;
@@ -626,42 +681,4 @@ body {
     padding: 6px 12px;
     border-radius: 6px;
     font-weight: bold;
-}
-/* ================= TABS STYLING ================= */
-.tab-container {
-    display: flex;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    padding: 4px;
-    margin-bottom: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.tab-btn {
-    flex: 1;
-    background: transparent;
-    border: none;
-    color: #94a3b8;
-    padding: 12px;
-    font-size: 1rem;
-    font-weight: 700;
-    cursor: pointer;
-    border-radius: 9px;
-    transition: all 0.2s ease;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-}
-
-/* Actieve tab krijgt een vette oplichtende look */
-.tab-btn.active {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-    color: #ffffff;
-    box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
-}
-
-/* Verbergt de knoppen die niet bij het actieve tabblad horen */
-.hidden-tab-content {
-    display: none !important;
 }
