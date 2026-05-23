@@ -388,3 +388,38 @@ body {
     color: var(--accent-color); /* Geeft de unieke skill een mooi kleurtje */
     font-weight: 600;
 }
+/* --- REGELS SCHERM STYLING --- */
+.regels-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+}
+
+.regel-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Grote neon-blauwe nummers */
+.regel-number {
+    font-family: monospace;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--accent-color);
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+    min-width: 35px; /* Zorgt dat de tekst ernaast altijd netjes uitlijnt */
+}
+
+.regel-text {
+    color: var(--text-main);
+    font-weight: 500;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
