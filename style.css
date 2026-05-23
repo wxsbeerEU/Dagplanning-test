@@ -318,3 +318,79 @@ body {
 .back-btn:hover {
     background: rgba(56, 189, 248, 0.1);
 }
+
+/* --- ANIMATOREN SCHERM STYLING --- */
+.animatoren-container {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+}
+
+.animator-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease;
+}
+
+.animator-card:hover {
+    transform: translateX(4px); /* Subtiel effect bij aanraken/hoofden */
+    border-color: rgba(56, 189, 248, 0.2);
+}
+
+/* Foto Styling met Cyber Ring */
+.animator-photo-wrapper {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0; /* Zorgt dat de foto niet platgedrukt wordt */
+}
+
+.animator-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid var(--accent-color);
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+}
+
+/* Info Tekst Styling */
+.animator-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+}
+
+.info-row {
+    font-size: 0.95rem;
+    line-height: 1.2;
+}
+
+.info-label {
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-block;
+    width: 65px; /* Lijn alle data netjes verticaal uit */
+}
+
+.info-value {
+    color: var(--text-main);
+    font-weight: 500;
+}
+
+/* Speciale styling voor de derde regel (de Skill/Kenmerk) */
+.info-row:last-child .info-value {
+    color: var(--accent-color); /* Geeft de unieke skill een mooi kleurtje */
+    font-weight: 600;
+}
