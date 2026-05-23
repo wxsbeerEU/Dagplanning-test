@@ -149,3 +149,17 @@ highlightCurrentTime();
 setInterval(highlightCurrentTime, 30000);
 setInterval(updateCurrentTime, 1000);
 updateCurrentTime();
+
+// Functie om te wisselen tussen de schermen
+function switchScreen(screenId) {
+    // Verberg alle schermen
+    document.querySelectorAll('.screen-section').forEach(screen => {
+        screen.classList.remove('active-screen');
+    });
+    
+    // Toon het gekozen scherm
+    const targetScreen = document.getElementById(screenId);
+    if (targetScreen) {
+        targetScreen.classList.add('active-screen');
+    }
+}
