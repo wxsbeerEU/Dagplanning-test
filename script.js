@@ -168,9 +168,23 @@ function switchScreen(screenId) {
 //                           SUPABASE CONFIGURATIE
 // ==========================================================================
 const SUPABASE_URL = "https://jshmsmubgpzfstphasoo.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_B4O8EAtcYJt04j1ilJ26mg_psPQT3kG"; 
+const SUPABASE_ANON_KEY = "PLAK_HIER_JOUW_LANGE_ANON_PUBLIC_KEY"; 
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Voorkom dubbele declaratie crash
+let supabaseClient;
+if (typeof supabase !== 'undefined') {
+    supabaseClient = supabase;
+} else if (window.supabase) {
+    supabaseClient = window.supabase;
+}
+
+if (supabaseClient && typeof supabaseClient.createClient === 'function') {
+    supabaseClient = supabaseClient.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+} else {
+    // Als er geen bestaande globale variabele is, maken we hem nu veilig aan
+    window.supabaseApp = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+    supabaseClient = window.supabaseApp;
+}
 
 let currentTeamName = "";
 let currentTeamScore = 0;
@@ -185,6 +199,11 @@ document.addEventListener("DOMContentLoaded", () => {
 //                       TEAM REGISTRATIE / LOGIN
 // ==========================================================================
 async function registerOrLoginTeam() {
+    if (!supabaseClient) {
+        alert("Supabase is niet correct geladen. Controleer je internetverbinding of scripts.");
+        return;
+    }
+
     const input = document.getElementById('team-name-input');
     const name = input.value.trim();
 
@@ -203,7 +222,7 @@ async function registerOrLoginTeam() {
     }
 
     // Check of het team al bestaat in de database
-    const { data: existingTeam, error: fetchError } = await supabase
+    const { data: existingTeam, error: fetchError } = await supabaseClient
         .from('teams')
         .select('*')
         .eq('team_name', name)
@@ -215,7 +234,7 @@ async function registerOrLoginTeam() {
         currentTeamScore = existingTeam.score;
     } else {
         // Nieuw team -> Maak aan in de database
-        const { data: newTeam, error: insertError } = await supabase
+        const { data: newTeam, error: insertError } = await supabaseClient
             .from('teams')
             .insert([{ team_name: name, score: 0 }])
             .select()
@@ -244,6 +263,8 @@ async function registerOrLoginTeam() {
 //                          REBUS CONTROLEREN
 // ==========================================================================
 async function checkRebus(rebusNumber, correctAnswer, points) {
+    if (!supabaseClient) return;
+
     const inputField = document.getElementById(`rebus-${rebusNumber}-input`);
     const userAnswer = inputField.value.trim().toLowerCase();
 
@@ -258,7 +279,7 @@ async function checkRebus(rebusNumber, correctAnswer, points) {
         document.getElementById(`rebus-${rebusNumber}-container`).classList.add('hidden');
 
         // Update de score live in Supabase
-        await supabase
+        await supabaseClient
             .from('teams')
             .update({ score: currentTeamScore })
             .eq('team_name', currentTeamName);
@@ -274,9 +295,9 @@ async function checkRebus(rebusNumber, correctAnswer, points) {
 // ==========================================================================
 async function loadLeaderboard() {
     const leaderboardList = document.getElementById('leaderboard-list');
-    if (!leaderboardList) return;
+    if (!leaderboardList || !supabaseClient) return;
     
-    const { data: teams, error } = await supabase
+    const { data: teams, error } = await supabaseClient
         .from('teams')
         .select('team_name', 'score')
         .order('score', { ascending: false });
@@ -312,9 +333,9 @@ async function loadLeaderboard() {
 // ==========================================================================
 async function loadAdminPanel() {
     const adminList = document.getElementById('admin-teams-list');
-    if (!adminList) return;
+    if (!adminList || !supabaseClient) return;
     
-    const { data: teams, error } = await supabase
+    const { data: teams, error } = await supabaseClient
         .from('teams')
         .select('*')
         .order('team_name', { ascending: true });
@@ -333,9 +354,11 @@ async function loadAdminPanel() {
 }
 
 async function adjustScore(teamName, currentScore, amount) {
+    if (!supabaseClient) return;
+
     const newScore = Math.max(0, currentScore + amount);
     
-    await supabase
+    await supabaseClient
         .from('teams')
         .update({ score: newScore })
         .eq('team_name', teamName);
