@@ -30,10 +30,15 @@
                     <span class="btn-text">Dagplanning</span>
                 </button>
 
-                <!-- Nieuwe Knop naar Animatoren -->
                 <button class="cyber-btn" onclick="switchScreen('animatoren-screen')">
                     <span class="btn-icon">😎</span>
                     <span class="btn-text">Wie zijn de animatoren?</span>
+                </button>
+
+                <!-- Nieuwe Knop naar Regels van de week -->
+                <button class="cyber-btn" onclick="switchScreen('regels-screen')">
+                    <span class="btn-icon">📜</span>
+                    <span class="btn-text">Regels van de week</span>
                 </button>
                 
                 <button class="cyber-btn disabled" disabled>
@@ -68,11 +73,8 @@
             <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar Hub</button>
 
             <div class="animatoren-container">
-                
-                <!-- Animator 1 (Voorbeeld) -->
                 <div class="animator-card">
                     <div class="animator-photo-wrapper">
-                        <!-- Vervang 'animator1.jpg' later door de echte foto -->
                         <img src="animator1.jpg" alt="Animator" class="animator-photo">
                     </div>
                     <div class="animator-info">
@@ -82,7 +84,6 @@
                     </div>
                 </div>
 
-                <!-- Animator 2 (Voorbeeld) -->
                 <div class="animator-card">
                     <div class="animator-photo-wrapper">
                         <img src="animator2.jpg" alt="Animator" class="animator-photo">
@@ -93,8 +94,40 @@
                         <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">Koningin van het bosspel 🌲</span></div>
                     </div>
                 </div>
+            </div>
+        </section>
 
-                <!-- Je kunt hierboven extra animatoren kopiëren en plakken -->
+        <!-- ================= REGELS SCHERM ================= -->
+        <section id="regels-screen" class="screen-section">
+            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar Hub</button>
+
+            <div class="regels-container">
+                
+                <!-- Regel 1 -->
+                <div class="regel-card">
+                    <div class="regel-number">01</div>
+                    <div class="regel-text">Respecteer de rust na het lichten uitdoen ($22:30$). Slaap is belangrijk voor een topdag!</div>
+                </div>
+
+                <!-- Regel 2 -->
+                <div class="regel-card">
+                    <div class="regel-number">02</div>
+                    <div class="regel-text">Gsm's zijn enkel toegestaan tijdens de vrije tijd op de kamers.</div>
+                </div>
+
+                <!-- Regel 3 -->
+                <div class="regel-card">
+                    <div class="regel-number">03</div>
+                    <div class="regel-text">Wees altijd op tijd voor de lesmomenten en verzamelplaatsen.</div>
+                </div>
+
+                <!-- Regel 4 -->
+                <div class="regel-card">
+                    <div class="regel-number">04</div>
+                    <div class="regel-text">Houd het domein proper. Afval hoort onmiddellijk in de vuilnisbak.</div>
+                </div>
+
+                <!-- Je kunt hierboven makkelijk regels aanpassen, verwijderen of extra toevoegen -->
 
             </div>
         </section>
