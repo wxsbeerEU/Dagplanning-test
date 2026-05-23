@@ -10,7 +10,7 @@
     "display_override": ["standalone"],
     "icons": [
         {
-            "src": "./wasbeerlogo.jpg",
+            "src": "./topvakantie-logo.png",
             "type": "image/jpg",
             "sizes": "700x700"
         }   
