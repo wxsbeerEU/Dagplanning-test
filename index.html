@@ -2,10 +2,11 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Topvakantie hoofdscherm</title>
-    <link rel="manifest" href="manifest.json">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Kamp App</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0b0f19">
 </head>
 <body>
 
@@ -13,214 +14,193 @@
 
         <header class="brand-header">
             <div class="logo-wrapper">
-                <img src="topvakantie-logo2.png" alt="Topvakantie Logo" class="logo-img">
+                <img src="logo.png" alt="Kamp Logo" class="logo-img">
             </div>
         </header>
 
-        <section id="main-menu" class="screen-section active-screen">
-            <div class="welcome-card">
-                <p>Welkom bij de site voor Week 5 - Topvakantie.</p>
-                <p>Klik op een van de opties hieronder:</p>
-            </div>
+        <main id="mainScreen" class="screen-section active-screen">
+            
+            <section class="live-card">
+                <div id="currentTime">00:00:00</div>
+                <div class="current-status-label">Nu bezig</div>
+                <div id="currentActivity">Laden...</div>
+                <div class="current-time-range">
+                    <span id="currentActivityFrom">00:00</span> - <span id="currentActivityTo">00:00</span>
+                </div>
+            </section>
 
             <div class="tab-container">
-                <button id="tab-deelnemers" class="tab-btn active" onclick="switchTab('deelnemers')">🎒 Deelnemers</button>
-                <button id="tab-ouders" class="tab-btn" onclick="switchTab('moni')">👨‍👩‍👧‍👦 Monitors</button>
+                <button id="tab-deelnemers" class="tab-btn active" onclick="switchTab('deelnemers')">Deelnemers</button>
+                <button id="tab-moni" class="tab-btn" onclick="switchTab('moni')">Moni</button>
             </div>
 
-            <div class="menu-grid">
-                <button class="cyber-btn deelnemers-content ouders-content" onclick="switchScreen('planning-screen')">
+            <nav class="menu-grid">
+                <button class="cyber-btn deelnemers-content moni-content" onclick="switchScreen('scheduleScreen')">
                     <span class="btn-icon">📅</span>
                     <span class="btn-text">Dagplanning</span>
                 </button>
 
-                <button class="cyber-btn deelnemers-content" onclick="window.open('https://open.spotify.com/playlist/64AVZMx8I6swct9ETmQM1L?si=nF55G46VQauFSOd8IA7PRw', '_blank')">
-                    <span class="btn-icon">🎵</span>
-                    <span class="btn-text">Kamphits (Spotify)</span>
-                </button>
-
-                <button class="cyber-btn deelnemers-content" onclick="switchScreen('animatoren-screen')">
+                <button class="cyber-btn deelnemers-content moni-content" onclick="switchScreen('animatorenScreen')">
                     <span class="btn-icon">😎</span>
-                    <span class="btn-text">Wie zijn de animatoren?</span>
+                    <span class="btn-text">Animatoren</span>
                 </button>
 
-                <button class="cyber-btn ouders-content hidden-tab-content" onclick="switchScreen('regels-screen')">
+                <button class="cyber-btn deelnemers-content moni-content" onclick="switchScreen('regelsScreen')">
                     <span class="btn-icon">📜</span>
-                    <span class="btn-text">Regels van de week</span>
+                    <span class="btn-text">Kampregels</span>
                 </button>
 
-                <button class="cyber-btn ouders-content hidden-tab-content" onclick="switchScreen('fotos-screen')">
-                    <span class="btn-icon">📸</span>
-                    <span class="btn-text">Fotoblog / Album</span>
-                </button>
-
-                <button class="cyber-btn deelnemers-content ouders-content" onclick="switchScreen('locatie-screen')">
+                <button class="cyber-btn deelnemers-content moni-content" onclick="switchScreen('locatieScreen')">
                     <span class="btn-icon">📍</span>
-                    <span class="btn-text">Waar zijn we?</span>
+                    <span class="btn-text">Locatie</span>
                 </button>
 
-                <button class="cyber-btn disabled deelnemers-content" disabled>
+                <button class="cyber-btn deelnemers-content moni-content" onclick="switchScreen('gameScreen')">
                     <span class="btn-icon">🎮</span>
-                    <span class="btn-text">Game (Coming Soon)</span>
+                    <span class="btn-text">Cyber Game</span>
                 </button>
+
+                <button class="cyber-btn moni-content hidden-tab-content" onclick="alert('Hier komt jouw Moni-prikbord of extra info!')">
+                    <span class="btn-icon">🔒</span>
+                    <span class="btn-text">Moni Dashboard</span>
+                </button>
+            </nav>
+
+        </main>
+
+        <section id="scheduleScreen" class="screen-section">
+            <button class="back-btn" onclick="switchScreen('mainScreen')">⬅ Terug</button>
+            <div class="welcome-card">
+                <h2>Dagplanning</h2>
+                <p>Volg het verloop van de dag</p>
             </div>
-        </section>
-
-        <section id="planning-screen" class="screen-section">
-            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar hoofdscherm</button>
-
-            <div class="live-card">
-                <div id="currentTime">00:00:00</div>
-                <div class="current-status-label">Nu bezig met</div>
-                <div id="currentActivity">Geen activiteit</div>
-                <div class="current-time-range">
-                    <span id="currentActivityFrom">00:00</span> - <span id="currentActivityTo">00:00</span>
-                </div>
-            </div>
-
             <div class="schedule-container">
-                <table class="schedule-table" id="schedule-table">
-                    <tbody></tbody>
+                <table id="schedule-table" class="schedule-table">
+                    <tbody>
+                        </tbody>
                 </table>
             </div>
         </section>
 
-        <section id="animatoren-screen" class="screen-section">
-            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar hoofdscherm</button>
-
+        <section id="animatorenScreen" class="screen-section">
+            <button class="back-btn" onclick="switchScreen('mainScreen')">⬅ Terug</button>
+            <div class="welcome-card">
+                <h2>Onze Animatoren</h2>
+                <p>De leiding van dit kamp</p>
+            </div>
+            
             <div class="animatoren-container">
                 <div class="animator-card">
                     <div class="animator-photo-wrapper">
-                        <img src="animator1.jpg" alt="Animator" class="animator-photo">
+                        <img src="https://via.placeholder.com/150" alt="Moni Foto" class="animator-photo">
                     </div>
                     <div class="animator-info">
-                        <div class="info-row"><span class="info-label">Naam:</span> <span class="info-value">Pascal</span></div>
-                        <div class="info-row"><span class="info-label">Functie:</span> <span class="info-value">Centrumleider</span></div>
-                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">---xxx---</span></div>
+                        <div class="info-row"><span class="info-label">Naam:</span><span class="info-value">Moni Jens</span></div>
+                        <div class="info-row"><span class="info-label">Leeftijd:</span><span class="info-value">22 jaar</span></div>
+                        <div class="info-row"><span class="info-label">Skill:</span><span class="info-value">Code Wizard 🧙‍♂️</span></div>
                     </div>
                 </div>
                 <div class="animator-card">
                     <div class="animator-photo-wrapper">
-                        <img src="animator2.jpg" alt="Animator" class="animator-photo">
+                        <img src="https://via.placeholder.com/150" alt="Moni Foto" class="animator-photo">
                     </div>
                     <div class="animator-info">
-                        <div class="info-row"><span class="info-label">Naam:</span> <span class="info-value">Moni 2</span></div>
-                        <div class="info-row"><span class="info-label">Functie:</span> <span class="info-value">Moni 2</span></div>
-                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">---xxx---</span></div>
-                    </div>
-                </div>
-                <div class="animator-card">
-                    <div class="animator-photo-wrapper">
-                        <img src="animator3.jpg" alt="Animator" class="animator-photo">
-                    </div>
-                    <div class="animator-info">
-                        <div class="info-row"><span class="info-label">Naam:</span> <span class="info-value">Moni 3</span></div>
-                        <div class="info-row"><span class="info-label">Functie:</span> <span class="info-value">Moni 3</span></div>
-                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">---xxx---</span></div>
-                    </div>
-                </div>
-                <div class="animator-card">
-                    <div class="animator-photo-wrapper">
-                        <img src="animator4.jpg" alt="Animator" class="animator-photo">
-                    </div>
-                    <div class="animator-info">
-                        <div class="info-row"><span class="info-label">Naam:</span> <span class="info-value">Moni 4</span></div>
-                        <div class="info-row"><span class="info-label">Functie:</span> <span class="info-value">Moni 4</span></div>
-                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">---xxx---</span></div>
-                    </div>
-                </div>
-                <div class="animator-card">
-                    <div class="animator-photo-wrapper">
-                        <img src="animator5.jpg" alt="Animator" class="animator-photo">
-                    </div>
-                    <div class="animator-info">
-                        <div class="info-row"><span class="info-label">Naam:</span> <span class="info-value">Moni 5</span></div>
-                        <div class="info-row"><span class="info-label">Functie:</span> <span class="info-value">Moni 5</span></div>
-                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">---xxx---</span></div>
+                        <div class="info-row"><span class="info-label">Naam:</span><span class="info-value">Moni Sarah</span></div>
+                        <div class="info-row"><span class="info-label">Leeftijd:</span><span class="info-value">20 jaar</span></div>
+                        <div class="info-row"><span class="info-label">Skill:</span><span class="info-value">Glitch Hunter 🕵️‍♀️</span></div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="regels-screen" class="screen-section">
-            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar hoofdscherm</button>
+        <section id="regelsScreen" class="screen-section">
+            <button class="back-btn" onclick="switchScreen('mainScreen')">⬅ Terug</button>
+            <div class="welcome-card">
+                <h2>Kampregels</h2>
+                <p>Houd het netjes en veilig</p>
+            </div>
 
             <div class="regels-container">
                 <div class="regel-card">
                     <div class="regel-number">01</div>
-                    <div class="regel-text">Respecteer de rust na het lichten uitdoen (22:30).</div>
+                    <div class="regel-text">Respecteer de moni's en je medekampers te allen tijde.</div>
                 </div>
-                 <div class="regel-card">
+                <div class="regel-card">
                     <div class="regel-number">02</div>
-                    <div class="regel-text">Regel 2 - Placeholder</div>
+                    <div class="regel-text">Binnenblijven na het doven van de lichten (22:30).</div>
                 </div>
                 <div class="regel-card">
                     <div class="regel-number">03</div>
-                    <div class="regel-text">Regel 3 - Placeholder</div>
-                </div>
-                <div class="regel-card">
-                    <div class="regel-number">04</div>
-                    <div class="regel-text">Regel 4 - Placeholder</div>
-                </div>
-                <div class="regel-card">
-                    <div class="regel-number">05</div>
-                    <div class="regel-text">Regel 5 - Placeholder</div>
+                    <div class="regel-text">Geen cyber-attacks op de kampserver uitvoeren!</div>
                 </div>
             </div>
         </section>
 
-        <section id="fotos-screen" class="screen-section">
-            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar hoofdscherm</button>
-
+        <section id="locatieScreen" class="screen-section">
+            <button class="back-btn" onclick="switchScreen('mainScreen')">⬅ Terug</button>
             <div class="welcome-card">
-                <h3>📸 Fotoblog van de week</h3>
-                <p>Hieronder vind je de foto's van Week 5 in Koksijde. Klik op een map van de gewenste dag om de foto's te bekijken.</p>
+                <h2>Kamplocatie</h2>
+                <p>Hier bevinden we ons</p>
             </div>
-
-            <div class="maps-container">
-                <iframe 
-                    src="https://drive.google.com/embeddedfolderview?id=HIER_JE_DRIVE_FOLDER_ID#grid" 
-                    class="google-maps-iframe" 
-                    style="height: 500px; border: none;"
-                    allowfullscreen="" 
-                    loading="lazy">
-                </iframe>
-            </div>
-        </section>
-
-        <section id="locatie-screen" class="screen-section">
-            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar hoofdscherm</button>
 
             <div class="maps-container">
                 <iframe 
                     class="google-maps-iframe"
-                    src="https://maps.google.com/maps?q=Hotelschool%20Ter%20Duinen,%20Houtsaegerlaan%2040,%208670%20Koksijde&t=&z=15&ie=UTF8&iwloc=&output=embed" 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2517.472740927763!2d3.8761001!3d50.7850029!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47c3a4f66dbb71ab%3A0x6b8eb7c6f018e69e!2sDe%20Heerlijkheid%20van%20Marialoop!5e0!3m2!1snl!2sbe!4v1710000000000!5m2!1snl!2sbe" 
                     allowfullscreen="" 
-                    loading="lazy">
+                    loading="lazy" 
+                    referrerpolicy="no-referrer-when-downgrade">
                 </iframe>
 
                 <div class="address-card">
-                    <span class="address-icon">🏢</span>
+                    <div class="address-icon">📍</div>
                     <div class="address-text">
-                        <strong>Hotelschool Ter Duinen</strong><br>
-                        Houtsaegerlaan 40, 8670 Koksijde
+                        <strong>De Cyber Base</strong><br>
+                        Marialoopsteenweg 1, <br>
+                        8700 Tielt, België
                     </div>
                 </div>
             </div>
         </section>
-        <div id="codeModal" class="custom-modal hidden">
-            <div class="modal-content">
-                <h3>Moni gedeelte</h3>
-                <p>Voer de toegangscode voor Moni's in:</p>
-                <input type="password" id="modalCodeInput" class="cyber-input" placeholder="Wachtwoord..." onkeydown="if(event.key === 'Enter') submitMoniCode()">
-                <div class="modal-buttons">
-                    <button class="modal-btn cancel-btn" onclick="closeCodeModal()">Annuleren</button>
-                    <button class="modal-btn confirm-btn" onclick="submitMoniCode()">Verifieer</button>
+
+        <section id="gameScreen" class="screen-section">
+            <button class="back-btn" onclick="switchScreen('mainScreen')">⬅ Terug</button>
+            <div class="welcome-card">
+                <h2>Cyber Game</h2>
+                <p>Kraak de codes met je team</p>
+            </div>
+
+            <div class="game-view">
+                <div class="team-status-bar">
+                    <span>Team: Neon Riders</span>
+                    <span>Score: 150 pts</span>
                 </div>
+
+                <div class="rebus-card">
+                    <h3>Rebus #1</h3>
+                    <div class="rebus-hint">Categorie: Technologie</div>
+                    <div class="rebus-content">
+                        [ ⌨️ + 💻 - 💬 ]
+                    </div>
+                    <input type="text" class="cyber-input" placeholder="Jouw antwoord...">
+                    <button class="action-btn">Versturen</button>
+                </div>
+            </div>
+        </section>
+
+    </div> <div id="codeModal" class="custom-modal hidden">
+        <div class="modal-content">
+            <h3>Moni Gedeelte</h3>
+            <p>Voer de toegangscode voor Moni's in:</p>
+            <input type="password" id="modalCodeInput" class="cyber-input" placeholder="Wachtwoord..." onkeydown="if(event.key === 'Enter') submitMoniCode()">
+            <div class="modal-buttons">
+                <button class="modal-btn cancel-btn" onclick="closeCodeModal()">Annuleren</button>
+                <button class="modal-btn confirm-btn" onclick="submitMoniCode()">Verifieer</button>
             </div>
         </div>
     </div>
 
-    <script src="script.js?v=3"></script>
+
+    <script src="script.js"></script>
 </body>
 </html>
