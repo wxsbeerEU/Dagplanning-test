@@ -1,5 +1,5 @@
 :root {
-    --bg-color: #0b0f19; /* Iets dieper donkerblauw voor meer cyber-contrast */
+    --bg-color: #0b0f19; /* Dieper donkerblauw voor meer cyber-contrast */
     --card-bg: #1e293b;
     --accent-color: #38bdf8;
     --accent-gradient: linear-gradient(135deg, #38bdf8, #0ea5e9);
@@ -31,18 +31,19 @@ body {
     gap: 20px;
 }
 
-/* --- NIEUW: LOGO HEADER STYLING --- */
+/* --- LOGO HEADER STYLING (VOLLEDIGE BREEDTE) --- */
 .brand-header {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 10px 0;
+    padding: 5px 0 10px 0; /* Iets minder witruimte aan de bovenkant */
     width: 100%;
 }
 
 .logo-wrapper {
     position: relative;
-    display: inline-block;
+    display: block;
+    width: 100%; /* Zorgt dat de wrapper de volledige breedte pakt */
 }
 
 /* Subtiele gloed achter het logo */
@@ -52,17 +53,18 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 80%;
-    height: 80%;
+    width: 90%;
+    height: 70%;
     background: var(--accent-color);
-    filter: blur(25px);
-    opacity: 0.15;
+    filter: blur(30px);
+    opacity: 0.12;
     z-index: -1;
 }
 
 .logo-img {
-    max-height: 65px; /* Perfecte grootte voor mobiele schermen */
-    width: auto;
+    width: 100%; /* Vult nu exact de volledige breedte van de balken */
+    height: auto; /* Behoudt automatisch de juiste verhoudingen */
+    display: block;
     object-fit: contain;
     /* Geeft het logo zelf een lichte cyber-achtige drop shadow */
     filter: drop-shadow(0 2px 8px rgba(56, 189, 248, 0.3));
