@@ -163,23 +163,24 @@ function switchScreen(screenId) {
         targetScreen.classList.add('active-screen');
     }
 }
-// Zorg dat deze functie in je script.js staat:
+
+// ================= NIEUW: TABBLADEN STRATEGIE =================
 function switchTab(targetTab) {
-    // 1. Verwijder active klasse van alle tabs en voeg toe aan de gekozen tab
-    document.getElementById('tab-deelnemers').classList.remove('active');
-    document.getElementById('tab-ouders').classList.remove('active');
+    // 1. Schakel de actieve styling van de tab-knoppen om
+    const tabDeelnemers = document.getElementById('tab-deelnemers');
+    const tabOuders = document.getElementById('tab-ouders');
     
-    if (targetTab === 'deelnemers') {
-        document.getElementById('tab-deelnemers').classList.add('active');
-    } else {
-        document.getElementById('tab-ouders').classList.add('active');
+    if (tabDeelnemers) tabDeelnemers.classList.remove('active');
+    if (tabOuders) tabOuders.classList.remove('active');
+    
+    const activeTabEl = document.getElementById(`tab-${targetTab}`);
+    if (activeTabEl) {
+        activeTabEl.classList.add('active');
     }
 
-    // 2. Zoek alle knoppen met de specifieke tab-klassen
+    // 2. Filter de menu-knoppen op basis van de geselecteerde doelgroep
     const alleKnoppen = document.querySelectorAll('.cyber-btn');
-    
     alleKnoppen.forEach(knop => {
-        // Controleer of de knop bij de gekozen tab hoort
         if (knop.classList.contains(`${targetTab}-content`)) {
             knop.classList.remove('hidden-tab-content');
         } else {
@@ -188,11 +189,5 @@ function switchTab(targetTab) {
     });
 }
 
-// Jouw bestaande switchScreen functie (zorg dat deze er ongeveer zo uitziet)
-function switchScreen(screenId) {
-    const screens = document.querySelectorAll('.screen-section');
-    screens.forEach(screen => {
-        screen.classList.remove('active-screen');
-    });
-    document.getElementById(screenId).classList.add('active-screen');
-}
+// Zorg dat bij het laden van de pagina meteen de juiste knoppen klaarstaan
+switchTab('deelnemers');
