@@ -35,10 +35,15 @@
                     <span class="btn-text">Wie zijn de animatoren?</span>
                 </button>
 
-                <!-- Nieuwe Knop naar Regels van de week -->
                 <button class="cyber-btn" onclick="switchScreen('regels-screen')">
                     <span class="btn-icon">📜</span>
                     <span class="btn-text">Regels van de week</span>
+                </button>
+
+                <!-- Nieuwe Knop naar Waar zijn we -->
+                <button class="cyber-btn" onclick="switchScreen('locatie-screen')">
+                    <span class="btn-icon">📍</span>
+                    <span class="btn-text">Waar zijn we?</span>
                 </button>
                 
                 <button class="cyber-btn disabled" disabled>
@@ -83,17 +88,6 @@
                         <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">Gitaar bij het kampvuur 🔥</span></div>
                     </div>
                 </div>
-
-                <div class="animator-card">
-                    <div class="animator-photo-wrapper">
-                        <img src="animator2.jpg" alt="Animator" class="animator-photo">
-                    </div>
-                    <div class="animator-info">
-                        <div class="info-row"><span class="info-label">Naam:</span> <span class="info-value">Lisa</span></div>
-                        <div class="info-row"><span class="info-label">Functie:</span> <span class="info-value">Animator</span></div>
-                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">Koningin van het bosspel 🌲</span></div>
-                    </div>
-                </div>
             </div>
         </section>
 
@@ -102,33 +96,33 @@
             <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar Hub</button>
 
             <div class="regels-container">
-                
-                <!-- Regel 1 -->
                 <div class="regel-card">
                     <div class="regel-number">01</div>
-                    <div class="regel-text">Respecteer de rust na het lichten uitdoen ($22:30$). Slaap is belangrijk voor een topdag!</div>
+                    <div class="regel-text">Respecteer de rust na het lichten uitdoen (22:30).</div>
                 </div>
+            </div>
+        </section>
 
-                <!-- Regel 2 -->
-                <div class="regel-card">
-                    <div class="regel-number">02</div>
-                    <div class="regel-text">Gsm's zijn enkel toegestaan tijdens de vrije tijd op de kamers.</div>
+        <!-- ================= LOCATIE SCHERM ================= -->
+        <section id="locatie-screen" class="screen-section">
+            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar Hub</button>
+
+            <div class="maps-container">
+                <!-- BELANGRIJK: Vervang hieronder 'Geraardsbergen' door het exacte adres van jouw kamp! -->
+                <iframe 
+                    class="google-maps-iframe"
+                    src="https://maps.google.com/maps?q=Geraardsbergen&t=&z=14&ie=UTF8&iwloc=&output=embed" 
+                    allowfullscreen="" 
+                    loading="lazy">
+                </iframe>
+                
+                <div class="address-card">
+                    <span class="address-icon">🏢</span>
+                    <div class="address-text">
+                        <strong>Domeinnaam / Kamphuis</strong><br>
+                        Straatnaam 123, 9500 Geraardsbergen
+                    </div>
                 </div>
-
-                <!-- Regel 3 -->
-                <div class="regel-card">
-                    <div class="regel-number">03</div>
-                    <div class="regel-text">Wees altijd op tijd voor de lesmomenten en verzamelplaatsen.</div>
-                </div>
-
-                <!-- Regel 4 -->
-                <div class="regel-card">
-                    <div class="regel-number">04</div>
-                    <div class="regel-text">Houd het domein proper. Afval hoort onmiddellijk in de vuilnisbak.</div>
-                </div>
-
-                <!-- Je kunt hierboven makkelijk regels aanpassen, verwijderen of extra toevoegen -->
-
             </div>
         </section>
         
