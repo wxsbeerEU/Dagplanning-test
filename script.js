@@ -1,3 +1,6 @@
+// ==========================================================================
+//                           DAGPLANNING LOGICA
+// ==========================================================================
 const schedule = [
     { time: '08:15', activity: 'Opstaan' },
     { time: '08:30', activity: 'Ochtendeten' },
@@ -114,7 +117,7 @@ function highlightCurrentTime() {
 function updateCurrentTime() {
     const now = new Date();
     const currentMinutes = timeToMinutes(now.getHours(), now.getMinutes());
-    
+
     const currentTimeText = String(now.getHours()).padStart(2, '0') + ":" + 
                             String(now.getMinutes()).padStart(2, '0') + ":" + 
                             String(now.getSeconds()).padStart(2, '0');
@@ -139,33 +142,41 @@ function updateCurrentTime() {
     }
 }
 
+// Service worker registratie voor de gsm-app functionaliteit
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch(err => console.log("SW error:", err));
 }
 
-createTable();
-highlightCurrentTime();
-setInterval(highlightCurrentTime, 30000);
-setInterval(updateCurrentTime, 1000);
-updateCurrentTime();
-
+// Algemene schermwissel
 function switchScreen(screenId) {
     document.querySelectorAll('.screen-section').forEach(screen => {
         screen.classList.remove('active-screen');
     });
-    
+
     const targetScreen = document.getElementById(screenId);
     if (targetScreen) {
         targetScreen.classList.add('active-screen');
     }
 }
 
+// Opstarten van de basisfuncties bij laden van de pagina
+document.addEventListener("DOMContentLoaded", () => {
+    createTable();
+    highlightCurrentTime();
+    setInterval(highlightCurrentTime, 30000);
+    setInterval(updateCurrentTime, 1000);
+    updateCurrentTime();
+    loadLeaderboard();
+});
+
+
 // ==========================================================================
-//                           SUPABASE CONFIGURATIE
+//                           SUPABASE CONFIGURATIE & GAME
 // ==========================================================================
 const SUPABASE_URL = "https://jshmsmubgpzfstphasoo.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_B4O8EAtcYJt04j1ilJ26mg_psPQT3kG"; 
 
+// Voorkom dubbele declaratie crash en initialiseer client netjes
 let supabaseClient;
 if (typeof supabase !== 'undefined') {
     supabaseClient = supabase;
@@ -184,25 +195,15 @@ let currentTeamName = "";
 let currentTeamScore = 0;
 let isAdmin = false;
 
-document.addEventListener("DOMContentLoaded", () => {
-    loadLeaderboard();
-});
-
-// ==========================================================================
-//                   GEHEIME CODES / REBUS ANTWOORDEN LIJST
-// ==========================================================================
+// Lijst met oplossingen en de bijbehorende punten per rebus of code
 const gameAnswers = {
+    "vispaleis": 50,
+    "bakpan": 50,
     "cyber": 10,
-    "firewall": 15,
-    "hacker": 20,
-    "computervirus": 15,
-    "wachtwoord": 10,
-    "monitoren": 25
+    "wachtwoord": 20
 };
 
-// ==========================================================================
-//                      OPLOSSING CONTROLEREN
-// ==========================================================================
+// Universele codecontrole functionaliteit
 async function submitSecretCode() {
     if (!supabaseClient) return;
 
@@ -212,15 +213,15 @@ async function submitSecretCode() {
     const userTyped = inputField.value.trim().toLowerCase();
 
     if (!userTyped) {
-        alert("Typ eerst een oplossing in het vak!");
+        alert("Typ eerst een oplossing in!");
         return;
     }
 
     if (gameAnswers.hasOwnProperty(userTyped)) {
         const pointsWon = gameAnswers[userTyped];
 
-        // 1. Check of deze code al door dit specifieke team is opgelost
-        const { data: alreadySolved, error: checkError } = await supabaseClient
+        // 1. Check of deze specifieke code al door dit team is opgelost
+        const { data: alreadySolved } = await supabaseClient
             .from('solved_codes')
             .select('*')
             .eq('team_name', currentTeamName)
@@ -228,39 +229,35 @@ async function submitSecretCode() {
             .maybeSingle();
 
         if (alreadySolved) {
-            alert("❌ Dit antwoord hebben jullie al eens ingeleverd! Zoek snel naar een andere rebus.");
+            alert("❌ Dit antwoord hebben jullie al eens ingeleverd!");
             inputField.value = "";
             return;
         }
 
-        // 2. Registreer de opgeloste code
+        // 2. Registreer oplossing in de tabel 'solved_codes'
         await supabaseClient
             .from('solved_codes')
             .insert([{ team_name: currentTeamName, code: userTyped }]);
 
-        // 3. Bereken nieuwe score en update lokaal
+        // 3. Update score lokaal en live in de database
         currentTeamScore += pointsWon;
-        const scoreDisplay = document.getElementById('display-team-score');
-        if (scoreDisplay) scoreDisplay.innerText = currentTeamScore;
+        document.getElementById('display-team-score').innerText = currentTeamScore;
 
-        // 4. Update de score live in Supabase
         await supabaseClient
             .from('teams')
             .update({ score: currentTeamScore })
             .eq('team_name', currentTeamName);
 
-        alert(`🎉 Schot in de roos! "${userTyped}" was correct. +${pointsWon} punten!`);
+        alert(`🎉 Correct! "${userTyped}" is juist. +${pointsWon} punten!`);
         inputField.value = ""; 
         loadLeaderboard(); 
 
     } else {
-        alert("❌ Helaas, die code of oplossing is niet juist. Kijk nog eens goed naar de rebus of controleer op typfouten!");
+        alert("❌ Helaas, dat antwoord is niet juist. Kijk nog eens goed of controleer op typfouten!");
     }
 }
 
-// ==========================================================================
-//                       TEAM REGISTRATIE / LOGIN
-// ==========================================================================
+// Team registratie / login
 async function registerOrLoginTeam() {
     if (!supabaseClient) {
         alert("Supabase is niet correct geladen. Controleer je internetverbinding of scripts.");
@@ -271,10 +268,11 @@ async function registerOrLoginTeam() {
     const name = input.value.trim();
 
     if (!name) {
-        alert("Vul eerst een coole teamnaam in!");
+        alert("Vul een teamnaam in!");
         return;
     }
 
+    // Geheime admin code check
     if (name.toUpperCase() === "ADMIN123") {
         isAdmin = true;
         document.getElementById('game-login-view').classList.add('hidden');
@@ -283,7 +281,7 @@ async function registerOrLoginTeam() {
         return;
     }
 
-    const { data: existingTeam, error: fetchError } = await supabaseClient
+    const { data: existingTeam } = await supabaseClient
         .from('teams')
         .select('*')
         .eq('team_name', name)
@@ -293,15 +291,14 @@ async function registerOrLoginTeam() {
         currentTeamName = existingTeam.team_name;
         currentTeamScore = existingTeam.score;
     } else {
-        const { data: newTeam, error: insertError } = await supabaseClient
+        const { data: newTeam, error } = await supabaseClient
             .from('teams')
             .insert([{ team_name: name, score: 0 }])
             .select()
             .single();
 
-        if (insertError) {
-            alert("Er ging iets mis bij het aanmaken van het team.");
-            console.error(insertError);
+        if (error) {
+            alert("Fout bij aanmaken van team.");
             return;
         }
         currentTeamName = newTeam.team_name;
@@ -317,9 +314,7 @@ async function registerOrLoginTeam() {
     loadLeaderboard();
 }
 
-// ==========================================================================
-//                          LIVE SCOREBORD INLADEN
-// ==========================================================================
+// Live scorebord inladen en sorteren
 async function loadLeaderboard() {
     const leaderboardList = document.getElementById('leaderboard-list');
     if (!leaderboardList || !supabaseClient) return;
@@ -329,70 +324,62 @@ async function loadLeaderboard() {
         .select('team_name', 'score')
         .order('score', { ascending: false });
 
-    if (error) {
-        leaderboardList.innerHTML = `<p style="color:red;">Fout bij laden scores.</p>`;
+    if (error || !teams) {
+        leaderboardList.innerHTML = `<p style="color:red; text-align:center;">Fout bij laden.</p>`;
         return;
     }
 
     if (teams.length === 0) {
-        leaderboardList.innerHTML = `<p style="text-align:center;color:var(--text-muted);">Nog geen teams actief.</p>`;
+        leaderboardList.innerHTML = `<p style="text-align:center; color:gray;">Nog geen teams actief.</p>`;
         return;
     }
 
     leaderboardList.innerHTML = teams.map((team, index) => {
-        let medal = "";
-        if (index === 0) medal = "🥇 ";
-        if (index === 1) medal = "🥈 ";
-        if (index === 2) medal = "🥉 ";
-
+        let medal = index === 0 ? "🥇 " : index === 1 ? "🥈 " : index === 2 ? "🥉 " : "";
         return `
-            <div class="leaderboard-row">
+            <div style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid rgba(255,255,255,0.1); font-size:0.95rem;">
                 <span>${medal}${index + 1}. ${team.team_name}</span>
-                <span style="font-weight: bold; color: var(--accent-color);">${team.score} pts</span>
+                <span style="font-weight:bold; color:#58a6ff;">${team.score} pts</span>
             </div>
         `;
     }).join('');
 }
 
-// ==========================================================================
-//                          ADMIN PANEL LOGICA
-// ==========================================================================
+// Admin panel opbouwen met actieve knoppen
 async function loadAdminPanel() {
     const adminList = document.getElementById('admin-teams-list');
     if (!adminList || !supabaseClient) return;
     
-    const { data: teams, error } = await supabaseClient
+    const { data: teams } = await supabaseClient
         .from('teams')
         .select('*')
         .order('team_name', { ascending: true });
 
-    if (error || !teams) return;
+    if (!teams) return;
 
     adminList.innerHTML = teams.map(team => `
-        <div class="admin-row">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:rgba(255,255,255,0.03); margin-bottom:5px; border-radius:6px;">
             <span><strong>${team.team_name}</strong> (${team.score} pts)</span>
-            <div class="admin-btn-group">
-                <button class="admin-btn-min" onclick="adjustScore('${team.team_name}', ${team.score}, -10)">-10</button>
-                <button class="admin-btn-plus" onclick="adjustScore('${team.team_name}', ${team.score}, 10)">+10</button>
+            <div>
+                <button style="padding:5px 10px; background:#da3637; color:white; border:none; border-radius:4px; font-weight:bold; cursor:pointer;" onclick="adjustScore('${team.team_name}', ${team.score}, -10)">-10</button>
+                <button style="padding:5px 10px; background:#2ea44f; color:white; border:none; border-radius:4px; font-weight:bold; cursor:pointer;" onclick="adjustScore('${team.team_name}', ${team.score}, 10)">+10</button>
             </div>
         </div>
     `).join('');
 }
 
+// Handmatige score-aanpassingen vanuit admin
 async function adjustScore(teamName, currentScore, amount) {
     if (!supabaseClient) return;
 
     const newScore = Math.max(0, currentScore + amount);
+    await supabaseClient.from('teams').update({ score: newScore }).eq('team_name', teamName);
     
-    await supabaseClient
-        .from('teams')
-        .update({ score: newScore })
-        .eq('team_name', teamName);
-        
     loadAdminPanel();
     loadLeaderboard();
 }
 
+// Admin uitloggen
 function logoutAdmin() {
     isAdmin = false;
     document.getElementById('game-admin-view').classList.add('hidden');
