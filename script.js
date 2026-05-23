@@ -164,9 +164,20 @@ function switchScreen(screenId) {
     }
 }
 
-// ================= NIEUW: TABBLADEN STRATEGIE =================
+// ================= TABBLADEN STRATEGIE MET CODEVEILIGING =================
 function switchTab(targetTab) {
-    // 1. Schakel de actieve styling van de tab-knoppen om
+    // Als men naar het ouderscherm wil, vragen we eerst om de code
+    if (targetTab === 'ouders') {
+        const invoerCode = prompt("Voer de toegangscode voor ouders in:");
+        
+        // Controleer of de ingevoerde code juist is
+        if (invoerCode !== '1234') { 
+            alert("Onjuiste code! Dit scherm is alleen toegankelijk voor ouders.");
+            return; // Stop de functie onmiddellijk, er wordt niet gewisseld
+        }
+    }
+
+    // Schakel de actieve styling van de tab-knoppen om
     const tabDeelnemers = document.getElementById('tab-deelnemers');
     const tabOuders = document.getElementById('tab-ouders');
     
@@ -178,7 +189,7 @@ function switchTab(targetTab) {
         activeTabEl.classList.add('active');
     }
 
-    // 2. Filter de menu-knoppen op basis van de geselecteerde doelgroep
+    // Filter de menu-knoppen op basis van de geselecteerde doelgroep
     const alleKnoppen = document.querySelectorAll('.cyber-btn');
     alleKnoppen.forEach(knop => {
         if (knop.classList.contains(`${targetTab}-content`)) {
