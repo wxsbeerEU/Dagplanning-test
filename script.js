@@ -163,3 +163,189 @@ function switchScreen(screenId) {
         targetScreen.classList.add('active-screen');
     }
 }
+
+// ==========================================================================
+//                           SUPABASE CONFIGURATIE
+// ==========================================================================
+const SUPABASE_URL = "https://jshmsmubgpzfstphasoo.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_B4O8EAtcYJt04j1ilJ26mg_psPQT3kG"; 
+
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let currentTeamName = "";
+let currentTeamScore = 0;
+let isAdmin = false;
+
+// Zorg dat het scorebord laadt zodra de app opstart
+document.addEventListener("DOMContentLoaded", () => {
+    loadLeaderboard();
+});
+
+// ==========================================================================
+//                       TEAM REGISTRATIE / LOGIN
+// ==========================================================================
+async function registerOrLoginTeam() {
+    const input = document.getElementById('team-name-input');
+    const name = input.value.trim();
+
+    if (!name) {
+        alert("Vul eerst een coole teamnaam in!");
+        return;
+    }
+
+    // GEHEIME ADMIN LOGIN CHECK
+    if (name.toUpperCase() === "ADMIN123") {
+        isAdmin = true;
+        document.getElementById('game-login-view').classList.add('hidden');
+        document.getElementById('game-admin-view').classList.remove('hidden');
+        loadAdminPanel();
+        return;
+    }
+
+    // Check of het team al bestaat in de database
+    const { data: existingTeam, error: fetchError } = await supabase
+        .from('teams')
+        .select('*')
+        .eq('team_name', name)
+        .maybeSingle();
+
+    if (existingTeam) {
+        // Team bestaat al -> Log in en ga verder met bestaande score
+        currentTeamName = existingTeam.team_name;
+        currentTeamScore = existingTeam.score;
+    } else {
+        // Nieuw team -> Maak aan in de database
+        const { data: newTeam, error: insertError } = await supabase
+            .from('teams')
+            .insert([{ team_name: name, score: 0 }])
+            .select()
+            .single();
+
+        if (insertError) {
+            alert("Er ging iets mis bij het aanmaken van het team.");
+            console.error(insertError);
+            return;
+        }
+        currentTeamName = newTeam.team_name;
+        currentTeamScore = 0;
+    }
+
+    // Schermen wisselen naar het speelveld
+    document.getElementById('display-team-name').innerText = currentTeamName;
+    document.getElementById('display-team-score').innerText = currentTeamScore;
+    
+    document.getElementById('game-login-view').classList.add('hidden');
+    document.getElementById('game-play-view').classList.remove('hidden');
+    
+    loadLeaderboard();
+}
+
+// ==========================================================================
+//                          REBUS CONTROLEREN
+// ==========================================================================
+async function checkRebus(rebusNumber, correctAnswer, points) {
+    const inputField = document.getElementById(`rebus-${rebusNumber}-input`);
+    const userAnswer = inputField.value.trim().toLowerCase();
+
+    if (userAnswer === correctAnswer) {
+        alert(`🎉 Correct! +${points} punten voor jullie team!`);
+        
+        // Bereken nieuwe score en update lokaal
+        currentTeamScore += points;
+        document.getElementById('display-team-score').innerText = currentTeamScore;
+
+        // Verberg de rebuskaart zodat ze hem niet nog een keer kunnen invullen
+        document.getElementById(`rebus-${rebusNumber}-container`).classList.add('hidden');
+
+        // Update de score live in Supabase
+        await supabase
+            .from('teams')
+            .update({ score: currentTeamScore })
+            .eq('team_name', currentTeamName);
+
+        loadLeaderboard();
+    } else {
+        alert("❌ Helaas, dat antwoord is niet juist. Probeer het nog eens!");
+    }
+}
+
+// ==========================================================================
+//                          LIVE SCOREBORD INLADEN
+// ==========================================================================
+async function loadLeaderboard() {
+    const leaderboardList = document.getElementById('leaderboard-list');
+    if (!leaderboardList) return;
+    
+    const { data: teams, error } = await supabase
+        .from('teams')
+        .select('team_name', 'score')
+        .order('score', { ascending: false });
+
+    if (error) {
+        leaderboardList.innerHTML = `<p style="color:red;">Fout bij laden scores.</p>`;
+        return;
+    }
+
+    if (teams.length === 0) {
+        leaderboardList.innerHTML = `<p style="text-align:center;color:var(--text-muted);">Nog geen teams actief.</p>`;
+        return;
+    }
+
+    // Bouw de rijen op voor het scorebord
+    leaderboardList.innerHTML = teams.map((team, index) => {
+        let medal = "";
+        if (index === 0) medal = "🥇 ";
+        if (index === 1) medal = "🥈 ";
+        if (index === 2) medal = "🥉 ";
+
+        return `
+            <div class="leaderboard-row">
+                <span>${medal}${index + 1}. ${team.team_name}</span>
+                <span style="font-weight: bold; color: var(--accent-color);">${team.score} pts</span>
+            </div>
+        `;
+    }).join('');
+}
+
+// ==========================================================================
+//                          ADMIN PANEL LOGICA
+// ==========================================================================
+async function loadAdminPanel() {
+    const adminList = document.getElementById('admin-teams-list');
+    if (!adminList) return;
+    
+    const { data: teams, error } = await supabase
+        .from('teams')
+        .select('*')
+        .order('team_name', { ascending: true });
+
+    if (error || !teams) return;
+
+    adminList.innerHTML = teams.map(team => `
+        <div class="admin-row">
+            <span><strong>${team.team_name}</strong> (${team.score} pts)</span>
+            <div class="admin-btn-group">
+                <button class="admin-btn-min" onclick="adjustScore('${team.team_name}', ${team.score}, -10)">-10</button>
+                <button class="admin-btn-plus" onclick="adjustScore('${team.team_name}', ${team.score}, 10)">+10</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+async function adjustScore(teamName, currentScore, amount) {
+    const newScore = Math.max(0, currentScore + amount);
+    
+    await supabase
+        .from('teams')
+        .update({ score: newScore })
+        .eq('team_name', teamName);
+        
+    loadAdminPanel();
+    loadLeaderboard();
+}
+
+function logoutAdmin() {
+    isAdmin = false;
+    document.getElementById('game-admin-view').classList.add('hidden');
+    document.getElementById('game-login-view').classList.remove('hidden');
+}
