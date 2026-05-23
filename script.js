@@ -139,7 +139,6 @@ function updateCurrentTime() {
     }
 }
 
-// Service worker registratie voor de gsm-app functionaliteit
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch(err => console.log("SW error:", err));
 }
@@ -150,14 +149,11 @@ setInterval(highlightCurrentTime, 30000);
 setInterval(updateCurrentTime, 1000);
 updateCurrentTime();
 
-// Functie om te wisselen tussen de schermen
 function switchScreen(screenId) {
-    // Verberg alle schermen
     document.querySelectorAll('.screen-section').forEach(screen => {
         screen.classList.remove('active-screen');
     });
     
-    // Toon het gekozen scherm
     const targetScreen = document.getElementById(screenId);
     if (targetScreen) {
         targetScreen.classList.add('active-screen');
@@ -170,7 +166,6 @@ function switchScreen(screenId) {
 const SUPABASE_URL = "https://jshmsmubgpzfstphasoo.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_B4O8EAtcYJt04j1ilJ26mg_psPQT3kG"; 
 
-// Voorkom dubbele declaratie crash
 let supabaseClient;
 if (typeof supabase !== 'undefined') {
     supabaseClient = supabase;
@@ -181,7 +176,6 @@ if (typeof supabase !== 'undefined') {
 if (supabaseClient && typeof supabaseClient.createClient === 'function') {
     supabaseClient = supabaseClient.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 } else {
-    // Als er geen bestaande globale variabele is, maken we hem nu veilig aan
     window.supabaseApp = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
     supabaseClient = window.supabaseApp;
 }
@@ -190,7 +184,6 @@ let currentTeamName = "";
 let currentTeamScore = 0;
 let isAdmin = false;
 
-// Zorg dat het scorebord laadt zodra de app opstart
 document.addEventListener("DOMContentLoaded", () => {
     loadLeaderboard();
 });
@@ -198,8 +191,6 @@ document.addEventListener("DOMContentLoaded", () => {
 // ==========================================================================
 //                   GEHEIME CODES / REBUS ANTWOORDEN LIJST
 // ==========================================================================
-// Hier kun je oneindig veel antwoorden en hun puntenwaarde aan toevoegen.
-// Schrijf de antwoorden ALTIJD in kleine letters (zonder hoofdletters).
 const gameAnswers = {
     "cyber": 10,
     "firewall": 15,
@@ -225,11 +216,10 @@ async function submitSecretCode() {
         return;
     }
 
-    // Controleer of de ingetypte tekst voorkomt in onze antwoordenlijst
     if (gameAnswers.hasOwnProperty(userTyped)) {
         const pointsWon = gameAnswers[userTyped];
 
-        // 1. Check in de database of dit team deze specifieke code al eens heeft ingediend
+        // 1. Check of deze code al door dit specifieke team is opgelost
         const { data: alreadySolved, error: checkError } = await supabaseClient
             .from('solved_codes')
             .select('*')
@@ -243,25 +233,25 @@ async function submitSecretCode() {
             return;
         }
 
-        // 2. Registreer dat het team deze code heeft opgelost
+        // 2. Registreer de opgeloste code
         await supabaseClient
             .from('solved_codes')
             .insert([{ team_name: currentTeamName, code: userTyped }]);
 
-        // 3. Bereken nieuwe score en update de app lokaal
+        // 3. Bereken nieuwe score en update lokaal
         currentTeamScore += pointsWon;
         const scoreDisplay = document.getElementById('display-team-score');
         if (scoreDisplay) scoreDisplay.innerText = currentTeamScore;
 
-        // 4. Update de score live in de hoofd-tabel van Supabase
+        // 4. Update de score live in Supabase
         await supabaseClient
             .from('teams')
             .update({ score: currentTeamScore })
             .eq('team_name', currentTeamName);
 
         alert(`🎉 Schot in de roos! "${userTyped}" was correct. +${pointsWon} punten!`);
-        inputField.value = ""; // Maak het veld weer leeg
-        loadLeaderboard(); // Update het scorebord direct
+        inputField.value = ""; 
+        loadLeaderboard(); 
 
     } else {
         alert("❌ Helaas, die code of oplossing is niet juist. Kijk nog eens goed naar de rebus of controleer op typfouten!");
@@ -285,7 +275,6 @@ async function registerOrLoginTeam() {
         return;
     }
 
-    // GEHEIME ADMIN LOGIN CHECK
     if (name.toUpperCase() === "ADMIN123") {
         isAdmin = true;
         document.getElementById('game-login-view').classList.add('hidden');
@@ -294,7 +283,6 @@ async function registerOrLoginTeam() {
         return;
     }
 
-    // Check of het team al bestaat in de database
     const { data: existingTeam, error: fetchError } = await supabaseClient
         .from('teams')
         .select('*')
@@ -302,11 +290,9 @@ async function registerOrLoginTeam() {
         .maybeSingle();
 
     if (existingTeam) {
-        // Team bestaat al -> Log in en ga verder met bestaande score
         currentTeamName = existingTeam.team_name;
         currentTeamScore = existingTeam.score;
     } else {
-        // Nieuw team -> Maak aan in de database
         const { data: newTeam, error: insertError } = await supabaseClient
             .from('teams')
             .insert([{ team_name: name, score: 0 }])
@@ -322,7 +308,6 @@ async function registerOrLoginTeam() {
         currentTeamScore = 0;
     }
 
-    // Schermen wisselen naar het speelveld
     document.getElementById('display-team-name').innerText = currentTeamName;
     document.getElementById('display-team-score').innerText = currentTeamScore;
     
@@ -354,7 +339,6 @@ async function loadLeaderboard() {
         return;
     }
 
-    // Bouw de rijen op voor het scorebord
     leaderboardList.innerHTML = teams.map((team, index) => {
         let medal = "";
         if (index === 0) medal = "🥇 ";
