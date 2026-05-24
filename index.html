@@ -29,6 +29,42 @@
                 <button id="tab-moni" class="tab-btn" onclick="switchTab('moni')">👨‍👩‍👧‍👦 Monitors</button>
             </div>
 
+            <div class="game-content hidden-tab-content">
+                <div class="welcome-card" style="margin-bottom: 20px;">
+                    <h2>Kamp Game</h2>
+                    <p>Kraak de codes op het terrein!</p>
+                </div>
+
+                <div id="tab-game-login-view">
+                    <div class="welcome-card" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                        <p style="margin-bottom: 10px; font-weight: bold;">Meld je team aan:</p>
+                        <input type="text" id="tab-team-name-input" class="cyber-input" placeholder="Vul je teamnaam in..." autocomplete="off" style="width: 100%; margin-bottom: 10px; box-sizing: border-box;">
+                        <button class="back-btn" onclick="loginTeam()" style="width: 100%; margin: 0; background: #007bff; color: white; border: none; padding: 10px; border-radius: 5px;">Start / Verder Spelen</button>
+                    </div>
+                </div>
+
+                <div id="tab-game-play-view" class="hidden">
+                    <div class="welcome-card" style="background: rgba(0, 123, 255, 0.1); border: 1px solid #007bff; padding: 10px; border-radius: 8px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center;">
+                        <span id="tab-active-team-display" style="font-weight: bold;">Team: ...</span>
+                        <span id="tab-active-score-display" style="background: #007bff; color: white; padding: 2px 10px; border-radius: 20px; font-weight: bold;">0 pts</span>
+                    </div>
+
+                    <div class="welcome-card" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                        <p style="margin-bottom: 5px; font-weight: bold;">Rebus Oplossing Invoeren</p>
+                        <p style="font-size: 0.85rem; opacity: 0.7; margin-bottom: 15px;">Code of woord gevonden op het terrein? Typ het hieronder:</p>
+                        <input type="text" id="tab-rebus-answer-input" class="cyber-input" placeholder="Typ oplossing hier..." autocomplete="off" style="width: 100%; margin-bottom: 10px; box-sizing: border-box;" onkeydown="if(event.key === 'Enter') submitAnswer()">
+                        <button class="back-btn" onclick="submitAnswer()" style="width: 100%; margin: 0; background: #28a745; color: white; border: none; padding: 10px; border-radius: 5px;">Controleer Oplossing</button>
+                    </div>
+                </div>
+
+                <div class="welcome-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 8px;">
+                    <h3 style="margin-bottom: 15px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">🏆 Live Scorebord</h3>
+                    <div id="tab-leaderboard-rows" style="display: flex; flex-direction: column; gap: 8px;">
+                        <div style="font-style: italic; opacity: 0.6; text-align: center; padding: 10px 0;">Nog geen teams actief...</div>
+                    </div>
+                </div>
+            </div>
+
             <div class="menu-grid">
                 <button class="cyber-btn deelnemers-content moni-content" onclick="switchScreen('planning-screen')">
                     <span class="btn-icon">📅</span>
@@ -63,7 +99,7 @@
         </section>
 
         <section id="planning-screen" class="screen-section">
-            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar hoofdscherm</button>
+            <button class="back-btn" onclick="goBackToTab(document.querySelector('.tab-btn.active').id.replace('tab-', ''))">← Terug naar hoofdscherm</button>
 
             <div class="live-card">
                 <div id="currentTime">00:00:00</div>
@@ -82,7 +118,7 @@
         </section>
 
         <section id="animatoren-screen" class="screen-section">
-            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar hoofdscherm</button>
+            <button class="back-btn" onclick="goBackToTab('deelnemers')">← Terug naar hoofdscherm</button>
 
             <div class="animatoren-container">
                 <div class="animator-card">
@@ -259,7 +295,7 @@
         </section>
 
         <section id="regels-screen" class="screen-section">
-            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar hoofdscherm</button>
+            <button class="back-btn" onclick="goBackToTab('moni')">← Terug naar hoofdscherm</button>
 
             <div class="regels-container">
                 <div class="regel-card">
@@ -286,7 +322,7 @@
         </section>
 
         <section id="fotos-screen" class="screen-section">
-            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar hoofdscherm</button>
+            <button class="back-btn" onclick="goBackToTab('moni')">← Terug naar hoofdscherm</button>
 
             <div class="welcome-card">
                 <h3>📸 Fotoblog van de week</h3>
@@ -305,7 +341,7 @@
         </section>
 
         <section id="locatie-screen" class="screen-section">
-            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar hoofdscherm</button>
+            <button class="back-btn" onclick="goBackToTab(document.querySelector('.tab-btn.active').id.replace('tab-', ''))">← Terug naar hoofdscherm</button>
 
             <div class="maps-container">
                 <iframe 
@@ -321,44 +357,6 @@
                         <strong>Hotelschool Ter Duinen</strong><br>
                         Houtsaegerlaan 40, 8670 Koksijde
                     </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="game-screen" class="screen-section">
-            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar hoofdscherm</button>
-
-            <div class="welcome-card">
-                <h2>Kamp Game</h2>
-                <p>Kraak de codes op het terrein!</p>
-            </div>
-
-            <div id="game-login-view">
-                <div class="welcome-card" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                    <p style="margin-bottom: 10px; font-weight: bold;">Meld je team aan:</p>
-                    <input type="text" id="team-name-input" class="cyber-input" placeholder="Vul je teamnaam in..." autocomplete="off" style="width: 100%; margin-bottom: 10px; box-sizing: border-box;">
-                    <button class="back-btn" onclick="loginTeam()" style="width: 100%; margin: 0; background: #007bff; color: white; border: none; padding: 10px; border-radius: 5px;">Start / Verder Spelen</button>
-                </div>
-            </div>
-
-            <div id="game-play-view" class="hidden">
-                <div class="welcome-card" style="background: rgba(0, 123, 255, 0.1); border: 1px solid #007bff; padding: 10px; border-radius: 8px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center;">
-                    <span id="active-team-display" style="font-weight: bold;">Team: ...</span>
-                    <span id="active-score-display" style="background: #007bff; color: white; padding: 2px 10px; border-radius: 20px; font-weight: bold;">0 pts</span>
-                </div>
-
-                <div class="welcome-card" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                    <p style="margin-bottom: 5px; font-weight: bold;">Rebus Oplossing Invoeren</p>
-                    <p style="font-size: 0.85rem; opacity: 0.7; margin-bottom: 15px;">Code of woord gevonden op het terrein? Typ het hieronder:</p>
-                    <input type="text" id="rebus-answer-input" class="cyber-input" placeholder="Typ oplossing hier..." autocomplete="off" style="width: 100%; margin-bottom: 10px; box-sizing: border-box;" onkeydown="if(event.key === 'Enter') submitAnswer()">
-                    <button class="back-btn" onclick="submitAnswer()" style="width: 100%; margin: 0; background: #28a745; color: white; border: none; padding: 10px; border-radius: 5px;">Controleer Oplossing</button>
-                </div>
-            </div>
-
-            <div class="welcome-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 8px;">
-                <h3 style="margin-bottom: 15px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">🏆 Live Scorebord</h3>
-                <div id="leaderboard-rows" style="display: flex; flex-direction: column; gap: 8px;">
-                    <div style="font-style: italic; opacity: 0.6; text-align: center; padding: 10px 0;">Nog geen teams actief...</div>
                 </div>
             </div>
         </section>
