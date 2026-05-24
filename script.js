@@ -167,7 +167,7 @@ setInterval(highlightCurrentTime, 30000);
 setInterval(updateCurrentTime, 1000);
 updateCurrentTime();
 
-// Schermwissel (voor interne subschermen)
+// Schermwissel (voor interne subschermen van sub-menu's)
 function switchScreen(screenId) {
     document.querySelectorAll('.screen-section').forEach(screen => {
         screen.classList.remove('active-screen');
@@ -203,7 +203,11 @@ function executeTabSwitch(targetTab) {
         activeTabEl.classList.add('active');
     }
 
-    switchScreen('main-menu');
+    // Alleen terugzetten naar main-menu als we NIET naar de game gaan, 
+    // want de game heeft geen aparte sub-knop meer nodig!
+    if (targetTab !== 'game') {
+        switchScreen('main-menu');
+    }
 
     const gameContent = document.getElementById('content-game');
     const deelnemersContent = document.getElementById('content-deelnemers');
@@ -214,7 +218,7 @@ function executeTabSwitch(targetTab) {
     if (moniContent) moniContent.classList.add('hidden-tab-content');
 
     if (targetTab === 'game' && gameContent) {
-        gameContent.remove('hidden-tab-content'); // Nu via ID
+        gameContent.classList.remove('hidden-tab-content');
     } else if (targetTab === 'deelnemers' && deelnemersContent) {
         deelnemersContent.classList.remove('hidden-tab-content');
     } else if (targetTab === 'moni' && moniContent) {
