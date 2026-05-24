@@ -359,15 +359,24 @@ body {
 }
 /* ================= TABBLADEN HOVER EFFECTEN ================= */
 
-/* Als Deelnemers actief is en je hovert over Monitors */
+/* Als Deelnemers actief is en je hovert over de andere tabs */
+.tab-btn#tab-deelnemers.active ~ .tab-btn#tab-game:hover,
 .tab-btn#tab-deelnemers.active ~ .tab-btn#tab-moni:hover {
     border-color: #ff9800;
     box-shadow: 0 0 12px rgba(255, 152, 0, 0.6);
     cursor: pointer;
 }
 
-/* Als Monitors actief is en je hovert over Deelnemers */
-.tab-container:has(#tab-moni.active) #tab-deelnemers:hover {
+/* Als Game of Moni actief is en je hovert over Deelnemers */
+.tab-container:has(#tab-moni.active) #tab-deelnemers:hover,
+.tab-container:has(#tab-game.active) #tab-deelnemers:hover {
+    border-color: #ff9800;
+    box-shadow: 0 0 12px rgba(255, 152, 0, 0.6);
+    cursor: pointer;
+}
+
+/* Generieke hover op niet-actieve tabbladen */
+.tab-btn:not(.active):hover {
     border-color: #ff9800;
     box-shadow: 0 0 12px rgba(255, 152, 0, 0.6);
     cursor: pointer;
@@ -893,4 +902,3 @@ body {
     box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
     transform: translateY(-1px);
 }
-
