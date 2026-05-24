@@ -166,17 +166,35 @@ setInterval(highlightCurrentTime, 30000);
 setInterval(updateCurrentTime, 1000);
 updateCurrentTime();
 
+// Schermwissel (voor interne subschermen)
 function switchScreen(screenId) {
     document.querySelectorAll('.screen-section').forEach(screen => {
         screen.classList.remove('active-screen');
     });
     
+    // Hoofdcontainers verbergen als we diep in een subscherm duiken
+    if (screenId !== 'main-menu') {
+        const gameContent = document.querySelector('.game-content');
+        const deelnemersContent = document.querySelector('.deelnemers-content');
+        const moniContent = document.querySelector('.moni-content');
+        
+        if (gameContent) gameContent.classList.add('hidden-tab-content');
+        if (deelnemersContent) deelnemersContent.classList.add('hidden-tab-content');
+        if (moniContent) moniContent.classList.add('hidden-tab-content');
+    }
+
     const targetScreen = document.getElementById(screenId);
     if (targetScreen) {
         targetScreen.classList.add('active-screen');
     }
 }
 
+// Handige functie voor de terugknoppen op subschermen om direct de juiste tab te heractiveren
+function goBackToTab(tabName) {
+    executeTabSwitch(tabName);
+}
+
+// Tabwissel hoofdknop actie
 function switchTab(targetTab) {
     if (targetTab === 'moni') {
         openCodeModal();
@@ -185,6 +203,7 @@ function switchTab(targetTab) {
     executeTabSwitch(targetTab);
 }
 
+// Uitvoeren van de tab-content filtering
 function executeTabSwitch(targetTab) {
     const tabDeelnemers = document.getElementById('tab-deelnemers');
     const tabGame = document.getElementById('tab-game');
@@ -199,21 +218,28 @@ function executeTabSwitch(targetTab) {
         activeTabEl.classList.add('active');
     }
 
-    // Als er op de Game-tab wordt geklikt, openen we direct het game-scherm
-    if (targetTab === 'game') {
-        switchScreen('game-screen');
-    } else {
-        // Zorg dat we terug naar het hoofdmenu gaan als de andere tabbladen worden geklikt
-        switchScreen('main-menu');
+    // Sluit eventuele openstaande subschermen
+    document.querySelectorAll('.screen-section').forEach(screen => {
+        screen.classList.remove('active-screen');
+    });
 
-        const alleKnoppen = document.querySelectorAll('.cyber-btn');
-        alleKnoppen.forEach(knop => {
-            if (knop.classList.contains(`${targetTab}-content`)) {
-                knop.classList.remove('hidden-tab-content');
-            } else {
-                knop.classList.add('hidden-tab-content');
-            }
-        });
+    // Pak de hoofdcontainers van de drie tabbladen
+    const gameContent = document.querySelector('.game-content');
+    const deelnemersContent = document.querySelector('.deelnemers-content');
+    const moniContent = document.querySelector('.moni-content');
+
+    // Reset de zichtbaarheid van alle tabblokken
+    if (gameContent) gameContent.classList.add('hidden-tab-content');
+    if (deelnemersContent) deelnemersContent.classList.add('hidden-tab-content');
+    if (moniContent) moniContent.classList.add('hidden-tab-content');
+
+    // Toon de specifieke content van het gekozen tabblad
+    if (targetTab === 'game' && gameContent) {
+        gameContent.classList.remove('hidden-tab-content');
+    } else if (targetTab === 'deelnemers' && deelnemersContent) {
+        deelnemersContent.classList.remove('hidden-tab-content');
+    } else if (targetTab === 'moni' && moniContent) {
+        moniContent.classList.remove('hidden-tab-content');
     }
 }
 
@@ -231,12 +257,8 @@ function closeCodeModal() {
     const modal = document.getElementById('codeModal');
     if (modal) modal.classList.add('hidden');
     
-    const tabDeelnemers = document.getElementById('tab-deelnemers');
-    const tabGame = document.getElementById('tab-game');
-    const tabMoni = document.getElementById('tab-moni');
-    if (tabDeelnemers) tabDeelnemers.classList.add('active');
-    if (tabGame) tabGame.classList.remove('active');
-    if (tabMoni) tabMoni.classList.remove('active');
+    // Bij annuleren springen we direct en veilig terug naar de Game tab
+    executeTabSwitch('game');
 }
 
 function submitMoniCode() {
@@ -380,7 +402,8 @@ if(huidigTeam) {
     updateGameUI();
 }
 
-switchTab('deelnemers');
+// Zorg dat de app bij het inladen opstart op de Game tab (Tab 1)
+switchTab('game');
 
 
 // ================= CHAT / SUGGESTIE LOGICA (FIREBASE) =================
