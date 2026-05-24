@@ -381,9 +381,23 @@
 
     </div>
 
+    <button id="chat-fab" onclick="toggleChatPopup()">💡</button>
+
+    <div id="chat-popup" class="hidden">
+        <div class="chat-header">
+            <h4>Deel je idee of melding! 🎒</h4>
+            <button class="chat-close" onclick="toggleChatPopup()">×</button>
+        </div>
+        <div class="chat-body">
+            <p>Heb je een leuk idee voor een spel, een opmerking of wil je iets meedelen aan de moni's? Typ het hier!</p>
+            <textarea id="chat-message-input" placeholder="Typ hier je bericht of idee..."></textarea>
+            <button class="chat-send-btn" onclick="sendSuggestion()">Verstuur Idee</button>
+        </div>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
-    <script src="script.js?v=5"></script>
+    <script src="script.js?v=6"></script>
 </body>
 </html>
