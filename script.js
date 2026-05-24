@@ -13,7 +13,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-// JOUW VOLLEDIGE DAGPLANNING
+// JOUW VOLLEDIGE DAGPLANNING IS HIER WEER INTEGRAL TERUG:
 const schedule = [
     { time: '08:15', activity: 'Opstaan' },
     { time: '08:30', activity: 'Ochtendeten' },
@@ -172,25 +172,11 @@ function switchScreen(screenId) {
     document.querySelectorAll('.screen-section').forEach(screen => {
         screen.classList.remove('active-screen');
     });
-    
-    if (screenId !== 'main-menu') {
-        const gameContent = document.querySelector('.game-content');
-        const deelnemersContent = document.querySelector('.deelnemers-content');
-        const moniContent = document.querySelector('.moni-content');
-        
-        if (gameContent) gameContent.classList.add('hidden-tab-content');
-        if (deelnemersContent) deelnemersContent.classList.add('hidden-tab-content');
-        if (moniContent) moniContent.classList.add('hidden-tab-content');
-    }
 
     const targetScreen = document.getElementById(screenId);
     if (targetScreen) {
         targetScreen.classList.add('active-screen');
     }
-}
-
-function goBackToTab(tabName) {
-    executeTabSwitch(tabName);
 }
 
 // Tabwissel hoofdknop actie
@@ -202,7 +188,7 @@ function switchTab(targetTab) {
     executeTabSwitch(targetTab);
 }
 
-// JOUW ORIGINELE KLASSEN WORDEN HIER VEILIG GEBRUIKT:
+// Uitvoeren van de tab-content filtering
 function executeTabSwitch(targetTab) {
     const tabDeelnemers = document.getElementById('tab-deelnemers');
     const tabGame = document.getElementById('tab-game');
@@ -217,28 +203,18 @@ function executeTabSwitch(targetTab) {
         activeTabEl.classList.add('active');
     }
 
-    // Zorg dat we terug naar het hoofdmenu gaan als we van tab wisselen
-    const mainMenu = document.getElementById('main-menu');
-    if (mainMenu) {
-        document.querySelectorAll('.screen-section').forEach(screen => {
-            screen.classList.remove('active-screen');
-        });
-        mainMenu.classList.add('active-screen');
-    }
+    switchScreen('main-menu');
 
-    // Pak de hoofdcontainers op basis van jouw eigen CSS-klassen
-    const gameContent = document.querySelector('.game-content');
-    const deelnemersContent = document.querySelector('.deelnemers-content');
-    const moniContent = document.querySelector('.moni-content');
+    const gameContent = document.getElementById('content-game');
+    const deelnemersContent = document.getElementById('content-deelnemers');
+    const moniContent = document.getElementById('content-moni');
 
-    // Reset de zichtbaarheid met een check of ze bestaan, zodat de code nooit crasht
     if (gameContent) gameContent.classList.add('hidden-tab-content');
     if (deelnemersContent) deelnemersContent.classList.add('hidden-tab-content');
     if (moniContent) moniContent.classList.add('hidden-tab-content');
 
-    // Toon de juiste content
     if (targetTab === 'game' && gameContent) {
-        gameContent.classList.remove('hidden-tab-content');
+        gameContent.remove('hidden-tab-content'); // Nu via ID
     } else if (targetTab === 'deelnemers' && deelnemersContent) {
         deelnemersContent.classList.remove('hidden-tab-content');
     } else if (targetTab === 'moni' && moniContent) {
@@ -259,7 +235,7 @@ function openCodeModal() {
 function closeCodeModal() {
     const modal = document.getElementById('codeModal');
     if (modal) modal.classList.add('hidden');
-    executeTabSwitch('game');
+    executeTabSwitch('deelnemers');
 }
 
 function submitMoniCode() {
@@ -381,17 +357,13 @@ function renderLeaderboard() {
     sorteerbareTeams.sort((a, b) => b.score - a.score);
 
     if (sorteerbareTeams.length === 0) {
-        container.innerHTML = '<div style="font-style: italic; opacity: 0.6; text-align: center; padding: 10px 0;">Nog geen teams actief...</div>';
+        container.innerHTML = '<div class="leaderboard-row" style="font-style: italic; opacity: 0.6; justify-content: center;">Nog geen teams actief...</div>';
         return;
     }
 
     sorteerbareTeams.forEach((team, index) => {
         const row = document.createElement('div');
-        row.style.display = 'flex';
-        row.style.justifyContent = 'space-between';
-        row.style.padding = '6px 10px';
-        row.style.background = 'rgba(255,255,255,0.05)';
-        row.style.borderRadius = '4px';
+        row.classList.add('leaderboard-row');
         row.innerHTML = `<span>${index + 1}. ${team.naam}</span> <strong>${team.score} pts</strong>`;
         container.appendChild(row);
     });
@@ -401,4 +373,50 @@ if(huidigTeam) {
     updateGameUI();
 }
 
-// We starten de app veilig op zonder direct functies aan te roepen die knoppen verstoppen
+// Zorg dat de app bij het inladen direct opstart op de Deelnemers tab
+executeTabSwitch('deelnemers');
+
+// ================= CHAT / SUGGESTIE LOGICA (FIREBASE) =================
+
+function toggleChatPopup() {
+    const popup = document.getElementById('chat-popup');
+    if (popup) {
+        popup.classList.toggle('hidden');
+    }
+}
+
+function sendSuggestion() {
+    const inputEl = document.getElementById('chat-message-input');
+    if (!inputEl) return;
+    
+    const message = inputEl.value.trim();
+
+    if (message === "") {
+        alert("Typ eerst even een berichtje voor je het verstuurt! 😉");
+        return;
+    }
+
+    let afzender = "Anoniem (Deelnemer/Moni)";
+    if (huidigTeam) {
+        afzender = "Team: " + huidigTeam;
+    }
+
+    const timestamp = new Date().toLocaleString("nl-BE");
+
+    const suggestionData = {
+        wie: afzender,
+        bericht: message,
+        tijd: timestamp
+    };
+
+    database.ref('suggesties').push(suggestionData)
+    .then(() => {
+        alert("Super! Je idee of melding is succesvol verstuurd naar de database. 🎉");
+        inputEl.value = ""; 
+        toggleChatPopup();  
+    })
+    .catch((error) => {
+        console.error("Firebase chat fout:", error);
+        alert("Er ging iets mis bij het versturen. Probeer het opnieuw!");
+    });
+}
