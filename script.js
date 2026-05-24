@@ -369,73 +369,106 @@ if(huidigTeam) {
 }
 
 switchTab('deelnemers');
+/* ==========================================================================
+   EASTER EGG: PULL DOWN TO REVEAL
+   ========================================================================== */
 
-// ================= EASTER EGG SWIPE DETECTIE =================
-let touchStartY = 0;
-let touchMoveY = 0;
-let totalPullAmount = 0;
-const targetPullNeeded = 250; // Aantal pixels dat er naar beneden gesleept moet worden
-let eggUnlocked = false;
+(function() {
+    let touchStartY = 0;
+    let touchMoveY = 0;
+    const triggerDistance = 180; // Aantal pixels dat je moet slepen
+    
+    // Zoek de elementen op
+    const mainMenu = document.getElementById('main-menu');
+    const loaderContainer = document.getElementById('easter-egg-loader-container');
+    const loaderBar = document.getElementById('easter-egg-bar');
+    const lyricsSection = document.getElementById('easter-egg-lyrics');
 
-// We luisteren specifiek naar swipes op het hoofdscherm
-const mainMenuEl = document.getElementById('main-menu');
+    // Veiligheidscheck: stoppen als de elementen niet bestaan
+    if (!mainMenu || !loaderContainer || !loaderBar || !lyricsSection) {
+        console.error("Easter egg elementen niet gevonden in de HTML!");
+        return;
+    }
 
-if (mainMenuEl) {
-    mainMenuEl.addEventListener('touchstart', (e) => {
-        if (eggUnlocked) return;
-        // Alleen triggeren als de gebruiker helemaal bovenaan de pagina staat
+    // 1. Vinger raakt het scherm (werkt ook met muis-clicks in de simulator!)
+    function onStart(e) {
+        // Alleen triggeren als we helemaal bovenaan de pagina staan
         if (window.scrollY === 0) {
-            touchStartY = e.touches[0].clientY;
+            touchStartY = e.touches ? e.touches[0].clientY : e.clientY;
         } else {
             touchStartY = 0;
         }
-    }, { passive: true });
+    }
 
-    mainMenuEl.addEventListener('touchmove', (e) => {
-        if (eggUnlocked || touchStartY === 0) return;
-        
-        touchMoveY = e.touches[0].clientY;
+    // 2. Vinger beweegt over het scherm
+    function onMove(e) {
+        if (touchStartY === 0) return;
+
+        touchMoveY = e.touches ? e.touches[0].clientY : e.clientY;
         const pullDistance = touchMoveY - touchStartY;
 
-        // Als er naar beneden gesleept wordt
+        // Alleen actie ondernemen als er naar BENEDEN wordt gesleept
         if (pullDistance > 0) {
-            totalPullAmount = pullDistance;
-            
-            const container = document.getElementById('easter-egg-loader-container');
-            const bar = document.getElementById('easter-egg-bar');
-            
-            if (container) container.style.display = 'block';
-            
-            // Bereken percentage van de balk
-            let percentage = Math.min((totalPullAmount / targetPullNeeded) * 100, 100);
-            if (bar) bar.style.width = `${percentage}%`;
+            // Voorkom dat de mobiele browser zelf de pagina gaat verversen
+            if (e.cancelable) e.preventDefault();
 
-            // Als de balk vol is!
-            if (percentage >= 100 && !eggUnlocked) {
-                eggUnlocked = true;
-                if (container) container.style.display = 'none';
-                
-                const lyricsEl = document.getElementById('easter-egg-lyrics');
-                if (lyricsEl) {
-                    lyricsEl.classList.remove('hidden');
-                    lyricsEl.scrollIntoView({ behavior: 'smooth' });
-                }
-                
-                if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+            // Toon de container van de laadbalk
+            loaderContainer.style.display = 'block';
+
+            // Bereken het percentage (maximaal 100%)
+            const percentage = Math.min((pullDistance / triggerDistance) * 100, 100);
+            loaderBar.style.width = percentage + '%';
+
+            // Als de balk vol is, activeer de Easter Egg!
+            if (percentage >= 100) {
+                activateEasterEgg();
             }
         }
-    }, { passive: true });
+    }
 
-    // Als de vinger van het scherm gaat en de balk was niet vol: reset de balk
-    mainMenuEl.addEventListener('touchend', () => {
-        if (eggUnlocked) return;
+    // 3. Vinger laat het scherm los / Muis klik stopt
+    function onEnd() {
         touchStartY = 0;
-        totalPullAmount = 0;
+        // Als de lyrics nog niet getoond worden, verberg de laadbalk weer netjes
+        if (lyricsSection.classList.contains('hidden')) {
+            loaderContainer.style.display = 'none';
+            loaderBar.style.width = '0%';
+        }
+    }
+
+    // 4. De ontgrendeling
+    function activateEasterEgg() {
+        loaderContainer.style.display = 'none'; // Laadbalk weg
+        lyricsSection.classList.remove('hidden'); // Toon de songtekst!
         
-        const container = document.getElementById('easter-egg-loader-container');
-        const bar = document.getElementById('easter-egg-bar');
+        // Scroll vloeiend naar de songtekst toe zodat de gebruiker het ziet
+        lyricsSection.scrollIntoView({ behavior: 'smooth' });
         
-        if (bar) bar.style.width = '0%';
-        if (container) container.style.display = 'none';
-    }, { passive: true });
-}
+        // Verwijder de listeners zodat je niet oneindig blijft triggeren
+        removeListeners();
+    }
+
+    // Listeners toevoegen voor zowel Mobiel (Touch) als Computer Simulator (Muis)
+    function initListeners() {
+        mainMenu.addEventListener('touchstart', onStart, { passive: false });
+        mainMenu.addEventListener('touchmove', onMove, { passive: false });
+        mainMenu.addEventListener('touchend', onEnd);
+
+        mainMenu.addEventListener('mousedown', onStart);
+        mainMenu.addEventListener('mousemove', onMove);
+        window.addEventListener('mouseup', onEnd);
+    }
+
+    function removeListeners() {
+        mainMenu.removeEventListener('touchstart', onStart);
+        mainMenu.removeEventListener('touchmove', onMove);
+        mainMenu.removeEventListener('touchend', onEnd);
+
+        mainMenu.removeEventListener('mousedown', onStart);
+        mainMenu.removeEventListener('mousemove', onMove);
+        window.removeEventListener('mouseup', onEnd);
+    }
+
+    // Start het script
+    initListeners();
+})();
