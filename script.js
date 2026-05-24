@@ -378,7 +378,7 @@ if(huidigTeam) {
 }
 
 // Zorg dat de app bij het inladen direct opstart op de Deelnemers tab
-executeTabSwitch('deelnemers');
+executeTabSwitch('game');
 
 // ================= CHAT / SUGGESTIE LOGICA (FIREBASE) =================
 
