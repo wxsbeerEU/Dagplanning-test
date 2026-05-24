@@ -357,7 +357,26 @@ body {
 .hidden-tab-content {
     display: none !important;
 }
+/* ================= TABBLADEN HOVER EFFECTEN ================= */
 
+/* Als Deelnemers actief is en je hovert over Monitors */
+.tab-btn#tab-deelnemers.active ~ .tab-btn#tab-moni:hover {
+    border-color: #ff9800;
+    box-shadow: 0 0 12px rgba(255, 152, 0, 0.6);
+    cursor: pointer;
+}
+
+/* Als Monitors actief is en je hovert over Deelnemers */
+.tab-container:has(#tab-moni.active) #tab-deelnemers:hover {
+    border-color: #ff9800;
+    box-shadow: 0 0 12px rgba(255, 152, 0, 0.6);
+    cursor: pointer;
+}
+
+/* Optioneel: Zorg voor een vloeiende overgang van de gloed */
+.tab-btn {
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
 /* --- ANIMATOREN SCHERM STYLING --- */
 .animatoren-container {
     display: flex;
