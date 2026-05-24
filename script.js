@@ -171,27 +171,11 @@ function switchScreen(screenId) {
     document.querySelectorAll('.screen-section').forEach(screen => {
         screen.classList.remove('active-screen');
     });
-    
-    // Hoofdcontainers verbergen als we diep in een subscherm duiken
-    if (screenId !== 'main-menu') {
-        const gameContent = document.querySelector('.game-content');
-        const deelnemersContent = document.querySelector('.deelnemers-content');
-        const moniContent = document.querySelector('.moni-content');
-        
-        if (gameContent) gameContent.classList.add('hidden-tab-content');
-        if (deelnemersContent) deelnemersContent.classList.add('hidden-tab-content');
-        if (moniContent) moniContent.classList.add('hidden-tab-content');
-    }
 
     const targetScreen = document.getElementById(screenId);
     if (targetScreen) {
         targetScreen.classList.add('active-screen');
     }
-}
-
-// Handige functie voor de terugknoppen op subschermen om direct de juiste tab te heractiveren
-function goBackToTab(tabName) {
-    executeTabSwitch(tabName);
 }
 
 // Tabwissel hoofdknop actie
@@ -203,7 +187,7 @@ function switchTab(targetTab) {
     executeTabSwitch(targetTab);
 }
 
-// Uitvoeren van de tab-content filtering
+// Uitvoeren van de tab-content filtering (NU RECHTSTREEKS GEKOPPELD AAN DE JUISTE ID's)
 function executeTabSwitch(targetTab) {
     const tabDeelnemers = document.getElementById('tab-deelnemers');
     const tabGame = document.getElementById('tab-game');
@@ -218,15 +202,13 @@ function executeTabSwitch(targetTab) {
         activeTabEl.classList.add('active');
     }
 
-    // Sluit eventuele openstaande subschermen
-    document.querySelectorAll('.screen-section').forEach(screen => {
-        screen.classList.remove('active-screen');
-    });
+    // Terug naar het hoofdscherm springen bij tabwissel
+    switchScreen('main-menu');
 
-    // Pak de hoofdcontainers van de drie tabbladen
-    const gameContent = document.querySelector('.game-content');
-    const deelnemersContent = document.querySelector('.deelnemers-content');
-    const moniContent = document.querySelector('.moni-content');
+    // Pak de hoofdcontainers van de drie tabbladen op basis van ID
+    const gameContent = document.getElementById('content-game');
+    const deelnemersContent = document.getElementById('content-deelnemers');
+    const moniContent = document.getElementById('content-moni');
 
     // Reset de zichtbaarheid van alle tabblokken
     if (gameContent) gameContent.classList.add('hidden-tab-content');
@@ -257,8 +239,8 @@ function closeCodeModal() {
     const modal = document.getElementById('codeModal');
     if (modal) modal.classList.add('hidden');
     
-    // Bij annuleren springen we direct en veilig terug naar de Game tab
-    executeTabSwitch('game');
+    // Bij annuleren springen we direct en veilig terug naar de Deelnemers tab
+    executeTabSwitch('deelnemers');
 }
 
 function submitMoniCode() {
@@ -319,9 +301,6 @@ function loginTeam() {
     huidigTeam = teamNaam;
     localStorage.setItem('huidigKampTeam', teamNaam);
 
-    document.getElementById('game-login-view').classList.add('hidden');
-    document.getElementById('game-play-view').classList.remove('hidden');
-
     updateGameUI();
 }
 
@@ -361,12 +340,15 @@ function submitAnswer() {
 function updateGameUI() {
     if (!huidigTeam) return;
     
-    document.getElementById('game-login-view').classList.add('hidden');
-    document.getElementById('game-play-view').classList.remove('hidden');
+    const loginView = document.getElementById('game-login-view');
+    const playView = document.getElementById('game-play-view');
+    
+    if(loginView) loginView.classList.add('hidden');
+    if(playView) playView.classList.remove('hidden');
 
     const mijnTeamData = alleTeams[huidigTeam] || { score: 0 };
-    document.getElementById('active-team-display').textContent = `Team: ${huidigTeam}`;
-    document.getElementById('active-score-display').textContent = `${mijnTeamData.score} pts`;
+    if(document.getElementById('active-team-display')) document.getElementById('active-team-display').textContent = `Team: ${huidigTeam}`;
+    if(document.getElementById('active-score-display')) document.getElementById('active-score-display').textContent = `${mijnTeamData.score} pts`;
 }
 
 function renderLeaderboard() {
@@ -382,17 +364,13 @@ function renderLeaderboard() {
     sorteerbareTeams.sort((a, b) => b.score - a.score);
 
     if (sorteerbareTeams.length === 0) {
-        container.innerHTML = '<div style="font-style: italic; opacity: 0.6; text-align: center; padding: 10px 0;">Nog geen teams actief...</div>';
+        container.innerHTML = '<div class="leaderboard-row" style="font-style: italic; opacity: 0.6; justify-content: center;">Nog geen teams actief...</div>';
         return;
     }
 
     sorteerbareTeams.forEach((team, index) => {
         const row = document.createElement('div');
-        row.style.display = 'flex';
-        row.style.justifyContent = 'space-between';
-        row.style.padding = '6px 10px';
-        row.style.background = 'rgba(255,255,255,0.05)';
-        row.style.borderRadius = '4px';
+        row.classList.add('leaderboard-row');
         row.innerHTML = `<span>${index + 1}. ${team.naam}</span> <strong>${team.score} pts</strong>`;
         container.appendChild(row);
     });
@@ -402,9 +380,8 @@ if(huidigTeam) {
     updateGameUI();
 }
 
-// Zorg dat de app bij het inladen opstart op de Game tab (Tab 1)
-switchTab('game');
-
+// Zorg dat de app bij het inladen netjes opstart op de Deelnemers tab
+executeTabSwitch('deelnemers');
 
 // ================= CHAT / SUGGESTIE LOGICA (FIREBASE) =================
 
@@ -426,7 +403,6 @@ function sendSuggestion() {
         return;
     }
 
-    // Als de gebruiker is ingelogd met een teamnaam bij het spel, sturen we die mee als afzender
     let afzender = "Anoniem (Deelnemer/Moni)";
     if (huidigTeam) {
         afzender = "Team: " + huidigTeam;
@@ -440,7 +416,6 @@ function sendSuggestion() {
         tijd: timestamp
     };
 
-    // Pushen naar de 'suggesties' node in jouw database
     database.ref('suggesties').push(suggestionData)
     .then(() => {
         alert("Super! Je idee of melding is succesvol verstuurd naar de database. 🎉");
