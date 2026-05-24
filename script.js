@@ -369,3 +369,51 @@ if(huidigTeam) {
 }
 
 switchTab('deelnemers');
+
+
+// ================= CHAT / SUGGESTIE LOGICA (FIREBASE) =================
+
+function toggleChatPopup() {
+    const popup = document.getElementById('chat-popup');
+    if (popup) {
+        popup.classList.toggle('hidden');
+    }
+}
+
+function sendSuggestion() {
+    const inputEl = document.getElementById('chat-message-input');
+    if (!inputEl) return;
+    
+    const message = inputEl.value.trim();
+
+    if (message === "") {
+        alert("Typ eerst even een berichtje voor je het verstuurt! 😉");
+        return;
+    }
+
+    // Als de gebruiker is ingelogd met een teamnaam bij het spel, sturen we die mee als afzender
+    let afzender = "Anoniem (Deelnemer/Moni)";
+    if (huidigTeam) {
+        afzender = "Team: " + huidigTeam;
+    }
+
+    const timestamp = new Date().toLocaleString("nl-BE");
+
+    const suggestionData = {
+        wie: afzender,
+        bericht: message,
+        tijd: timestamp
+    };
+
+    // Pushen naar de 'suggesties' node in jouw database
+    database.ref('suggesties').push(suggestionData)
+    .then(() => {
+        alert("Super! Je idee of melding is succesvol verstuurd naar de database. 🎉");
+        inputEl.value = ""; 
+        toggleChatPopup();  
+    })
+    .catch((error) => {
+        console.error("Firebase chat fout:", error);
+        alert("Er ging iets mis bij het versturen. Probeer het opnieuw!");
+    });
+}
