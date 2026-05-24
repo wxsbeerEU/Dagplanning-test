@@ -328,7 +328,7 @@ body {
 .tab-btn {
     flex: 1;
     background: transparent;
-    border: none;
+    border: 1px solid transparent; /* EXTRA FIX: Voorkomt dat de tab layout 'springt' bij een hover-border */
     color: #94a3b8;
     padding: 12px;
     font-size: 1rem;
@@ -355,15 +355,14 @@ body {
 }
 
 /* ================= TABBLADEN HOVER EFFECTEN ================= */
-/* GECORRIGEERD: :has() selector gecorrigeerd naar moderne standaarden om bugs op mobiel te voorkomen */
-.tab-btn#tab-deelnemers.active ~ .tab-btn#tab-moni:hover {
-    border-color: #ff9800;
-    box-shadow: 0 0 12px rgba(255, 152, 0, 0.6);
-}
 
-.tab-container:has(#tab-moni.active) #tab-deelnemers:hover {
+/* GECORRIGEERD: Elk tabblad dat NIET actief is, krijgt nu altijd deze oranje cyber-glow bij hover */
+.tab-btn:not(.active):hover {
     border-color: #ff9800;
     box-shadow: 0 0 12px rgba(255, 152, 0, 0.6);
+    background: rgba(255, 152, 0, 0.05);
+    color: #ffffff;
+    cursor: pointer;
 }
 
 /* ================= FLOATING SUGGESTION CHAT ================= */
