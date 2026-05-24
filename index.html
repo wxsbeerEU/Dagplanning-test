@@ -29,33 +29,52 @@
                 <button id="tab-moni" class="tab-btn" onclick="switchTab('moni')">👨‍👩‍👧‍👦 Monitors</button>
             </div>
 
-            <div class="menu-grid">
-                <button class="cyber-btn deelnemers-content moni-content" onclick="switchScreen('planning-screen')">
+            <div id="content-deelnemers" class="menu-grid tab-content-block">
+                <button class="cyber-btn" onclick="switchScreen('planning-screen')">
                     <span class="btn-icon">📅</span>
                     <span class="btn-text">Dagplanning</span>
                 </button>
 
-                <button class="cyber-btn deelnemers-content" onclick="window.open('https://open.spotify.com/playlist/64AVZMx8I6swct9ETmQM1L?si=nF55G46VQauFSOd8IA7PRw', '_blank')">
+                <button class="cyber-btn" onclick="window.open('https://open.spotify.com/playlist/64AVZMx8I6swct9ETmQM1L?si=nF55G46VQauFSOd8IA7PRw', '_blank')">
                     <span class="btn-icon">🎵</span>
                     <span class="btn-text">Kamphits (Spotify)</span>
                 </button>
 
-                <button class="cyber-btn deelnemers-content" onclick="switchScreen('animatoren-screen')">
+                <button class="cyber-btn" onclick="switchScreen('animatoren-screen')">
                     <span class="btn-icon">😎</span>
                     <span class="btn-text">Wie zijn de animatoren?</span>
                 </button>
 
-                <button class="cyber-btn moni-content hidden-tab-content" onclick="switchScreen('regels-screen')">
+                <button class="cyber-btn" onclick="switchScreen('locatie-screen')">
+                    <span class="btn-icon">📍</span>
+                    <span class="btn-text">Waar zijn we?</span>
+                </button>
+            </div>
+
+            <div id="content-game" class="menu-grid tab-content-block hidden-tab-content">
+                <button class="cyber-btn" onclick="switchScreen('game-screen')">
+                    <span class="btn-icon">🎮</span>
+                    <span class="btn-text">Naar de Kamp Game!</span>
+                </button>
+            </div>
+
+            <div id="content-moni" class="menu-grid tab-content-block hidden-tab-content">
+                <button class="cyber-btn" onclick="switchScreen('planning-screen')">
+                    <span class="btn-icon">📅</span>
+                    <span class="btn-text">Dagplanning</span>
+                </button>
+                
+                <button class="cyber-btn" onclick="switchScreen('regels-screen')">
                     <span class="btn-icon">📜</span>
                     <span class="btn-text">Regels van de week</span>
                 </button>
 
-                <button class="cyber-btn moni-content hidden-tab-content" onclick="switchScreen('fotos-screen')">
+                <button class="cyber-btn" onclick="switchScreen('fotos-screen')">
                     <span class="btn-icon">📸</span>
                     <span class="btn-text">Fotoblog / Album</span>
                 </button>
 
-                <button class="cyber-btn deelnemers-content moni-content" onclick="switchScreen('locatie-screen')">
+                <button class="cyber-btn" onclick="switchScreen('locatie-screen')">
                     <span class="btn-icon">📍</span>
                     <span class="btn-text">Waar zijn we?</span>
                 </button>
