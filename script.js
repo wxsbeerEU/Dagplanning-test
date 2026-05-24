@@ -369,3 +369,73 @@ if(huidigTeam) {
 }
 
 switchTab('deelnemers');
+
+// ================= EASTER EGG SWIPE DETECTIE =================
+let touchStartY = 0;
+let touchMoveY = 0;
+let totalPullAmount = 0;
+const targetPullNeeded = 250; // Aantal pixels dat er naar beneden gesleept moet worden
+let eggUnlocked = false;
+
+// We luisteren specifiek naar swipes op het hoofdscherm
+const mainMenuEl = document.getElementById('main-menu');
+
+if (mainMenuEl) {
+    mainMenuEl.addEventListener('touchstart', (e) => {
+        if (eggUnlocked) return;
+        // Alleen triggeren als de gebruiker helemaal bovenaan de pagina staat
+        if (window.scrollY === 0) {
+            touchStartY = e.touches[0].clientY;
+        } else {
+            touchStartY = 0;
+        }
+    }, { passive: true });
+
+    mainMenuEl.addEventListener('touchmove', (e) => {
+        if (eggUnlocked || touchStartY === 0) return;
+        
+        touchMoveY = e.touches[0].clientY;
+        const pullDistance = touchMoveY - touchStartY;
+
+        // Als er naar beneden gesleept wordt
+        if (pullDistance > 0) {
+            totalPullAmount = pullDistance;
+            
+            const container = document.getElementById('easter-egg-loader-container');
+            const bar = document.getElementById('easter-egg-bar');
+            
+            if (container) container.style.display = 'block';
+            
+            // Bereken percentage van de balk
+            let percentage = Math.min((totalPullAmount / targetPullNeeded) * 100, 100);
+            if (bar) bar.style.width = `${percentage}%`;
+
+            // Als de balk vol is!
+            if (percentage >= 100 && !eggUnlocked) {
+                eggUnlocked = true;
+                if (container) container.style.display = 'none';
+                
+                const lyricsEl = document.getElementById('easter-egg-lyrics');
+                if (lyricsEl) {
+                    lyricsEl.classList.remove('hidden');
+                    lyricsEl.scrollIntoView({ behavior: 'smooth' });
+                }
+                
+                if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+            }
+        }
+    }, { passive: true });
+
+    // Als de vinger van het scherm gaat en de balk was niet vol: reset de balk
+    mainMenuEl.addEventListener('touchend', () => {
+        if (eggUnlocked) return;
+        touchStartY = 0;
+        totalPullAmount = 0;
+        
+        const container = document.getElementById('easter-egg-loader-container');
+        const bar = document.getElementById('easter-egg-bar');
+        
+        if (bar) bar.style.width = '0%';
+        if (container) container.style.display = 'none';
+    }, { passive: true });
+}
