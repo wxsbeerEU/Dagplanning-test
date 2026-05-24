@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Topvakantie hoofdscherm</title>
-    <link rel="manifest" href="manifest.json">
+    <link class="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -59,7 +59,7 @@
                     <span class="btn-text">Waar zijn we?</span>
                 </button>
 
-                <button class="cyber-btn deelnemers-content moni-content" onclick="void(0)">
+                <button class="cyber-btn deelnemers-content moni-content" onclick="switchScreen('game-screen')">
                     <span class="btn-icon">🎮</span>
                     <span class="btn-text">Game</span>
                 </button>
@@ -205,6 +205,44 @@
                         <strong>Hotelschool Ter Duinen</strong><br>
                         Houtsaegerlaan 40, 8670 Koksijde
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="game-screen" class="screen-section">
+            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar hoofdscherm</button>
+
+            <div class="welcome-card">
+                <h2>Kamp Game</h2>
+                <p>Kraak de codes op het terrein!</p>
+            </div>
+
+            <div id="game-login-view">
+                <div class="welcome-card" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                    <p style="margin-bottom: 10px; font-weight: bold;">Meld je team aan:</p>
+                    <input type="text" id="team-name-input" class="cyber-input" placeholder="Vul je teamnaam in..." autocomplete="off" style="width: 100%; margin-bottom: 10px; box-sizing: border-box;">
+                    <button class="back-btn" onclick="loginTeam()" style="width: 100%; margin: 0; background: #007bff; color: white; border: none; padding: 10px; border-radius: 5px;">Start / Verder Spelen</button>
+                </div>
+            </div>
+
+            <div id="game-play-view" class="hidden">
+                <div class="welcome-card" style="background: rgba(0, 123, 255, 0.1); border: 1px solid #007bff; padding: 10px; border-radius: 8px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center;">
+                    <span id="active-team-display" style="font-weight: bold;">Team: ...</span>
+                    <span id="active-score-display" style="background: #007bff; color: white; padding: 2px 10px; border-radius: 20px; font-weight: bold;">0 pts</span>
+                </div>
+
+                <div class="welcome-card" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                    <p style="margin-bottom: 5px; font-weight: bold;">Rebus Oplossing Invoeren</p>
+                    <p style="font-size: 0.85rem; opacity: 0.7; margin-bottom: 15px;">Code of woord gevonden op het terrein? Typ het hieronder:</p>
+                    <input type="text" id="rebus-answer-input" class="cyber-input" placeholder="Typ oplossing hier..." autocomplete="off" style="width: 100%; margin-bottom: 10px; box-sizing: border-box;" onkeydown="if(event.key === 'Enter') submitAnswer()">
+                    <button class="back-btn" onclick="submitAnswer()" style="width: 100%; margin: 0; background: #28a745; color: white; border: none; padding: 10px; border-radius: 5px;">Controleer Oplossing</button>
+                </div>
+            </div>
+
+            <div class="welcome-card" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 8px;">
+                <h3 style="margin-bottom: 15px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">🏆 Live Scorebord</h3>
+                <div id="leaderboard-rows" style="display: flex; flex-direction: column; gap: 8px;">
+                    <div style="font-style: italic; opacity: 0.6; text-align: center; padding: 10px 0;">Nog geen teams actief...</div>
                 </div>
             </div>
         </section>
