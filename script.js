@@ -242,6 +242,8 @@ function closeCodeModal() {
     executeTabSwitch('deelnemers');
 }
 
+// ... (al je bestaande code blijft exact hetzelfde staan tot aan deze regel)
+
 function submitMoniCode() {
     const input = document.getElementById('modalCodeInput');
     const modal = document.getElementById('codeModal');
@@ -263,6 +265,35 @@ function submitMoniCode() {
         }
     }
 }
+
+// ================= NIEUWE FUNCTIE VOOR THINK TECH KAMP =================
+function openPasswordModal() {
+    // We hergebruiken je bestaande 'codeModal' om het wachtwoord te vragen
+    const modal = document.getElementById('codeModal');
+    const input = document.getElementById('modalCodeInput');
+    const header = modal.querySelector('h3');
+    
+    if (header) header.textContent = "Think Tech Kamp"; // Pas titel aan
+    
+    modal.classList.remove('hidden');
+    input.value = '';
+    input.focus();
+    
+    // Pas de bevestig-knop tijdelijk aan om naar het kamp-gedeelte te checken
+    const confirmBtn = modal.querySelector('.confirm-btn');
+    confirmBtn.onclick = function() {
+        if (input.value === 'TECH2026') { // Stel hier je wachtwoord in
+            modal.classList.add('hidden');
+            alert("Welkom bij Think Tech!");
+            // Voeg hier eventueel een switchScreen('think-tech-screen') toe
+        } else {
+            alert("Foutief wachtwoord!");
+        }
+        // Herstel de originele onclick na gebruik
+        confirmBtn.onclick = submitMoniCode;
+    };
+}
+
 
 // ================= REALTIME GAME LOGICA VIA FIREBASE =================
 
