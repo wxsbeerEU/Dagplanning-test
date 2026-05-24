@@ -245,7 +245,7 @@ function closeCodeModal() {
 function submitMoniCode() {
     const input = document.getElementById('modalCodeInput');
     const modal = document.getElementById('codeModal');
-    
+
     if (input && input.value === '1234') {
         if (modal) modal.classList.add('hidden');
         executeTabSwitch('moni'); 
@@ -255,7 +255,7 @@ function submitMoniCode() {
             input.value = '';
             input.placeholder = "Onjuiste code! Probeer opnieuw...";
             input.focus();
-            
+
             input.addEventListener('input', () => {
                 input.style.borderColor = '';
                 input.placeholder = "Wachtwoord...";
@@ -263,8 +263,6 @@ function submitMoniCode() {
         }
     }
 }
-
-
 
 
 // ================= REALTIME GAME LOGICA VIA FIREBASE =================
