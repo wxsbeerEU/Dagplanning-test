@@ -104,8 +104,10 @@ function highlightCurrentTime() {
     });
 
     if (!highlighted && rows.length > 0) {
-        const firstRowMinutes = timeToMinutes(parseInt(rows[0].getAttribute('hour')), parseInt(rows[0].getAttribute('minute')));
-        if (currentMinutes < firstRowMinutes) {
+        const firstRowMinutes = timeToMinutes(parseInt(rows[0].getAttribute('hour')), parseInt(rows[0].['minute']));
+        const firstRowMinute = parseInt(rows[0].getAttribute('minute'));
+        const firstRowMinutesCalc = timeToMinutes(parseInt(rows[0].getAttribute('hour')), firstRowMinute);
+        if (currentMinutes < firstRowMinutesCalc) {
             rows[0].classList.add('current-activity');
         }
     }
@@ -240,6 +242,120 @@ function submitMoniCode() {
         }
     }
 }
+
+// ================= GAME LOGICA (REBUSSEN & SCOREBORD) =================
+
+// De database met geldige rebus-oplossingen en hun respectievelijke puntenwaarde
+const rebusOplossingen = {
+    "hallo": 10,
+    "topvakantie": 20,
+    "koksijde": 15,
+    "hotelschool": 30,
+    "monitors": 10
+};
+
+let alleTeams = JSON.parse(localStorage.getItem('kampTeams')) || {};
+let huidigTeam = null;
+
+function loginTeam() {
+    const input = document.getElementById('team-name-input');
+    if (!input || input.value.trim() === "") return alert("Vul eerst een geldige teamnaam in!");
+
+    const teamNaam = input.value.trim();
+
+    // Als de teamnaam nog niet bestaat in de database, maak hem dan onmiddellijk aan
+    if (!alleTeams[teamNaam]) {
+        alleTeams[teamNaam] = {
+            score: 0,
+            opgelost: []
+        };
+        saveTeams();
+    }
+
+    huidigTeam = teamNaam;
+
+    // Wissel de spelweergaven om
+    document.getElementById('game-login-view').classList.add('hidden');
+    document.getElementById('game-play-view').classList.remove('hidden');
+
+    updateGameUI();
+}
+
+function submitAnswer() {
+    const input = document.getElementById('rebus-answer-input');
+    if (!input || input.value.trim() === "") return;
+
+    // Zet de invoer om naar kleine letters om fouten met mobiele hoofdletters te vermijden
+    const ingevoerdAntwoord = input.value.trim().toLowerCase();
+
+    if (rebusOplossingen[ingevoerdAntwoord] !== undefined) {
+        // Controleer of dit team deze specifieke rebus al eens gekraakt heeft
+        if (alleTeams[huidigTeam].opgelost.includes(ingevoerdAntwoord)) {
+            alert("Je team heeft deze rebus al eens opgelost! Zoek snel naar een andere.");
+            input.value = '';
+            return;
+        }
+
+        // Voeg punten toe en markeer als opgelost
+        const verdiendePunten = rebusOplossingen[ingevoerdAntwoord];
+        alleTeams[huidigTeam].score += verdiendePunten;
+        alleTeams[huidigTeam].opgelost.push(ingevoerdAntwoord);
+
+        saveTeams();
+        updateGameUI();
+
+        alert(`🎉 Super! +${verdiendePunten} punten voor je team!`);
+        input.value = '';
+    } else {
+        alert("❌ Helaas, dat antwoord is onjuist. Kijk nog eens goed naar de rebus!");
+        input.value = '';
+    }
+}
+
+function saveTeams() {
+    localStorage.setItem('kampTeams', JSON.stringify(alleTeams));
+    renderLeaderboard();
+}
+
+function updateGameUI() {
+    if (!huidigTeam) return;
+    document.getElementById('active-team-display').textContent = `Team: ${huidigTeam}`;
+    document.getElementById('active-score-display').textContent = `${alleTeams[huidigTeam].score} pts`;
+    renderLeaderboard();
+}
+
+function renderLeaderboard() {
+    const container = document.getElementById('leaderboard-rows');
+    if (!container) return;
+    container.innerHTML = '';
+
+    let sorteerbareTeams = [];
+    for (let team in alleTeams) {
+        sorteerbareTeams.push({ naam: team, score: alleTeams[team].score });
+    }
+
+    // Sorteer de teams van de hoogste naar de laagste score
+    sorteerbareTeams.sort((a, b) => b.score - a.score);
+
+    if (sorteerbareTeams.length === 0) {
+        container.innerHTML = '<div style="font-style: italic; opacity: 0.6; text-align: center; padding: 10px 0;">Nog geen teams actief...</div>';
+        return;
+    }
+
+    sorteerbareTeams.forEach((team, index) => {
+        const row = document.createElement('div');
+        row.style.display = 'flex';
+        row.style.justifyContent = 'space-between';
+        row.style.padding = '6px 10px';
+        row.style.background = 'rgba(255,255,255,0.05)';
+        row.style.borderRadius = '4px';
+        row.innerHTML = `<span>${index + 1}. ${team.naam}</span> <strong>${team.score} pts</strong>`;
+        container.appendChild(row);
+    });
+}
+
+// Initialiseer het scorebord direct bij het inladen
+renderLeaderboard();
 
 // Zorg dat bij het laden van de pagina meteen de juiste knoppen klaarstaan
 switchTab('deelnemers');
