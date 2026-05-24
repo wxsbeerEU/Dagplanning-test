@@ -1,3 +1,18 @@
+// Firebase configuratie van jouw project
+const firebaseConfig = {
+  apiKey: "AIzaSyDj_V67S2djpAWDxMuWk1B9BqFTPvK7mEE",
+  authDomain: "topvakantie-game.firebaseapp.com",
+  databaseURL: "https://topvakantie-game-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "topvakantie-game",
+  storageBucket: "topvakantie-game.firebasestorage.app",
+  messagingSenderId: "962032679607",
+  appId: "1:962032679607:web:df8a1689af235c61576b32"
+};
+
+// Initialiseer Firebase via de compat SDK
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+
 const schedule = [
     { time: '08:15', activity: 'Opstaan' },
     { time: '08:30', activity: 'Ochtendeten' },
@@ -141,7 +156,6 @@ function updateCurrentTime() {
     }
 }
 
-// Service worker registratie voor de gsm-app functionaliteit
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch(err => console.log("SW error:", err));
 }
@@ -152,7 +166,6 @@ setInterval(highlightCurrentTime, 30000);
 setInterval(updateCurrentTime, 1000);
 updateCurrentTime();
 
-// Functie om te wisselen tussen de schermen
 function switchScreen(screenId) {
     document.querySelectorAll('.screen-section').forEach(screen => {
         screen.classList.remove('active-screen');
@@ -164,15 +177,11 @@ function switchScreen(screenId) {
     }
 }
 
-// ================= TABBLADEN STRATEGIE MET CUSTOM POP-UP (MONI) =================
 function switchTab(targetTab) {
-    // Als men naar het Moni-scherm wil, openen we de custom pop-up
     if (targetTab === 'moni') {
         openCodeModal();
         return; 
     }
-
-    // Deelnemers switcht direct
     executeTabSwitch(targetTab);
 }
 
@@ -198,7 +207,6 @@ function executeTabSwitch(targetTab) {
     });
 }
 
-// Custom Pop-up Acties
 function openCodeModal() {
     const modal = document.getElementById('codeModal');
     const input = document.getElementById('modalCodeInput');
@@ -213,7 +221,6 @@ function closeCodeModal() {
     const modal = document.getElementById('codeModal');
     if (modal) modal.classList.add('hidden');
     
-    // Reset visualisatie naar Deelnemers bij annuleren
     const tabDeelnemers = document.getElementById('tab-deelnemers');
     const tabMoni = document.getElementById('tab-moni');
     if (tabDeelnemers) tabDeelnemers.classList.add('active');
@@ -224,7 +231,6 @@ function submitMoniCode() {
     const input = document.getElementById('modalCodeInput');
     const modal = document.getElementById('codeModal');
     
-    // MONI CODE (Nu ingesteld op '1234')
     if (input && input.value === '1234') {
         if (modal) modal.classList.add('hidden');
         executeTabSwitch('moni'); 
@@ -243,9 +249,8 @@ function submitMoniCode() {
     }
 }
 
-// ================= GAME LOGICA (REBUSSEN & SCOREBORD) =================
+// ================= REALTIME GAME LOGICA VIA FIREBASE =================
 
-// De database met geldige rebus-oplossingen en hun respectievelijke puntenwaarde
 const rebusOplossingen = {
     "hallo": 10,
     "topvakantie": 20,
@@ -254,8 +259,15 @@ const rebusOplossingen = {
     "monitors": 10
 };
 
-let alleTeams = JSON.parse(localStorage.getItem('kampTeams')) || {};
-let huidigTeam = null;
+let alleTeams = {};
+let huidigTeam = localStorage.getItem('huidigKampTeam') || null;
+
+// Luister live naar updates uit de Firebase Cloud
+database.ref('teams').on('value', (snapshot) => {
+    alleTeams = snapshot.val() || {};
+    renderLeaderboard();
+    updateGameUI();
+});
 
 function loginTeam() {
     const input = document.getElementById('team-name-input');
@@ -263,18 +275,16 @@ function loginTeam() {
 
     const teamNaam = input.value.trim();
 
-    // Als de teamnaam nog niet bestaat in de database, maak hem dan onmiddellijk aan
     if (!alleTeams[teamNaam]) {
-        alleTeams[teamNaam] = {
+        database.ref('teams/' + teamNaam).set({
             score: 0,
-            opgelost: []
-        };
-        saveTeams();
+            opgelost: ["init"]
+        });
     }
 
     huidigTeam = teamNaam;
+    localStorage.setItem('huidigKampTeam', teamNaam);
 
-    // Wissel de spelweergaven om
     document.getElementById('game-login-view').classList.add('hidden');
     document.getElementById('game-play-view').classList.remove('hidden');
 
@@ -285,24 +295,26 @@ function submitAnswer() {
     const input = document.getElementById('rebus-answer-input');
     if (!input || input.value.trim() === "") return;
 
-    // Zet de invoer om naar kleine letters om fouten met mobiele hoofdletters te vermijden
     const ingevoerdAntwoord = input.value.trim().toLowerCase();
 
     if (rebusOplossingen[ingevoerdAntwoord] !== undefined) {
-        // Controleer of dit team deze specifieke rebus al eens gekraakt heeft
-        if (alleTeams[huidigTeam].opgelost.includes(ingevoerdAntwoord)) {
+        let teamData = alleTeams[huidigTeam] || { score: 0, opgelost: [] };
+        if (!teamData.opgelost) teamData.opgelost = [];
+
+        if (teamData.opgelost.includes(ingevoerdAntwoord)) {
             alert("Je team heeft deze rebus al eens opgelost! Zoek snel naar een andere.");
             input.value = '';
             return;
         }
 
-        // Voeg punten toe en markeer als opgelost
         const verdiendePunten = rebusOplossingen[ingevoerdAntwoord];
-        alleTeams[huidigTeam].score += verdiendePunten;
-        alleTeams[huidigTeam].opgelost.push(ingevoerdAntwoord);
+        const nieuweScore = teamData.score + verdiendePunten;
+        teamData.opgelost.push(ingevoerdAntwoord);
 
-        saveTeams();
-        updateGameUI();
+        database.ref('teams/' + huidigTeam).update({
+            score: nieuweScore,
+            opgelost: teamData.opgelost
+        });
 
         alert(`🎉 Super! +${verdiendePunten} punten voor je team!`);
         input.value = '';
@@ -312,16 +324,15 @@ function submitAnswer() {
     }
 }
 
-function saveTeams() {
-    localStorage.setItem('kampTeams', JSON.stringify(alleTeams));
-    renderLeaderboard();
-}
-
 function updateGameUI() {
     if (!huidigTeam) return;
+    
+    document.getElementById('game-login-view').classList.add('hidden');
+    document.getElementById('game-play-view').classList.remove('hidden');
+
+    const mijnTeamData = alleTeams[huidigTeam] || { score: 0 };
     document.getElementById('active-team-display').textContent = `Team: ${huidigTeam}`;
-    document.getElementById('active-score-display').textContent = `${alleTeams[huidigTeam].score} pts`;
-    renderLeaderboard();
+    document.getElementById('active-score-display').textContent = `${mijnTeamData.score} pts`;
 }
 
 function renderLeaderboard() {
@@ -334,7 +345,6 @@ function renderLeaderboard() {
         sorteerbareTeams.push({ naam: team, score: alleTeams[team].score });
     }
 
-    // Sorteer de teams van de hoogste naar de laagste score
     sorteerbareTeams.sort((a, b) => b.score - a.score);
 
     if (sorteerbareTeams.length === 0) {
@@ -354,8 +364,8 @@ function renderLeaderboard() {
     });
 }
 
-// Initialiseer het scorebord direct bij het inladen
-renderLeaderboard();
+if(huidigTeam) {
+    updateGameUI();
+}
 
-// Zorg dat bij het laden van de pagina meteen de juiste knoppen klaarstaan
 switchTab('deelnemers');
