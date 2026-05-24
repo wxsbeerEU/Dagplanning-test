@@ -187,9 +187,11 @@ function switchTab(targetTab) {
 
 function executeTabSwitch(targetTab) {
     const tabDeelnemers = document.getElementById('tab-deelnemers');
+    const tabGame = document.getElementById('tab-game');
     const tabMoni = document.getElementById('tab-moni');
     
     if (tabDeelnemers) tabDeelnemers.classList.remove('active');
+    if (tabGame) tabGame.classList.remove('active');
     if (tabMoni) tabMoni.classList.remove('active');
     
     const activeTabEl = document.getElementById(`tab-${targetTab}`);
@@ -197,14 +199,22 @@ function executeTabSwitch(targetTab) {
         activeTabEl.classList.add('active');
     }
 
-    const alleKnoppen = document.querySelectorAll('.cyber-btn');
-    alleKnoppen.forEach(knop => {
-        if (knop.classList.contains(`${targetTab}-content`)) {
-            knop.classList.remove('hidden-tab-content');
-        } else {
-            knop.classList.add('hidden-tab-content');
-        }
-    });
+    // Als er op de Game-tab wordt geklikt, openen we direct het game-scherm
+    if (targetTab === 'game') {
+        switchScreen('game-screen');
+    } else {
+        // Zorg dat we terug naar het hoofdmenu gaan als de andere tabbladen worden geklikt
+        switchScreen('main-menu');
+
+        const alleKnoppen = document.querySelectorAll('.cyber-btn');
+        alleKnoppen.forEach(knop => {
+            if (knop.classList.contains(`${targetTab}-content`)) {
+                knop.classList.remove('hidden-tab-content');
+            } else {
+                knop.classList.add('hidden-tab-content');
+            }
+        });
+    }
 }
 
 function openCodeModal() {
@@ -222,8 +232,10 @@ function closeCodeModal() {
     if (modal) modal.classList.add('hidden');
     
     const tabDeelnemers = document.getElementById('tab-deelnemers');
+    const tabGame = document.getElementById('tab-game');
     const tabMoni = document.getElementById('tab-moni');
     if (tabDeelnemers) tabDeelnemers.classList.add('active');
+    if (tabGame) tabGame.classList.remove('active');
     if (tabMoni) tabMoni.classList.remove('active');
 }
 
