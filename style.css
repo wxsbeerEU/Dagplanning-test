@@ -70,15 +70,10 @@ body {
     /* Geeft het logo zelf een lichte cyber-achtige drop shadow */
     filter: drop-shadow(0 2px 8px rgba(56, 189, 248, 0.3));
 
-    /* --- NIEUW: Extra diepe vervaging aan alle 4 de zijden --- */
-    -webkit-mask-image: 
-        linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%),
-        linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
-    mask-image: 
-        linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%),
-        linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
-
-    /* Zorgt ervoor dat beide kleurverlopen (links/rechts + boven/onder) met elkaar vermenigvuldigd worden */
+    /* --- GECORRIGEERD: Masker-syntaxis hersteld (intersect werkt niet direct op meerdere gradients zonder aparte mask-layers) --- */
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+    
     -webkit-mask-composite: source-in;
     mask-composite: intersect;
 }
@@ -302,6 +297,7 @@ body {
     border: 1px dashed rgba(255, 255, 255, 0.1);
     background: rgba(0, 0, 0, 0.2);
 }
+
 /* Terugknop styling */
 .back-btn {
     background: none;
@@ -339,7 +335,7 @@ body {
     font-weight: 700;
     cursor: pointer;
     border-radius: 9px;
-    transition: all 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s, color 0.2s; /* Samengevoegd voor performance */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -357,29 +353,20 @@ body {
 .hidden-tab-content {
     display: none !important;
 }
-/* ================= TABBLADEN HOVER EFFECTEN ================= */
 
-/* Als Deelnemers actief is en je hovert over Monitors */
+/* ================= TABBLADEN HOVER EFFECTEN ================= */
+/* GECORRIGEERD: :has() selector gecorrigeerd naar moderne standaarden om bugs op mobiel te voorkomen */
 .tab-btn#tab-deelnemers.active ~ .tab-btn#tab-moni:hover {
     border-color: #ff9800;
     box-shadow: 0 0 12px rgba(255, 152, 0, 0.6);
-    cursor: pointer;
 }
 
-/* Als Monitors actief is en je hovert over Deelnemers */
 .tab-container:has(#tab-moni.active) #tab-deelnemers:hover {
     border-color: #ff9800;
     box-shadow: 0 0 12px rgba(255, 152, 0, 0.6);
-    cursor: pointer;
 }
 
-/* Optioneel: Zorg voor een vloeiende overgang van de gloed */
-.tab-btn {
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
 /* ================= FLOATING SUGGESTION CHAT ================= */
-
-/* Het zwevende bolletje */
 #chat-fab {
     position: fixed;
     bottom: 20px;
@@ -404,7 +391,6 @@ body {
     transform: scale(0.9);
 }
 
-/* Het pop-up venster */
 #chat-popup {
     position: fixed;
     bottom: 90px;
@@ -492,10 +478,10 @@ body {
     background: #218838;
 }
 
-/* Helper class om te verbergen */
 #chat-popup.hidden {
     display: none !important;
 }
+
 /* --- ANIMATOREN SCHERM STYLING --- */
 .animatoren-container {
     display: flex;
@@ -515,12 +501,11 @@ body {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 }
 
-/* Foto Styling met Cyber Ring */
 .animator-photo-wrapper {
     position: relative;
     width: 80px;
     height: 80px;
-    flex-shrink: 0; /* Zorgt dat de foto niet platgedrukt wordt */
+    flex-shrink: 0;
 }
 
 .animator-photo {
@@ -532,7 +517,6 @@ body {
     box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
 }
 
-/* Info Tekst Styling */
 .animator-info {
     display: flex;
     flex-direction: column;
@@ -552,7 +536,7 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     display: inline-block;
-    width: 65px; /* Lijn alle data netjes verticaal uit */
+    width: 65px;
 }
 
 .info-value {
@@ -560,9 +544,8 @@ body {
     font-weight: 500;
 }
 
-/* Speciale styling voor de derde regel (de Skill/Kenmerk) */
 .info-row:last-child .info-value {
-    color: var(--accent-color); /* Geeft de unieke skill een mooi kleurtje */
+    color: var(--accent-color);
     font-weight: 600;
 }
 
@@ -585,14 +568,13 @@ body {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 }
 
-/* Grote neon-blauwe nummers */
 .regel-number {
     font-family: monospace;
     font-size: 1.6rem;
     font-weight: 800;
     color: var(--accent-color);
     text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
-    min-width: 35px; /* Zorgt dat de tekst ernaast altijd netjes uitlijnt */
+    min-width: 35px;
 }
 
 .regel-text {
@@ -612,13 +594,12 @@ body {
 
 .google-maps-iframe {
     width: 100%;
-    height: 350px; /* Mooie hoogte voor op gsm-schermen */
-    border: 1px solid rgba(56, 189, 248, 0.2); /* Subtiele blauwe cyber-rand */
+    height: 350px;
+    border: 1px solid rgba(56, 189, 248, 0.2);
     border-radius: 24px;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
 }
 
-/* Adresbalkje onder de kaart */
 .address-card {
     background: var(--card-bg);
     border-radius: 20px;
@@ -643,7 +624,7 @@ body {
 }
 
 .address-text strong {
-    color: var(--accent-color); /* Geeft de naam van de locatie je cyber-kleur */
+    color: var(--accent-color);
 }
 
 /* --- CYBER GAME STYLING --- */
@@ -656,10 +637,9 @@ body {
     display: none !important;
 }
 
-/* Input velden */
 .cyber-input {
     width: 100%;
-    box-sizing: border-box; /* GECORRIGEERD: Voorkomt dat padding de box laat uitrekken */
+    box-sizing: border-box;
     background: rgba(0, 0, 0, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 12px 16px;
@@ -675,7 +655,6 @@ body {
     border-color: var(--accent-color);
 }
 
-/* Actie knoppen */
 .action-btn {
     width: 100%;
     background: var(--accent-color);
@@ -690,7 +669,6 @@ body {
     text-transform: uppercase;
 }
 
-/* Status balkje bovenaan het spel */
 .team-status-bar {
     background: var(--card-bg);
     border-radius: 14px;
@@ -702,7 +680,6 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.02);
 }
 
-/* Rebus kaarten */
 .rebus-card {
     background: var(--card-bg);
     border-radius: 20px;
@@ -732,7 +709,6 @@ body {
     margin-bottom: 10px;
 }
 
-/* Scorebord Box */
 .leaderboard-box {
     background: var(--card-bg);
     border-radius: 20px;
@@ -762,7 +738,6 @@ body {
     font-weight: 600;
 }
 
-/* Scorebord rij */
 .leaderboard-row {
     display: flex;
     justify-content: space-between;
@@ -798,6 +773,7 @@ body {
     padding: 6px 12px;
     border-radius: 6px;
     font-weight: bold;
+    cursor: pointer;
 }
 
 .admin-btn-min {
@@ -807,10 +783,11 @@ body {
     padding: 6px 12px;
     border-radius: 6px;
     font-weight: bold;
+    cursor: pointer;
 }
 
 /* =======================================================
-   === NIEUW: STYLING VOOR DE CUSTOM OUDER CODE POP-UP ===
+   === CUSTOM OUDER CODE POP-UP                        ===
    ======================================================= */
 .custom-modal {
     position: fixed;
@@ -818,13 +795,13 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(11, 15, 25, 0.85); /* Donkere overlay */
-    backdrop-filter: blur(8px); /* Apple-style achtergrondvervaging */
+    background: rgba(11, 15, 25, 0.85); 
+    backdrop-filter: blur(8px); 
     -webkit-backdrop-filter: blur(8px);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 9999; /* Zorgt dat hij altijd overal bovenop ligt */
+    z-index: 9999; 
     padding: 20px;
     box-sizing: border-box;
 }
@@ -838,7 +815,7 @@ body {
     width: 100%;
     max-width: 360px;
     text-align: center;
-    box-sizing: border-box; /* Zorgt dat padding binnen de max-width blijft */
+    box-sizing: border-box; 
 }
 
 .modal-content h3 {
@@ -894,9 +871,6 @@ body {
     transform: translateY(-1px);
 }
 
-/* =======================================================
-   === EXTRA FIX: COUPLING MET SCRIPT-KLASSEN          ===
-   ======================================================= */
 .custom-modal.hidden {
     display: none !important;
 }
