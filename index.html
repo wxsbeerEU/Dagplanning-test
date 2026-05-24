@@ -51,11 +51,45 @@
                 </button>
             </div>
 
-            <div id="content-game" class="menu-grid tab-content-block hidden-tab-content">
-                <button class="cyber-btn" onclick="switchScreen('game-screen')">
-                    <span class="btn-icon">🎮</span>
-                    <span class="btn-text">Naar de Kamp Game!</span>
-                </button>
+            <div id="content-game" class="tab-content-block hidden-tab-content">
+                <div class="welcome-card" style="margin-bottom: 20px;">
+                    <h2>Kamp Game</h2>
+                    <p>Kraak de codes op het terrein!</p>
+                </div>
+
+                <div id="game-login-view" class="game-view">
+                    <div class="rebus-card">
+                        <h3>Meld je team aan:</h3>
+                        <input type="text" id="team-name-input" class="cyber-input" placeholder="Vul je teamnaam in..." autocomplete="off">
+                        <button class="action-btn" onclick="loginTeam()">Start / Verder Spelen</button>
+                    </div>
+                </div>
+
+                <div id="game-play-view" class="game-view hidden">
+                    <div class="team-status-bar">
+                        <span id="active-team-display">Team: ...</span>
+                        <span id="active-score-display" style="color: var(--accent-color);">0 pts</span>
+                    </div>
+
+                    <div class="rebus-card">
+                        <h3>Rebus Oplösung Invoeren</h3>
+                        <p class="rebus-hint">Code of woord gevonden op het terrein? Typ het hieronder:</p>
+                        <div class="rebus-content">
+                            <input type="text" id="rebus-answer-input" class="cyber-input" placeholder="Typ oplossing hier..." autocomplete="off" onkeydown="if(event.key === 'Enter') submitAnswer()">
+                        </div>
+                        <button class="action-btn" onclick="submitAnswer()">Controleer Oplossing</button>
+                    </div>
+                </div>
+
+                <div class="leaderboard-box" style="margin-top: 20px;">
+                    <div class="leaderboard-header">
+                        <span>🏆 Live Scorebord</span>
+                        <button class="refresh-btn" onclick="renderLeaderboard()">Vernieuwen</button>
+                    </div>
+                    <div id="leaderboard-rows">
+                        <div class="leaderboard-row" style="font-style: italic; opacity: 0.6; justify-content: center;">Nog geen teams actief...</div>
+                    </div>
+                </div>
             </div>
 
             <div id="content-moni" class="menu-grid tab-content-block hidden-tab-content">
@@ -344,49 +378,6 @@
                         <strong>Hotelschool Ter Duinen</strong><br>
                         Houtsaegerlaan 40, 8670 Koksijde
                     </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="game-screen" class="screen-section">
-            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar hoofdscherm</button>
-
-            <div class="welcome-card">
-                <h2>Kamp Game</h2>
-                <p>Kraak de codes op het terrein!</p>
-            </div>
-
-            <div id="game-login-view" class="game-view">
-                <div class="rebus-card">
-                    <h3>Meld je team aan:</h3>
-                    <input type="text" id="team-name-input" class="cyber-input" placeholder="Vul je teamnaam in..." autocomplete="off">
-                    <button class="action-btn" onclick="loginTeam()">Start / Verder Spelen</button>
-                </div>
-            </div>
-
-            <div id="game-play-view" class="game-view hidden">
-                <div class="team-status-bar">
-                    <span id="active-team-display">Team: ...</span>
-                    <span id="active-score-display" style="color: var(--accent-color);">0 pts</span>
-                </div>
-
-                <div class="rebus-card">
-                    <h3>Rebus Oplossing Invoeren</h3>
-                    <p class="rebus-hint">Code of woord gevonden op het terrein? Typ het hieronder:</p>
-                    <div class="rebus-content">
-                        <input type="text" id="rebus-answer-input" class="cyber-input" placeholder="Typ oplossing hier..." autocomplete="off" onkeydown="if(event.key === 'Enter') submitAnswer()">
-                    </div>
-                    <button class="action-btn" onclick="submitAnswer()">Controleer Oplossing</button>
-                </div>
-            </div>
-
-            <div class="leaderboard-box">
-                <div class="leaderboard-header">
-                    <span>🏆 Live Scorebord</span>
-                    <button class="refresh-btn" onclick="renderLeaderboard()">Vernieuwen</button>
-                </div>
-                <div id="leaderboard-rows">
-                    <div class="leaderboard-row" style="font-style: italic; opacity: 0.6; justify-content: center;">Nog geen teams actief...</div>
                 </div>
             </div>
         </section>
