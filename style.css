@@ -302,7 +302,24 @@ body {
     border: 1px dashed rgba(255, 255, 255, 0.1);
     background: rgba(0, 0, 0, 0.2);
 }
+/* Speciale styling voor de Game knop zodat deze extra opvalt */
+.cyber-btn.cyber-btn-game {
+    border-color: rgba(34, 197, 94, 0.4); /* Subtiele groene rand in ruststand */
+    background: rgba(34, 197, 94, 0.02);
+}
 
+/* Effect wanneer er over de game-knop gezweefd of geklikt wordt */
+.cyber-btn.cyber-btn-game:hover {
+    border-color: #22c55e !important; /* Felgroen bij hover */
+    background: rgba(34, 197, 94, 0.1) !important;
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.4) !important; /* Groene neon-gloed */
+}
+
+/* Kleur van het icoontje in de game-knop */
+.cyber-btn.cyber-btn-game .btn-icon {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+}
 
 /* Terugknop styling */
 .back-btn {
