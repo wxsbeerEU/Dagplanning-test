@@ -104,10 +104,10 @@ function highlightCurrentTime() {
     });
 
     if (!highlighted && rows.length > 0) {
-        const firstRowMinutes = timeToMinutes(parseInt(rows[0].getAttribute('hour')), parseInt(rows[0].['minute']));
+        const firstRowHour = parseInt(rows[0].getAttribute('hour'));
         const firstRowMinute = parseInt(rows[0].getAttribute('minute'));
-        const firstRowMinutesCalc = timeToMinutes(parseInt(rows[0].getAttribute('hour')), firstRowMinute);
-        if (currentMinutes < firstRowMinutesCalc) {
+        const firstRowMinutes = timeToMinutes(firstRowHour, firstRowMinute);
+        if (currentMinutes < firstRowMinutes) {
             rows[0].classList.add('current-activity');
         }
     }
