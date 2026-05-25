@@ -270,6 +270,17 @@ let huidigTeam = localStorage.getItem('huidigKampTeam') || null;
 
 database.ref('teams').on('value', (snapshot) => {
     alleTeams = snapshot.val() || {};
+    
+    // CONTROLE: Bestaat ons team nog wel?
+    if (huidigTeam && (!alleTeams || !alleTeams[huidigTeam])) {
+        // Het team is uit de database verwijderd!
+        localStorage.removeItem('huidigKampTeam');
+        huidigTeam = null;
+        alert("Je team is verwijderd door een monitor.");
+        location.reload(); // Herlaad de pagina zodat de gebruiker weer moet inloggen
+        return; // Stop de functie hier
+    }
+    
     renderLeaderboard();
     updateGameUI();
 });
@@ -291,7 +302,6 @@ function loginTeam() {
     localStorage.setItem('huidigKampTeam', teamNaam);
     updateGameUI();
 }
-
 async function submitAnswer() {
     const input = document.getElementById('rebus-answer-input');
     const antwoord = input.value.toLowerCase().trim();
