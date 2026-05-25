@@ -280,13 +280,7 @@ async function submitMoniCode() {
 
 // ================= REALTIME GAME LOGICA VIA FIREBASE =================
 
-const rebusOplossingen = {
-    "hallo": 10,
-    "topvakantie": 20,
-    "koksijde": 15,
-    "hotelschool": 30,
-    "monitors": 10
-};
+
 
 let alleTeams = {};
 let huidigTeam = localStorage.getItem('huidigKampTeam') || null;
