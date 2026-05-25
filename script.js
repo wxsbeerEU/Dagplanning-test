@@ -1,4 +1,4 @@
-// Firebase configuratie van jouw project
+// 1. Firebase configuratie
 const firebaseConfig = {
   apiKey: "AIzaSyDj_V67S2djpAWDxMuWk1B9BqFTPvK7mEE",
   authDomain: "topvakantie-game.firebaseapp.com",
@@ -9,7 +9,8 @@ const firebaseConfig = {
   appId: "1:962032679607:web:df8a1689af235c61576b32"
 };
 
-// Initialiseer Firebase via de compat SDK
+// 2. Initialiseer Firebase (dit zorgt ervoor dat de verbinding wordt gemaakt)
+
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
@@ -242,26 +243,38 @@ function closeCodeModal() {
     executeTabSwitch('deelnemers');
 }
 
-function submitMoniCode() {
+async function submitMoniCode() {
     const input = document.getElementById('modalCodeInput');
     const modal = document.getElementById('codeModal');
+    const enteredCode = input.value;
 
-    if (input && input.value === '1234') {
-        if (modal) modal.classList.add('hidden');
-        executeTabSwitch('moni'); 
-    } else {
-        if (input) {
+    // Haal de database referentie op
+    const db = firebase.database();
+    const codeRef = db.ref('settings/moniCode');
+    
+    // Lees de waarde éénmalig uit de database
+    codeRef.once('value').then((snapshot) => {
+        const correctCode = snapshot.val();
+
+        // Vergelijk input met de database waarde (snapshot.val geeft een string of nummer)
+        if (enteredCode == correctCode) {
+            modal.classList.add('hidden');
+            input.value = ''; // Reset input veld
+            executeTabSwitch('moni'); 
+        } else {
+            // Foutmelding geven
             input.style.borderColor = '#ff4a4a';
             input.value = '';
-            input.placeholder = "Onjuiste code! Probeer opnieuw...";
+            input.placeholder = "Onjuiste code!";
             input.focus();
-
-            input.addEventListener('input', () => {
-                input.style.borderColor = '';
-                input.placeholder = "Wachtwoord...";
-            }, { once: true });
+            
+            // Reset de randkleur na even wachten
+            setTimeout(() => { input.style.borderColor = ''; }, 2000);
         }
-    }
+    }).catch((error) => {
+        console.error("Fout bij ophalen uit database: ", error);
+        alert("Er ging iets mis met de verbinding. Probeer het later opnieuw.");
+    });
 }
 
 
