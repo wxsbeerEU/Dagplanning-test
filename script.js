@@ -315,37 +315,32 @@ function loginTeam() {
     updateGameUI();
 }
 
-function submitAnswer() {
+async function submitAnswer() {
     const input = document.getElementById('rebus-answer-input');
-    if (!input || input.value.trim() === "") return;
+    const antwoord = input.value.toLowerCase().trim(); // Maak alles klein en verwijder spaties
+    
+    if (!antwoord) return;
 
-    const ingevoerdAntwoord = input.value.trim().toLowerCase();
+    const db = firebase.database();
+    // Vraag de database om het ingevoerde woord
+    const rebusRef = db.ref('rebus/' + antwoord);
 
-    if (rebusOplossingen[ingevoerdAntwoord] !== undefined) {
-        let teamData = alleTeams[huidigTeam] || { score: 0, opgelost: [] };
-        if (!teamData.opgelost) teamData.opgelost = [];
-
-        if (teamData.opgelost.includes(ingevoerdAntwoord)) {
-            alert("Je team heeft deze rebus al eens opgelost! Zoek snel naar een andere.");
+    rebusRef.once('value').then((snapshot) => {
+        if (snapshot.exists()) {
+            const punten = snapshot.val();
+            // Woord is gevonden!
+            alert("Goed zo! Je hebt " + punten + " punten verdiend.");
+            
+            // Hier komt je logica om de score toe te voegen aan het actieve team
+            // bijv: updateTeamScore(punten);
+            
+            input.value = ''; // Leeg het invoerveld
+        } else {
+            // Woord niet gevonden
+            alert("Helaas, dat is niet de juiste code.");
             input.value = '';
-            return;
         }
-
-        const verdiendePunten = rebusOplossingen[ingevoerdAntwoord];
-        const nieuweScore = teamData.score + verdiendePunten;
-        teamData.opgelost.push(ingevoerdAntwoord);
-
-        database.ref('teams/' + huidigTeam).update({
-            score: nieuweScore,
-            opgelost: teamData.opgelost
-        });
-
-        alert(`🎉 Super! +${verdiendePunten} punten voor je team!`);
-        input.value = '';
-    } else {
-        alert("❌ Helaas, dat antwoord is onjuist. Kijk nog eens goed naar de rebus!");
-        input.value = '';
-    }
+    });
 }
 
 function updateGameUI() {
