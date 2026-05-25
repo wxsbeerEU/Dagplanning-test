@@ -9,8 +9,7 @@ const firebaseConfig = {
   appId: "1:962032679607:web:df8a1689af235c61576b32"
 };
 
-// 2. Initialiseer Firebase (dit zorgt ervoor dat de verbinding wordt gemaakt)
-
+// 2. Initialiseer Firebase
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
@@ -168,7 +167,6 @@ setInterval(highlightCurrentTime, 30000);
 setInterval(updateCurrentTime, 1000);
 updateCurrentTime();
 
-// Schermwissel (voor interne subschermen van sub-menu's)
 function switchScreen(screenId) {
     document.querySelectorAll('.screen-section').forEach(screen => {
         screen.classList.remove('active-screen');
@@ -180,7 +178,6 @@ function switchScreen(screenId) {
     }
 }
 
-// Tabwissel hoofdknop actie
 function switchTab(targetTab) {
     if (targetTab === 'moni') {
         openCodeModal();
@@ -189,7 +186,6 @@ function switchTab(targetTab) {
     executeTabSwitch(targetTab);
 }
 
-// Uitvoeren van de tab-content filtering
 function executeTabSwitch(targetTab) {
     const tabDeelnemers = document.getElementById('tab-deelnemers');
     const tabGame = document.getElementById('tab-game');
@@ -204,8 +200,6 @@ function executeTabSwitch(targetTab) {
         activeTabEl.classList.add('active');
     }
 
-    // Alleen terugzetten naar main-menu als we NIET naar de game gaan, 
-    // want de game heeft geen aparte sub-knop meer nodig!
     if (targetTab !== 'game') {
         switchScreen('main-menu');
     }
@@ -248,27 +242,21 @@ async function submitMoniCode() {
     const modal = document.getElementById('codeModal');
     const enteredCode = input.value;
 
-    // Haal de database referentie op
     const db = firebase.database();
     const codeRef = db.ref('settings/moniCode');
     
-    // Lees de waarde éénmalig uit de database
     codeRef.once('value').then((snapshot) => {
         const correctCode = snapshot.val();
 
-        // Vergelijk input met de database waarde (snapshot.val geeft een string of nummer)
         if (enteredCode == correctCode) {
             modal.classList.add('hidden');
-            input.value = ''; // Reset input veld
+            input.value = ''; 
             executeTabSwitch('moni'); 
         } else {
-            // Foutmelding geven
             input.style.borderColor = '#ff4a4a';
             input.value = '';
             input.placeholder = "Onjuiste code!";
             input.focus();
-            
-            // Reset de randkleur na even wachten
             setTimeout(() => { input.style.borderColor = ''; }, 2000);
         }
     }).catch((error) => {
@@ -276,11 +264,6 @@ async function submitMoniCode() {
         alert("Er ging iets mis met de verbinding. Probeer het later opnieuw.");
     });
 }
-
-
-// ================= REALTIME GAME LOGICA VIA FIREBASE =================
-
-
 
 let alleTeams = {};
 let huidigTeam = localStorage.getItem('huidigKampTeam') || null;
@@ -311,30 +294,47 @@ function loginTeam() {
 
 async function submitAnswer() {
     const input = document.getElementById('rebus-answer-input');
-    const antwoord = input.value.toLowerCase().trim(); // Maak alles klein en verwijder spaties
+    const antwoord = input.value.toLowerCase().trim();
     
     if (!antwoord) return;
+    if (!huidigTeam) return alert("Log eerst in met een teamnaam!");
 
     const db = firebase.database();
-    // Vraag de database om het ingevoerde woord
-    const rebusRef = db.ref('rebus/' + antwoord);
+    
+    const rebusSnapshot = await db.ref('rebus/' + antwoord).once('value');
+    
+    if (!rebusSnapshot.exists()) {
+        alert("Helaas, dat is niet de juiste code.");
+        input.value = '';
+        return;
+    }
 
-    rebusRef.once('value').then((snapshot) => {
-        if (snapshot.exists()) {
-            const punten = snapshot.val();
-            // Woord is gevonden!
-            alert("Goed zo! Je hebt " + punten + " punten verdiend.");
-            
-            // Hier komt je logica om de score toe te voegen aan het actieve team
-            // bijv: updateTeamScore(punten);
-            
-            input.value = ''; // Leeg het invoerveld
-        } else {
-            // Woord niet gevonden
-            alert("Helaas, dat is niet de juiste code.");
-            input.value = '';
-        }
-    });
+    const punten = rebusSnapshot.val();
+    
+    const teamRef = db.ref('teams/' + huidigTeam);
+    const teamSnapshot = await teamRef.once('value');
+    const teamData = teamSnapshot.val();
+    
+    if (teamData.opgelost && teamData.opgelost.includes(antwoord)) {
+        alert("Dit team heeft deze code al ingevoerd!");
+        input.value = '';
+        return;
+    }
+
+    const nieuweScore = (teamData.score || 0) + punten;
+    const nieuweOpgelostLijst = teamData.opgelost ? [...teamData.opgelost, antwoord] : [antwoord];
+
+    try {
+        await teamRef.update({
+            score: nieuweScore,
+            opgelost: nieuweOpgelostLijst
+        });
+        alert("Goed zo! Je hebt " + punten + " punten verdiend.");
+        input.value = '';
+    } catch (error) {
+        console.error("Fout bij updaten score:", error);
+        alert("Er ging iets mis bij het opslaan van je punten.");
+    }
 }
 
 function updateGameUI() {
@@ -380,10 +380,7 @@ if(huidigTeam) {
     updateGameUI();
 }
 
-// Zorg dat de app bij het inladen direct opstart op de Deelnemers tab
 executeTabSwitch('game');
-
-// ================= CHAT / SUGGESTIE LOGICA (FIREBASE) =================
 
 function toggleChatPopup() {
     const popup = document.getElementById('chat-popup');
