@@ -11,351 +11,316 @@
 
     <div class="app-container">
 
-        <!-- Header -->
         <header class="brand-header">
             <div class="logo-wrapper">
                 <img src="topvakantie-logo2.png" alt="Topvakantie Logo" class="logo-img">
             </div>
         </header>
 
-        <!-- Main Menu Section -->
         <section id="main-menu" class="screen-section active-screen">
             <div class="welcome-card">
                 <p>Welkom bij de site voor de kampen van week 5!</p>
             </div>
 
-            <!-- Tab Navigation (Semantic & Accessible) -->
-            <nav class="tab-container" role="tablist" aria-label="Hoofdmenu tabbladen">
-                <button id="tab-game" class="tab-btn active" role="tab" aria-selected="true" aria-controls="content-game" data-tab="game">🎮 Game</button>
-                <button id="tab-deelnemers" class="tab-btn" role="tab" aria-selected="false" aria-controls="content-deelnemers" data-tab="deelnemers">🎒 Deelnemers</button>
-                <button id="tab-moni" class="tab-btn" role="tab" aria-selected="false" aria-controls="content-moni" data-tab="moni">👨‍👩‍👧‍👦 Monitors</button>
-            </nav>
+            <div class="tab-container">
+                <button id="tab-game" class="tab-btn active" onclick="switchTab('game')">🎮 Game</button>
+                <button id="tab-deelnemers" class="tab-btn" onclick="switchTab('deelnemers')">🎒 Deelnemers</button>
+                <button id="tab-moni" class="tab-btn" onclick="switchTab('moni')">👨‍👩‍👧‍👦 Monitors</button>
+            </div>
 
-            <!-- Tab Content: Deelnemers -->
-            <div id="content-deelnemers" class="menu-grid tab-content-block hidden-tab-content" role="tabpanel" aria-labelledby="tab-deelnemers">
-                <button class="cyber-btn" data-target-screen="planning-screen">
-                    <span class="btn-icon" aria-hidden="true">📅</span>
+            <div id="content-deelnemers" class="menu-grid tab-content-block">
+                <button class="cyber-btn" onclick="switchScreen('planning-screen')">
+                    <span class="btn-icon">📅</span>
                     <span class="btn-text">Dagplanning</span>
                 </button>
 
-                <a href="https://open.spotify.com/playlist/64AVZMx8I6swct9ETmQM1L?si=nF55G46VQauFSOd8IA7PRw" target="_blank" rel="noopener noreferrer" class="cyber-btn-link">
-                    <button class="cyber-btn">
-                        <span class="btn-icon" aria-hidden="true">🎵</span>
-                        <span class="btn-text">Kamphits (Spotify)</span>
-                    </button>
-                </a>
+                <button class="cyber-btn" onclick="window.open('https://open.spotify.com/playlist/64AVZMx8I6swct9ETmQM1L?si=nF55G46VQauFSOd8IA7PRw', '_blank')">
+                    <span class="btn-icon">🎵</span>
+                    <span class="btn-text">Kamphits (Spotify)</span>
+                </button>
 
-                <button class="cyber-btn" data-target-screen="animatoren-screen">
-                    <span class="btn-icon" aria-hidden="true">😎</span>
+                <button class="cyber-btn" onclick="switchScreen('animatoren-screen')">
+                    <span class="btn-icon">😎</span>
                     <span class="btn-text">Wie zijn de animatoren?</span>
                 </button>
 
-                <button class="cyber-btn" data-target-screen="locatie-screen">
-                    <span class="btn-icon" aria-hidden="true">📍</span>
+                <button class="cyber-btn" onclick="switchScreen('locatie-screen')">
+                    <span class="btn-icon">📍</span>
                     <span class="btn-text">Waar zijn we?</span>
                 </button>
 
-                <button class="cyber-btn" data-target-screen="techkamp-screen">
-                    <span class="btn-icon" aria-hidden="true">🤖</span>
+                <button class="cyber-btn" onclick="switchScreen('techkamp-screen')">
+                    <span class="btn-icon">🤖</span>
                     <span class="btn-text">Think Tech Kamp</span>
                 </button>
             </div>
 
-            <!-- Tab Content: Game (Default Active) -->
-            <div id="content-game" class="tab-content-block" role="tabpanel" aria-labelledby="tab-game">
-                <div class="welcome-card card-spacer">
+            <div id="content-game" class="tab-content-block hidden-tab-content">
+                <div class="welcome-card" style="margin-bottom: 20px;">
                     <h2>Kamp Game</h2>
                     <p>Kraak de codes op het terrein!</p>
                 </div>
 
-                <!-- Game Login View -->
                 <div id="game-login-view" class="game-view">
                     <div class="rebus-card">
                         <h3>Meld je team aan:</h3>
-                        <form id="team-login-form" onsubmit="return false;">
-                            <input type="text" id="team-name-input" class="cyber-input" placeholder="Vul je teamnaam in..." autocomplete="off" required>
-                            <button type="submit" id="btn-login-team" class="action-btn">Start / Verder Spelen</button>
-                        </form>
+                        <input type="text" id="team-name-input" class="cyber-input" placeholder="Vul je teamnaam in..." autocomplete="off">
+                        <button class="action-btn" onclick="loginTeam()">Start / Verder Spelen</button>
                     </div>
                 </div>
 
-                <!-- Game Play View -->
                 <div id="game-play-view" class="game-view hidden">
                     <div class="team-status-bar">
                         <span id="active-team-display">Team: ...</span>
-                        <span id="active-score-display" class="accent-text">0 pts</span>
+                        <span id="active-score-display" style="color: var(--accent-color);">0 pts</span>
                     </div>
 
                     <div class="rebus-card">
-                        <h3>Rebus Oplossing Invoeren</h3>
+                        <h3>Rebus Oplösung Invoeren</h3>
                         <p class="rebus-hint">Code of woord gevonden op het terrein? Typ het hieronder:</p>
-                        <form id="rebus-form" onsubmit="return false;">
-                            <div class="rebus-content">
-                                <input type="text" id="rebus-answer-input" class="cyber-input" placeholder="Typ oplossing hier..." autocomplete="off" required>
-                            </div>
-                            <button type="submit" id="btn-submit-answer" class="action-btn">Controleer Oplossing</button>
-                        </form>
+                        <div class="rebus-content">
+                            <input type="text" id="rebus-answer-input" class="cyber-input" placeholder="Typ oplossing hier..." autocomplete="off" onkeydown="if(event.key === 'Enter') submitAnswer()">
+                        </div>
+                        <button class="action-btn" onclick="submitAnswer()">Controleer Oplossing</button>
                     </div>
                 </div>
 
-                <!-- Leaderboard -->
-                <div class="leaderboard-box">
+                <div class="leaderboard-box" style="margin-top: 20px;">
                     <div class="leaderboard-header">
                         <span>🏆 Live Scorebord</span>
-                        <button id="btn-refresh-leaderboard" class="refresh-btn">Vernieuwen</button>
+                        <button class="refresh-btn" onclick="renderLeaderboard()">Vernieuwen</button>
                     </div>
                     <div id="leaderboard-rows">
-                        <div class="leaderboard-row empty-state">Nog geen teams actief...</div>
+                        <div class="leaderboard-row" style="font-style: italic; opacity: 0.6; justify-content: center;">Nog geen teams actief...</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Tab Content: Monitors -->
-            <div id="content-moni" class="menu-grid tab-content-block hidden-tab-content" role="tabpanel" aria-labelledby="tab-moni">
-                <button class="cyber-btn" data-target-screen="planning-screen">
-                    <span class="btn-icon" aria-hidden="true">📅</span>
+            <div id="content-moni" class="menu-grid tab-content-block hidden-tab-content">
+                <button class="cyber-btn" onclick="switchScreen('planning-screen')">
+                    <span class="btn-icon">📅</span>
                     <span class="btn-text">Dagplanning</span>
                 </button>
                 
-                <button class="cyber-btn" data-target-screen="regels-screen">
-                    <span class="btn-icon" aria-hidden="true">📜</span>
+                <button class="cyber-btn" onclick="switchScreen('regels-screen')">
+                    <span class="btn-icon">📜</span>
                     <span class="btn-text">Regels van de week</span>
                 </button>
 
-                <button class="cyber-btn" data-target-screen="fotos-screen">
-                    <span class="btn-icon" aria-hidden="true">📸</span>
+                <button class="cyber-btn" onclick="switchScreen('fotos-screen')">
+                    <span class="btn-icon">📸</span>
                     <span class="btn-text">Fotoblog / Album</span>
                 </button>
 
-                <button class="cyber-btn" data-target-screen="locatie-screen">
-                    <span class="btn-icon" aria-hidden="true">📍</span>
+                <button class="cyber-btn" onclick="switchScreen('locatie-screen')">
+                    <span class="btn-icon">📍</span>
                     <span class="btn-text">Waar zijn we?</span>
                 </button>
             </div>
         </section>
 
-        <!-- Screen: Dagplanning -->
         <section id="planning-screen" class="screen-section">
-            <button class="back-btn" data-target-screen="main-menu">← Terug naar hoofdscherm</button>
+            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar hoofdscherm</button>
 
             <div class="welcome-card">
                 <h2>Dagplanning</h2>
             </div>
 
-            <div class="live-card text-center">
-                <div id="currentTime" class="time-display">00:00:00</div>
-                <div class="current-status-label">Nu bezig met</div>
-                <div id="currentActivity" class="activity-display">Geen activiteit</div>
+            <div class="live-card" style="background: var(--card-bg); padding: 20px; border-radius: 24px; text-align: center;">
+                <div id="currentTime" style="font-size: 1.5rem; font-weight: bold; margin-bottom: 10px;">00:00:00</div>
+                <div class="current-status-label" style="color: var(--text-muted);">Nu bezig met</div>
+                <div id="currentActivity" style="font-size: 1.2rem; font-weight: bold; color: var(--accent-color); margin: 5px 0;">Geen activiteit</div>
                 <div class="current-time-range">
                     <span id="currentActivityFrom">00:00</span> - <span id="currentActivityTo">00:00</span>
                 </div>
             </div>
 
             <div class="schedule-container">
-                <table class="schedule-table" id="schedule-table">
+                <table class="schedule-table" id="schedule-table" style="width: 100%; color: var(--text-main);">
                     <tbody></tbody>
                 </table>
             </div>
         </section>
 
-        <!-- Screen: Animatoren -->
         <section id="animatoren-screen" class="screen-section">
-            <button class="back-btn" data-target-screen="main-menu">← Terug naar hoofdscherm</button>
+            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar hoofdscherm</button>
 
             <div class="animatoren-container">
-                <!-- Pascal -->
                 <div class="animator-card">
                     <div class="animator-photo-wrapper">
-                        <img src="topvakantie-logo.png" alt="Pascal Ysebaert" class="animator-photo">
+                        <img src="topvakantie-logo.png" alt="Animator" class="animator-photo">
                     </div>
                     <div class="animator-info">
                         <div class="info-row"><span class="info-label">Naam:</span> <span class="info-value">Pascal Ysebaert</span></div>
                         <div class="info-row"><span class="info-label">Functie:</span> <span class="info-value">Centrumleider</span></div>
-                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">Master Organisator & Koffie-connaisseur</span></div>
+                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">---xxx---</span></div>
                     </div>
                 </div>
-                <!-- Ian -->
                 <div class="animator-card">
                     <div class="animator-photo-wrapper">
-                        <img src="topvakantie-logo.png" alt="Ian Vanoppen" class="animator-photo">
+                        <img src="topvakantie-logo.png" alt="Animator" class="animator-photo">
                     </div>
                     <div class="animator-info">
                         <div class="info-row"><span class="info-label">Naam:</span> <span class="info-value">Ian Vanoppen</span></div>
                         <div class="info-row"><span class="info-label">Functie:</span> <span class="info-value">Instructeur Draken & Kerkers</span></div>
-                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">Nat 20 Dice Roller & Wereldbouwer</span></div>
+                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">---xxx---</span></div>
                     </div>
                 </div>
-                <!-- Yari -->
                 <div class="animator-card">
                     <div class="animator-photo-wrapper">
-                        <img src="topvakantie-logo.png" alt="Yari Van der Slaghmolen" class="animator-photo">
+                        <img src="topvakantie-logo.png" alt="Animator" class="animator-photo">
                     </div>
                     <div class="animator-info">
                         <div class="info-row"><span class="info-label">Naam:</span> <span class="info-value">Yari Van der Slaghmolen</span></div>
                         <div class="info-row"><span class="info-label">Functie:</span> <span class="info-value">Instructeur Draken & Kerkers</span></div>
-                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">Dungeon Master Extraordinaire</span></div>
+                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">---xxx---</span></div>
                     </div>
                 </div>
-                <!-- Daan -->
                 <div class="animator-card">
                     <div class="animator-photo-wrapper">
-                        <img src="topvakantie-logo.png" alt="Daan Bruyenne" class="animator-photo">
+                        <img src="topvakantie-logo.png" alt="Animator" class="animator-photo">
                     </div>
                     <div class="animator-info">
                         <div class="info-row"><span class="info-label">Naam:</span> <span class="info-value">Daan Bruyenne</span></div>
                         <div class="info-row"><span class="info-label">Functie:</span> <span class="info-value">Animator</span></div>
-                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">Sfeermaker & Nachtspelkoning</span></div>
+                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">---xxx---</span></div>
                     </div>
                 </div>
-                <!-- Gloria -->
                 <div class="animator-card">
                     <div class="animator-photo-wrapper">
-                        <img src="topvakantie-logo.png" alt="Gloria Ide" class="animator-photo">
+                        <img src="topvakantie-logo.png" alt="Animator" class="animator-photo">
                     </div>
                     <div class="animator-info">
                         <div class="info-row"><span class="info-label">Naam:</span> <span class="info-value">Gloria Ide</span></div>
                         <div class="info-row"><span class="info-label">Functie:</span> <span class="info-value">Animator</span></div>
-                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">Creatieve Duizendpoot & TikTok-expert</span></div>
+                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">---xxx---</span></div>
                     </div>
                 </div>
-                <!-- Axel -->
                 <div class="animator-card">
                     <div class="animator-photo-wrapper">
-                        <img src="topvakantie-logo.png" alt="Axel Vandervelde" class="animator-photo">
+                        <img src="topvakantie-logo.png" alt="Animator" class="animator-photo">
                     </div>
                     <div class="animator-info">
                         <div class="info-row"><span class="info-label">Naam:</span> <span class="info-value">Axel Vandervelde</span></div>
                         <div class="info-row"><span class="info-label">Functie:</span> <span class="info-value">Animator</span></div>
-                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">Sport & Spelfanaat</span></div>
+                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">---xxx---</span></div>
                     </div>
                 </div>
-                <!-- Sarah -->
                 <div class="animator-card">
                     <div class="animator-photo-wrapper">
-                        <img src="topvakantie-logo.png" alt="Sarah Roes" class="animator-photo">
+                        <img src="topvakantie-logo.png" alt="Animator" class="animator-photo">
                     </div>
                     <div class="animator-info">
                         <div class="info-row"><span class="info-label">Naam:</span> <span class="info-value">Sarah Roes</span></div>
                         <div class="info-row"><span class="info-label">Functie:</span> <span class="info-value">Animator</span></div>
-                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">Enthousiasme-bom & Toneelster</span></div>
+                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">---xxx---</span></div>
                     </div>
                 </div>
-                <!-- Ruben -->
                 <div class="animator-card">
                     <div class="animator-photo-wrapper">
-                        <img src="topvakantie-logo.png" alt="Ruben Maes" class="animator-photo">
+                        <img src="topvakantie-logo.png" alt="Animator" class="animator-photo">
                     </div>
                     <div class="animator-info">
                         <div class="info-row"><span class="info-label">Naam:</span> <span class="info-value">Ruben Maes</span></div>
                         <div class="info-row"><span class="info-label">Functie:</span> <span class="info-value">Instructeur Gaming</span></div>
-                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">Pro-Gamer & Latency Killer</span></div>
+                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">---xxx---</span></div>
                     </div>
                 </div>
-                <!-- Farah -->
                 <div class="animator-card">
                     <div class="animator-photo-wrapper">
-                        <img src="topvakantie-logo.png" alt="Farah Bombay" class="animator-photo">
+                        <img src="topvakantie-logo.png" alt="Animator" class="animator-photo">
                     </div>
                     <div class="animator-info">
                         <div class="info-row"><span class="info-label">Naam:</span> <span class="info-value">Farah Bombay</span></div>
                         <div class="info-row"><span class="info-label">Functie:</span> <span class="info-value">Animator Hotel Noordzee</span></div>
-                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">Hospitality Expert & Glimlachgarantie</span></div>
+                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">---xxx---</span></div>
                     </div>
                 </div>
-                <!-- Emy -->
                 <div class="animator-card">
                     <div class="animator-photo-wrapper">
-                        <img src="topvakantie-logo.png" alt="Emy Haesaert" class="animator-photo">
+                        <img src="topvakantie-logo.png" alt="Animator" class="animator-photo">
                     </div>
                     <div class="animator-info">
                         <div class="info-row"><span class="info-label">Naam:</span> <span class="info-value">Emy Haesaert</span></div>
                         <div class="info-row"><span class="info-label">Functie:</span> <span class="info-value">Animator Hotel Noordzee</span></div>
-                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">Hotel Sfeerbeheerder</span></div>
+                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">---xxx---</span></div>
                     </div>
                 </div>
-                <!-- Ilse -->
                 <div class="animator-card">
                     <div class="animator-photo-wrapper">
-                        <img src="topvakantie-logo.png" alt="Ilse Bogaert" class="animator-photo">
+                        <img src="topvakantie-logo.png" alt="Animator" class="animator-photo">
                     </div>
                     <div class="animator-info">
                         <div class="info-row"><span class="info-label">Naam:</span> <span class="info-value">Ilse Bogaert</span></div>
                         <div class="info-row"><span class="info-label">Functie:</span> <span class="info-value">Instructeur Hotel</span></div>
-                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">Etiquette & Service Master</span></div>
+                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">---xxx---</span></div>
                     </div>
                 </div>
-                <!-- Christine -->
                 <div class="animator-card">
                     <div class="animator-photo-wrapper">
-                        <img src="topvakantie-logo.png" alt="Christine Wallez" class="animator-photo">
+                        <img src="topvakantie-logo.png" alt="Animator" class="animator-photo">
                     </div>
                     <div class="animator-info">
                         <div class="info-row"><span class="info-label">Naam:</span> <span class="info-value">Christine Wallez</span></div>
                         <div class="info-row"><span class="info-label">Functie:</span> <span class="info-value">Instructeur Koken</span></div>
-                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">Sterrenchef in spe & Smaaksensatie</span></div>
+                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">---xxx---</span></div>
                     </div>
                 </div>
-                <!-- Jana -->
                 <div class="animator-card">
                     <div class="animator-photo-wrapper">
-                        <img src="topvakantie-logo.png" alt="Jana Deschodt" class="animator-photo">
+                        <img src="topvakantie-logo.png" alt="Animator" class="animator-photo">
                     </div>
                     <div class="animator-info">
                         <div class="info-row"><span class="info-label">Naam:</span> <span class="info-value">Jana Deschodt</span></div>
                         <div class="info-row"><span class="info-label">Functie:</span> <span class="info-value">Zorgverlener</span></div>
-                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">EHBO-held & Luisterend Oor</span></div>
+                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">---xxx---</span></div>
                     </div>
                 </div>
-                <!-- Nino -->
                 <div class="animator-card">
                     <div class="animator-photo-wrapper">
-                        <img src="topvakantie-logo.png" alt="Nino Wullaert" class="animator-photo">
+                        <img src="topvakantie-logo.png" alt="Animator" class="animator-photo">
                     </div>
                     <div class="animator-info">
                         <div class="info-row"><span class="info-label">Naam:</span> <span class="info-value">Nino Wullaert</span></div>
                         <div class="info-row"><span class="info-label">Functie:</span> <span class="info-value">Instructeur Think Tech</span></div>
-                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">Code-Fluisteraar & Soldeer-Koning</span></div>
+                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">---xxx---</span></div>
                     </div>
                 </div>
-                <!-- Tim -->
                 <div class="animator-card">
                     <div class="animator-photo-wrapper">
-                        <img src="topvakantie-logo.png" alt="Tim Ramon" class="animator-photo">
+                        <img src="topvakantie-logo.png" alt="Animator" class="animator-photo">
                     </div>
                     <div class="animator-info">
                         <div class="info-row"><span class="info-label">Naam:</span> <span class="info-value">Tim Ramon</span></div>
                         <div class="info-row"><span class="info-label">Functie:</span> <span class="info-value">Animator</span></div>
-                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">Gitarenkoning & Kampvuur-legende</span></div>
+                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">---xxx---</span></div>
                     </div>
                 </div>
-                <!-- Marie -->
                 <div class="animator-card">
                     <div class="animator-photo-wrapper">
-                        <img src="topvakantie-logo.png" alt="Marie Gevaert" class="animator-photo">
+                        <img src="topvakantie-logo.png" alt="Animator" class="animator-photo">
                     </div>
                     <div class="animator-info">
                         <div class="info-row"><span class="info-label">Naam:</span> <span class="info-value">Marie Gevaert</span></div>
                         <div class="info-row"><span class="info-label">Functie:</span> <span class="info-value">Animator</span></div>
-                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">Schmink-kampioen & Knutselkoningin</span></div>
+                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">---xxx---</span></div>
                     </div>
                 </div>
-                <!-- Yaro -->
                 <div class="animator-card">
                     <div class="animator-photo-wrapper">
-                        <img src="topvakantie-logo.png" alt="Yaro Huybrechts" class="animator-photo">
+                        <img src="topvakantie-logo.png" alt="Animator" class="animator-photo">
                     </div>
                     <div class="animator-info">
                         <div class="info-row"><span class="info-label">Naam:</span> <span class="info-value">Yaro Huybrechts</span></div>
                         <div class="info-row"><span class="info-label">Functie:</span> <span class="info-value">Animator</span></div>
-                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">Bosspel-strateeg & Tactisch Brein</span></div>
+                        <div class="info-row"><span class="info-label">Skill:</span> <span class="info-value">---xxx---</span></div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Screen: Regels -->
         <section id="regels-screen" class="screen-section">
-            <button class="back-btn" data-target-screen="main-menu">← Terug naar hoofdscherm</button>
+            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar hoofdscherm</button>
 
             <div class="regels-container">
                 <div class="regel-card">
@@ -364,59 +329,55 @@
                 </div>
                  <div class="regel-card">
                     <div class="regel-number">02</div>
-                    <div class="regel-text">Hotelschool Ter Duinen is onze thuis; houd de kamers en infrastructuur kraaknet.</div>
+                    <div class="regel-text">Regel 2 - Placeholder</div>
                 </div>
                 <div class="regel-card">
                     <div class="regel-number">03</div>
-                    <div class="regel-text">Fair play tijdens het Kamp Game en de gaming-sessies. Geen cheats!</div>
+                    <div class="regel-text">Regel 3 - Placeholder</div>
                 </div>
                 <div class="regel-card">
                     <div class="regel-number">04</div>
-                    <div class="regel-text">Respecteer elkaars privacy en materialen. Vragen is gratis.</div>
+                    <div class="regel-text">Regel 4 - Placeholder</div>
                 </div>
                 <div class="regel-card">
                     <div class="regel-number">05</div>
-                    <div class="regel-text">Smartphone-vrije zones tijdens de groepsactiviteiten – beleef het kamp live!</div>
+                    <div class="regel-text">Regel 5 - Placeholder</div>
                 </div>
             </div>
         </section>
 
-        <!-- Screen: Fotoblog -->
         <section id="fotos-screen" class="screen-section">
-            <button class="back-btn" data-target-screen="main-menu">← Terug naar hoofdscherm</button>
+            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar hoofdscherm</button>
 
-            <div class="welcome-card card-spacer">
+            <div class="welcome-card">
                 <h2>📸 Fotoblog van de week</h2>
                 <p>Hieronder vind je de foto's van Week 5 in Koksijde. Klik op een map van de gewenste dag om de foto's te bekijken.</p>
             </div>
 
             <div class="maps-container">
-                <!-- Let op: Vervang HIER_JE_DRIVE_FOLDER_ID met de echte ID in je JS of hier -->
                 <iframe 
                     src="https://drive.google.com/embeddedfolderview?id=HIER_JE_DRIVE_FOLDER_ID#grid" 
-                    class="google-maps-iframe iframe-photo" 
-                    allowfullscreen 
-                    loading="lazy"
-                    title="Google Drive Fotoblog Map">
+                    class="google-maps-iframe" 
+                    style="height: 500px; border: none;"
+                    allowfullscreen="" 
+                    loading="lazy">
                 </iframe>
             </div>
         </section>
 
-        <!-- Screen: Locatie -->
         <section id="locatie-screen" class="screen-section">
-            <button class="back-btn" data-target-screen="main-menu">← Terug naar hoofdscherm</button>
+            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar hoofdscherm</button>
 
             <div class="maps-container">
                 <iframe 
                     class="google-maps-iframe"
                     src="https://maps.google.com/maps?q=Hotelschool%20Ter%20Duinen,%20Houtsaegerlaan%2040,%208670%20Koksijde&t=&z=15&ie=UTF8&iwloc=&output=embed" 
-                    allowfullscreen 
-                    loading="lazy"
-                    title="Locatie Hotelschool Ter Duinen op Google Maps">
+                    allowfullscreen="" 
+                    loading="lazy">
                 </iframe>
 
                 <div class="address-card">
-                    <span class="address-icon" aria-hidden="true">🏢</span>
+                    <span class="address-icon">🏢</span>
                     <div class="address-text">
                         <strong>Hotelschool Ter Duinen</strong><br>
                         Houtsaegerlaan 40, 8670 Koksijde
@@ -425,11 +386,10 @@
             </div>
         </section>
 
-        <!-- Screen: Think Tech -->
         <section id="techkamp-screen" class="screen-section">
-            <button class="back-btn" data-target-screen="main-menu">← Terug naar hoofdscherm</button>
+            <button class="back-btn" onclick="switchScreen('main-menu')">← Terug naar hoofdscherm</button>
 
-            <div class="welcome-card card-spacer">
+            <div class="welcome-card">
                 <h2>🤖 Think Tech Kamp</h2>
                 <p>Welkom bij de toekomst! Hier vind je alles over de projecten van deze week.</p>
              </div>
@@ -437,59 +397,46 @@
             <div class="menu-grid">
                 <div class="regel-card">
                     <div class="regel-number">01</div>
-                    <div class="regel-text">
-                        <strong>Project 1: Robotica Basics</strong>
-                        <p class="project-desc">Bouw en programmeer je eigen rijdende robotbot.</p>
-                    </div>
+                    <div class="regel-text">Project 1: Robotica Basics</div>
                 </div>
                 <div class="regel-card">
                     <div class="regel-number">02</div>
-                    <div class="regel-text">
-                        <strong>Project 2: AI & Codering</strong>
-                        <p class="project-desc">Train een neuraal netwerk om handgebaren te herkennen.</p>
-                    </div>
+                    <div class="regel-text">Project 2: AI & Codering</div>
                 </div>
             </div>
         </section>
 
-        <!-- Modal: Monitor Toegang -->
-        <div id="codeModal" class="custom-modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div id="codeModal" class="custom-modal hidden">
             <div class="modal-content">
-                <h3 id="modal-title">👨‍👩‍👧‍👦 Monitor Toegang</h3>
+                <h3>👨‍👩‍👧‍👦 Monitor Toegang</h3>
                 <p>Voer de toegangscode voor Monitors in:</p>
-                <form id="moni-code-form" onsubmit="return false;">
-                    <input type="password" id="modalCodeInput" class="cyber-input" placeholder="Wachtwoord..." autocomplete="off" required>
-                    <div class="modal-buttons">
-                        <button type="button" id="btn-close-modal" class="modal-btn cancel-btn">Annuleren</button>
-                        <button type="submit" id="btn-submit-moni" class="modal-btn confirm-btn">Verifieer</button>
-                    </div>
-                </form>
+                <input type="password" id="modalCodeInput" class="cyber-input" placeholder="Wachtwoord..." autocomplete="off" onkeydown="if(event.key === 'Enter') submitMoniCode()">
+                <div class="modal-buttons">
+                    <button class="modal-btn cancel-btn" onclick="closeCodeModal()">Annuleren</button>
+                    <button class="modal-btn confirm-btn" onclick="submitMoniCode()">Verifieer</button>
+                </div>
             </div>
         </div>
 
     </div>
 
-    <!-- Floating Action Button -->
-    <button id="chat-fab" aria-label="Open ideeënbus">💡</button>
+    <button id="chat-fab" onclick="toggleChatPopup()">💡</button>
 
-    <!-- Suggestion Chat Popup -->
-    <div id="chat-popup" class="hidden" role="dialog" aria-label="Ideeënbus">
+    <div id="chat-popup" class="hidden">
         <div class="chat-header">
             <h4>Deel je idee of melding! 🎒</h4>
-            <button id="btn-close-chat" class="chat-close" aria-label="Sluit ideeënbus">×</button>
+            <button class="chat-close" onclick="toggleChatPopup()">×</button>
         </div>
         <div class="chat-body">
             <p>Heb je een leuk idee voor een spel, een opmerking of wil je iets meedelen aan de moni's? Typ het hier!</p>
-            <textarea id="chat-message-input" placeholder="Typ hier je bericht of idee..." required></textarea>
-            <button id="btn-send-suggestion" class="chat-send-btn">Verstuur Idee</button>
+            <textarea id="chat-message-input" placeholder="Typ hier je bericht of idee..."></textarea>
+            <button class="chat-send-btn" onclick="sendSuggestion()">Verstuur Idee</button>
         </div>
     </div>
 
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
-    <!-- Custom App Script -->
     <script src="script.js?v=6"></script>
 </body>
 </html>
