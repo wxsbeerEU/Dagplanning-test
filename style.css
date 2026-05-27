@@ -1,13 +1,48 @@
 :root {
+    /* Base Colors */
     --bg-color: #0b0f19; /* Dieper donkerblauw voor meer cyber-contrast */
     --card-bg: #1e293b;
+    
+    /* Accents */
     --accent-color: #38bdf8;
     --accent-gradient: linear-gradient(135deg, #38bdf8, #0ea5e9);
-    --neon-pink: #ff0055; /* Extra cyber accentkleur */
+    --neon-pink: #ff0055; 
+    --cyber-glow: 0 0 15px rgba(56, 189, 248, 0.4);
+    --highlight-bg: rgba(56, 189, 248, 0.08);
+
+    /* Text */
     --text-main: #f8fafc;
     --text-muted: #94a3b8;
-    --highlight-bg: rgba(56, 189, 248, 0.08);
-    --cyber-glow: 0 0 15px rgba(56, 189, 248, 0.4);
+
+    /* Functional Colors (Nieuw toegevoegd voor overzicht) */
+    --warning-color: #f59e0b;
+    --warning-glow: #ff9800;
+    --success-color: #22c55e;
+    --danger-color: #ef4444;
+    --chat-primary: #007bff;
+    --chat-secondary: #0056b3;
+    --chat-bg: #1e1e2e;
+}
+
+/* --- GLOBALE RESET & SCROLLBAR --- */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* Custom Cyber Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-color);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--card-bg);
+    border-radius: 10px;
+    border: 1px solid rgba(56, 189, 248, 0.2);
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-color);
 }
 
 body {
@@ -20,7 +55,6 @@ body {
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
-    box-sizing: border-box;
 }
 
 .app-container {
@@ -31,22 +65,21 @@ body {
     gap: 20px;
 }
 
-/* --- LOGO HEADER STYLING (VOLLEDIGE BREEDTE) --- */
+/* --- LOGO HEADER STYLING --- */
 .brand-header {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 5px 0 10px 0; /* Iets minder witruimte aan de bovenkant */
+    padding: 5px 0 10px 0;
     width: 100%;
 }
 
 .logo-wrapper {
     position: relative;
     display: block;
-    width: 100%; /* Zorgt dat de wrapper de volledige breedte pakt */
+    width: 100%;
 }
 
-/* Subtiele gloed achter het logo */
 .logo-wrapper::after {
     content: '';
     position: absolute;
@@ -62,18 +95,13 @@ body {
 }
 
 .logo-img {
-    width: 100%; /* Vult nu exact de volledige breedte van de balken */
-    height: auto; /* Behoudt automatisch de juiste verhoudingen */
+    width: 100%;
+    height: auto;
     display: block;
     object-fit: contain;
-
-    /* Geeft het logo zelf een lichte cyber-achtige drop shadow */
     filter: drop-shadow(0 2px 8px rgba(56, 189, 248, 0.3));
-
-    /* --- GECORRIGEERD: Masker-syntaxis hersteld (intersect werkt niet direct op meerdere gradients zonder aparte mask-layers) --- */
     -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
     mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
-    
     -webkit-mask-composite: source-in;
     mask-composite: intersect;
 }
@@ -84,7 +112,7 @@ body {
     border-radius: 24px;
     padding: 24px;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 0 20px rgba(56, 189, 248, 0.03);
-    border: 1px solid rgba(56, 189, 248, 0.1); /* Lichte neon border */
+    border: 1px solid rgba(56, 189, 248, 0.1);
     text-align: center;
     position: relative;
     overflow: hidden;
@@ -102,7 +130,7 @@ body {
     font-size: 2.7rem;
     font-weight: 800;
     letter-spacing: 1px;
-    font-family: monospace; /* Monospace past perfect bij de cyber-vibe */
+    font-family: monospace;
     background: var(--accent-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -113,7 +141,7 @@ body {
 .current-status-label {
     font-size: 0.85rem;
     text-transform: uppercase;
-    letter-spacing: 2px; /* Iets wijder voor sci-fi look */
+    letter-spacing: 2px;
     color: var(--text-muted);
     margin-bottom: 4px;
 }
@@ -149,7 +177,7 @@ body {
 }
 
 .activity-row {
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.4s;
 }
 
 .cell {
@@ -184,7 +212,6 @@ body {
     background: var(--highlight-bg);
     border-top: 1px solid rgba(56, 189, 248, 0.25);
     border-bottom: 1px solid rgba(56, 189, 248, 0.25);
-    /* Subtiele pulse-animatie op de achtergrond van de actieve rij */
     animation: cyberPulse 2.5s infinite alternate ease-in-out;
 }
 
@@ -210,23 +237,22 @@ body {
     }
     100% {
         background: rgba(56, 189, 248, 0.14);
-        box-shadow: inset 0 0 15px rgba(56, 189, 248, 0.08);
+        box-shadow: inset 0 0 20px rgba(56, 189, 248, 0.12);
     }
 }
 
-/* --- SCREEN CONTROLS (Wisselen tussen schermen) --- */
+/* --- SCREEN CONTROLS --- */
 .screen-section {
-    display: none; /* Standaard onzichtbaar */
+    display: none;
     flex-direction: column;
     gap: 20px;
     width: 100%;
 }
 
 .screen-section.active-screen {
-    display: flex; /* Alleen zichtbaar als deze klasse actief is */
+    display: flex;
 }
 
-/* Welkomstkaart op het hoofdscherm */
 .welcome-card {
     background: var(--card-bg);
     border-radius: 24px;
@@ -245,13 +271,13 @@ body {
 
 .welcome-card p {
     margin: 0;
-    color: var(--accent-color); /* Maakt de tekst fel cyaanblauw */
-    font-size: 1.1rem;          /* Maakt de tekst net een slag groter */
-    font-weight: 600;           /* Maakt de tekst iets dikker voor betere leesbaarheid */
-    text-shadow: 0 0 10px rgba(56, 189, 248, 0.3); /* Geeft een subtiele cyber-gloed aan de letters */
+    color: var(--accent-color);
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
 }
 
-/* Knoppen Grid */
+/* --- CYBER KNOPPEN --- */
 .menu-grid {
     display: flex;
     flex-direction: column;
@@ -259,7 +285,6 @@ body {
     width: 100%;
 }
 
-/* De Cyber Knoppen */
 .cyber-btn {
     background: var(--card-bg);
     border: 1px solid rgba(56, 189, 248, 0.2);
@@ -272,8 +297,8 @@ body {
     display: flex;
     align-items: center;
     gap: 15px;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
 }
 
 .cyber-btn:not(.disabled):hover {
@@ -290,7 +315,6 @@ body {
     border-radius: 12px;
 }
 
-/* Uitgeschakelde game-knop (Coming Soon) */
 .cyber-btn.disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -298,7 +322,6 @@ body {
     background: rgba(0, 0, 0, 0.2);
 }
 
-/* Terugknop styling */
 .back-btn {
     background: none;
     border: none;
@@ -308,14 +331,14 @@ body {
     align-self: flex-start;
     padding: 5px 10px;
     border-radius: 8px;
-    transition: background 0.2s;
+    transition: background-color 0.2s;
 }
 
 .back-btn:hover {
     background: rgba(56, 189, 248, 0.1);
 }
 
-/* ================= TABS STYLING ================= */
+/* --- TABS STYLING --- */
 .tab-container {
     display: flex;
     background: rgba(255, 255, 255, 0.05);
@@ -328,51 +351,45 @@ body {
 .tab-btn {
     flex: 1;
     background: transparent;
-    border: 1px solid transparent; /* EXTRA FIX: Voorkomt dat de tab layout 'springt' bij een hover-border */
-    color: #94a3b8;
+    border: 1px solid transparent;
+    color: var(--text-muted);
     padding: 12px;
     font-size: 1rem;
     font-weight: 700;
     cursor: pointer;
     border-radius: 9px;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s, color 0.2s; /* Samengevoegd voor performance */
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 8px;
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s, color 0.2s;
 }
 
-/* Actieve tab krijgt een vette oplichtende look */
 .tab-btn.active {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
+    background: linear-gradient(135deg, var(--warning-color), #d97706);
     color: #ffffff;
     box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
 }
 
-/* Verbergt de knoppen die niet bij het actieve tabblad horen */
+.tab-btn:not(.active):hover {
+    border-color: var(--warning-glow);
+    box-shadow: 0 0 12px rgba(255, 152, 0, 0.6);
+    background: rgba(255, 152, 0, 0.05);
+    color: #ffffff;
+}
+
 .hidden-tab-content {
     display: none !important;
 }
 
-/* ================= TABBLADEN HOVER EFFECTEN ================= */
-
-/* GECORRIGEERD: Elk tabblad dat NIET actief is, krijgt nu altijd deze oranje cyber-glow bij hover */
-.tab-btn:not(.active):hover {
-    border-color: #ff9800;
-    box-shadow: 0 0 12px rgba(255, 152, 0, 0.6);
-    background: rgba(255, 152, 0, 0.05);
-    color: #ffffff;
-    cursor: pointer;
-}
-
-/* ================= FLOATING SUGGESTION CHAT ================= */
+/* --- FLOATING SUGGESTION CHAT --- */
 #chat-fab {
     position: fixed;
     bottom: 20px;
     right: 20px;
     width: 60px;
     height: 60px;
-    background: linear-gradient(135deg, #007bff, #0056b3);
+    background: linear-gradient(135deg, var(--chat-primary), var(--chat-secondary));
     color: white;
     border: none;
     border-radius: 50%;
@@ -383,7 +400,7 @@ body {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     cursor: pointer;
     z-index: 999;
-    transition: transform 0.2s ease;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 #chat-fab:active {
@@ -396,7 +413,7 @@ body {
     right: 20px;
     width: calc(100% - 40px);
     max-width: 320px;
-    background: #1e1e2e; /* Past mooi bij een donkerder/cyber thema */
+    background: var(--chat-bg);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
@@ -407,7 +424,7 @@ body {
 }
 
 .chat-header {
-    background: #007bff;
+    background: var(--chat-primary);
     color: white;
     padding: 12px 15px;
     display: flex;
@@ -452,44 +469,45 @@ body {
     font-family: inherit;
     font-size: 0.9rem;
     resize: none;
-    box-sizing: border-box;
     margin-bottom: 10px;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 #chat-message-input:focus {
     outline: none;
-    border-color: #007bff;
+    border-color: var(--chat-primary);
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
 }
 
 .chat-send-btn {
     width: 100%;
-    background: #28a745;
+    background: var(--success-color);
     color: white;
     border: none;
     padding: 10px;
     border-radius: 6px;
     font-weight: bold;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background-color 0.2s;
 }
 
 .chat-send-btn:hover {
-    background: #218838;
+    background: #16a34a; /* Iets donkerder groen */
 }
 
 #chat-popup.hidden {
     display: none !important;
 }
 
-/* --- ANIMATOREN SCHERM STYLING --- */
-.animatoren-container {
+/* --- ANIMATOREN & REGELS SCHERM --- */
+.animatoren-container, .regels-container {
     display: flex;
     flex-direction: column;
     gap: 14px;
     width: 100%;
 }
 
-.animator-card {
+.animator-card, .regel-card {
     background: var(--card-bg);
     border-radius: 20px;
     padding: 16px;
@@ -548,25 +566,6 @@ body {
     font-weight: 600;
 }
 
-/* --- REGELS SCHERM STYLING --- */
-.regels-container {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    width: 100%;
-}
-
-.regel-card {
-    background: var(--card-bg);
-    border-radius: 20px;
-    padding: 16px 20px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.03);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-}
-
 .regel-number {
     font-family: monospace;
     font-size: 1.6rem;
@@ -583,7 +582,7 @@ body {
     line-height: 1.4;
 }
 
-/* --- LOCATIE SCHERM STYLING --- */
+/* --- LOCATIE SCHERM --- */
 .maps-container {
     display: flex;
     flex-direction: column;
@@ -626,7 +625,7 @@ body {
     color: var(--accent-color);
 }
 
-/* --- CYBER GAME STYLING --- */
+/* --- CYBER GAME & FORMS --- */
 .game-view {
     width: 100%;
     margin-bottom: 20px;
@@ -638,7 +637,6 @@ body {
 
 .cyber-input {
     width: 100%;
-    box-sizing: border-box;
     background: rgba(0, 0, 0, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 12px 16px;
@@ -647,11 +645,12 @@ body {
     font-size: 1rem;
     margin: 10px 0;
     outline: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .cyber-input:focus {
     border-color: var(--accent-color);
+    box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
 }
 
 .action-btn {
@@ -666,6 +665,12 @@ body {
     cursor: pointer;
     box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
     text-transform: uppercase;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.action-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.6);
 }
 
 .team-status-bar {
@@ -679,12 +684,15 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.02);
 }
 
-.rebus-card {
+.rebus-card, .leaderboard-box {
     background: var(--card-bg);
     border-radius: 20px;
     padding: 16px;
-    margin-bottom: 16px;
     border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.rebus-card {
+    margin-bottom: 16px;
 }
 
 .rebus-card h3 {
@@ -709,10 +717,6 @@ body {
 }
 
 .leaderboard-box {
-    background: var(--card-bg);
-    border-radius: 20px;
-    padding: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.03);
     margin-top: 30px;
 }
 
@@ -735,6 +739,11 @@ body {
     cursor: pointer;
     font-size: 0.9rem;
     font-weight: 600;
+    transition: opacity 0.2s;
+}
+
+.refresh-btn:hover {
+    opacity: 0.8;
 }
 
 .leaderboard-row {
@@ -749,7 +758,7 @@ body {
     border-bottom: none;
 }
 
-/* Admin Knopjes */
+/* --- ADMIN KNOPJES --- */
 .admin-row {
     display: flex;
     justify-content: space-between;
@@ -765,29 +774,29 @@ body {
     gap: 8px;
 }
 
-.admin-btn-plus {
-    background: #22c55e;
+.admin-btn-plus, .admin-btn-min {
     color: white;
     border: none;
     padding: 6px 12px;
     border-radius: 6px;
     font-weight: bold;
     cursor: pointer;
+    transition: filter 0.2s;
+}
+
+.admin-btn-plus {
+    background: var(--success-color);
 }
 
 .admin-btn-min {
-    background: #ef4444;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
+    background: var(--danger-color);
 }
 
-/* =======================================================
-   === CUSTOM OUDER CODE POP-UP                        ===
-   ======================================================= */
+.admin-btn-plus:hover, .admin-btn-min:hover {
+    filter: brightness(1.1);
+}
+
+/* --- MODAL POP-UP --- */
 .custom-modal {
     position: fixed;
     top: 0;
@@ -802,7 +811,6 @@ body {
     align-items: center;
     z-index: 9999; 
     padding: 20px;
-    box-sizing: border-box;
 }
 
 .modal-content {
@@ -814,7 +822,6 @@ body {
     width: 100%;
     max-width: 360px;
     text-align: center;
-    box-sizing: border-box; 
 }
 
 .modal-content h3 {
@@ -845,7 +852,7 @@ body {
     cursor: pointer;
     border: none;
     font-size: 0.95rem;
-    transition: all 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
 }
 
 .cancel-btn {
