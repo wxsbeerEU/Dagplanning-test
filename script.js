@@ -1,6 +1,4 @@
-// ==========================================
-// 1. FIREBASE CONFIGURATIE & INITIALISATIE
-// ==========================================
+// 1. Firebase configuratie
 const firebaseConfig = {
   apiKey: "AIzaSyDj_V67S2djpAWDxMuWk1B9BqFTPvK7mEE",
   authDomain: "topvakantie-game.firebaseapp.com",
@@ -11,392 +9,428 @@ const firebaseConfig = {
   appId: "1:962032679607:web:df8a1689af235c61576b32"
 };
 
+// 2. Initialiseer Firebase
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-// ==========================================
-// 2. STATE & PLANNING DATA
-// ==========================================
+// JOUW VOLLEDIGE DAGPLANNING IS HIER WEER INTEGRAL TERUG:
 const schedule = [
-  { time: '08:15', activity: 'Opstaan' },
-  { time: '08:30', activity: 'Ochtendeten' },
-  { time: '09:15', activity: 'Lesmoment 1' },
-  { time: '10:45', activity: 'Pauze' },
-  { time: '11:05', activity: 'Lesmoment 2' },
-  { time: '12:30', activity: 'Middageten - Vrije tijd' },
-  { time: '13:45', activity: 'Lesmoment 3' },
-  { time: '15:15', activity: 'Pauze' },
-  { time: '15:20', activity: 'Namiddagactiviteit' },
-  { time: '17:45', activity: 'Vrije tijd' },
-  { time: '18:30', activity: 'Avondeten - Vrije tijd' },
-  { time: '19:45', activity: 'Avondactiviteit' },
-  { time: '21:30', activity: 'Vrije tijd - Bar' },
-  { time: '22:00', activity: 'Niet meer douchen' },
-  { time: '22:00', activity: 'Iedereen naar de kamers' },
-  { time: '22:30', activity: 'Lichten uit - Slapen' }
+    { time: '08:15', activity: 'Opstaan' },
+    { time: '08:30', activity: 'Ochtendeten' },
+    { time: '09:15', activity: 'Lesmoment 1' },
+    { time: '10:45', activity: 'Pauze' },
+    { time: '11:05', activity: 'Lesmoment 2' },
+    { time: '12:30', activity: 'Middageten - Vrije tijd' },
+    { time: '13:45', activity: 'Lesmoment 3' },
+    { time: '15:15', activity: 'Pauze' },
+    { time: '15:20', activity: 'Namiddagactiviteit' },
+    { time: '17:45', activity: 'Vrije tijd' },
+    { time: '18:30', activity: 'Avondeten - Vrije tijd' },
+    { time: '19:45', activity: 'Avondactiviteit' },
+    { time: '21:30', activity: 'Vrije tijd - Bar' },
+    { time: '22:00', activity: 'Niet meer douchen' },
+    { time: '22:00', activity: 'Iedereen naar de kamers' },
+    { time: '22:30', activity: 'Lichten uit - Slapen' }
 ];
 
-const betterSchedule = [];
-let alleTeams = {};
-let huidigTeam = localStorage.getItem('huidigKampTeam') || null;
+let betterschedule = [];
 
-// Cache veelgebruikte DOM-elementen voor betere prestaties
-const DOM = {
-  tbody: document.querySelector('#schedule-table tbody'),
-  currentTime: document.getElementById('currentTime'),
-  currentActivity: document.getElementById('currentActivity'),
-  currentActivityFrom: document.getElementById('currentActivityFrom'),
-  currentActivityTo: document.getElementById('currentActivityTo'),
-  codeModal: document.getElementById('codeModal'),
-  modalCodeInput: document.getElementById('modalCodeInput'),
-  teamNameInput: document.getElementById('team-name-input'),
-  rebusAnswerInput: document.getElementById('rebus-answer-input'),
-  leaderboardRows: document.getElementById('leaderboard-rows'),
-  chatMessageInput: document.getElementById('chat-message-input'),
-  chatPopup: document.getElementById('chat-popup'),
-  gameLoginView: document.getElementById('game-login-view'),
-  gamePlayView: document.getElementById('game-play-view'),
-  activeTeamDisplay: document.getElementById('active-team-display'),
-  activeScoreDisplay: document.getElementById('active-score-display')
-};
+function timeToMinutes(hour, minute) {
+    return hour * 60 + minute;
+}
 
-// ==========================================
-// 3. HELPER FUNCTIES (TIJD)
-// ==========================================
-const parseTimeStr = (timeStr) => timeStr.split(':').map(Number);
-const timeToMinutes = (hour, minute) => hour * 60 + minute;
-const timeStringToMinutes = (timeStr) => {
-  const [hour, minute] = parseTimeStr(timeStr);
-  return timeToMinutes(hour, minute);
-};
+function timeStringToMinutes(timestr) {
+    const [hour, minute] = timestr.split(':').map(Number);
+    return timeToMinutes(hour, minute);
+}
 
-// Genereer de betere planning structuur
-schedule.forEach((item, index, array) => {
-  const minutes = timeStringToMinutes(item.time);
-  const newValue = { activity: item.activity, startTime: item.time, startMinutes: minutes };
+schedule.forEach(function (item, index, array) {
+    const [hour, minute] = item.time.split(':').map(Number);
+    let minutes = timeToMinutes(hour, minute);
 
-  if (index === array.length - 1) {
-    newValue.endMinutes = 1439; // Tot 23:59
-    newValue.endTime = "23:59";
-  } else {
-    const nextTime = array[index + 1].time;
-    newValue.endMinutes = timeStringToMinutes(nextTime);
-    newValue.endTime = nextTime;
-  }
-  betterSchedule.push(newValue);
+    let newvalue = { activity: item.activity, startTime: item.time };
+    newvalue.startMinutes = minutes;
+
+    if (index === array.length - 1) {
+        newvalue.endMinutes = 1439;
+        newvalue.endTime = "23:59";
+    } else {
+        const nextItem = array[index + 1];
+        newvalue.endMinutes = timeStringToMinutes(nextItem.time);
+        newvalue.endTime = nextItem.time;
+    }
+
+    betterschedule.push(newvalue);
 });
 
-// ==========================================
-// 4. UI LOGICA & TIMERS
-// ==========================================
 function createTable() {
-  if (!DOM.tbody) return;
-  DOM.tbody.innerHTML = '';
+    const tbody = document.querySelector('#schedule-table tbody');
+    if(!tbody) return;
+    tbody.innerHTML = ''; 
 
-  schedule.forEach((item) => {
-    const [hour, minute] = parseTimeStr(item.time);
-    const row = document.createElement('tr');
-    row.dataset.hour = hour;
-    row.dataset.minute = minute;
-    row.classList.add('activity-row');
+    schedule.forEach((item) => {
+        const [hour, minute] = item.time.split(':').map(Number);
+        const row = document.createElement('tr');
+        row.setAttribute('hour', hour);
+        row.setAttribute('minute', minute);
+        row.classList.add('activity-row');
 
-    const hourStr = String(hour).padStart(2, '0');
-    const minuteStr = String(minute).padStart(2, '0');
+        const hourStr = String(hour).padStart(2, '0');
+        const minuteStr = String(minute).padStart(2, '0');
 
-    row.innerHTML = `
-      <td class="cell cell-time"><span class="hour">${hourStr}</span>:${minuteStr}</td>
-      <td class="cell cell-activity">${item.activity}</td>
-    `;
-    DOM.tbody.appendChild(row);
-  });
+        const timeCell = document.createElement('td');
+        timeCell.classList.add("cell", "cell-time");
+        timeCell.innerHTML = `<span class="hour">${hourStr}</span>:${minuteStr}`;
+        row.appendChild(timeCell);
+
+        const activityCell = document.createElement('td');
+        activityCell.classList.add("cell", "cell-activity");
+        activityCell.textContent = item.activity;
+        row.appendChild(activityCell);
+
+        tbody.appendChild(row);
+    });
 }
 
 function highlightCurrentTime() {
-  const now = new Date();
-  const currentMinutes = timeToMinutes(now.getHours(), now.getMinutes());
-  const rows = document.querySelectorAll('#schedule-table tbody tr');
-  let highlighted = false;
+    const now = new Date();
+    const currentMinutes = timeToMinutes(now.getHours(), now.getMinutes());
+    const rows = document.querySelectorAll('tbody tr');
 
-  rows.forEach((row, index) => {
-    const rowMinutes = timeToMinutes(parseInt(row.dataset.hour), parseInt(row.dataset.minute));
-    let nextRowMinutes = 1439;
+    let highlighted = false;
 
-    if (index < rows.length - 1) {
-      const nextRow = rows[index + 1];
-      nextRowMinutes = timeToMinutes(parseInt(nextRow.dataset.hour), parseInt(nextRow.dataset.minute));
+    rows.forEach((row, index) => {
+        const rowHour = parseInt(row.getAttribute('hour'));
+        const rowMinute = parseInt(row.getAttribute('minute'));
+        const rowMinutes = timeToMinutes(rowHour, rowMinute);
+
+        let nextRowMinutes = 1439; 
+        if (index < rows.length - 1) {
+            const nextRowHour = parseInt(rows[index + 1].getAttribute('hour'));
+            const nextRowMinute = parseInt(rows[index + 1].getAttribute('minute'));
+            nextRowMinutes = timeToMinutes(nextRowHour, nextRowMinute);
+        }
+
+        if (currentMinutes >= rowMinutes && currentMinutes < nextRowMinutes) {
+            row.classList.add('current-activity');
+            highlighted = true;
+        } else {
+            row.classList.remove('current-activity');
+        }
+    });
+
+    if (!highlighted && rows.length > 0) {
+        const firstRowHour = parseInt(rows[0].getAttribute('hour'));
+        const firstRowMinute = parseInt(rows[0].getAttribute('minute'));
+        const firstRowMinutes = timeToMinutes(firstRowHour, firstRowMinute);
+        if (currentMinutes < firstRowMinutes) {
+            rows[0].classList.add('current-activity');
+        }
     }
-
-    if (currentMinutes >= rowMinutes && currentMinutes < nextRowMinutes) {
-      row.classList.add('current-activity');
-      highlighted = true;
-    } else {
-      row.classList.remove('current-activity');
-    }
-  });
-
-  // Indien vóór de eerste activiteit van de dag, highlight de eerste rij
-  if (!highlighted && rows.length > 0) {
-    const firstRowMinutes = timeToMinutes(parseInt(rows[0].dataset.hour), parseInt(rows[0].dataset.minute));
-    if (currentMinutes < firstRowMinutes) {
-      rows[0].classList.add('current-activity');
-    }
-  }
 }
 
 function updateCurrentTime() {
-  const now = new Date();
-  const currentMinutes = timeToMinutes(now.getHours(), now.getMinutes());
+    const now = new Date();
+    const currentMinutes = timeToMinutes(now.getHours(), now.getMinutes());
 
-  if (DOM.currentTime) {
-    DOM.currentTime.textContent = now.toLocaleTimeString('nl-BE', { hour12: false });
-  }
+    const currentTimeText = String(now.getHours()).padStart(2, '0') + ":" + 
+                            String(now.getMinutes()).padStart(2, '0') + ":" + 
+                            String(now.getSeconds()).padStart(2, '0');
 
-  let activeItem = betterSchedule.find(item => currentMinutes >= item.startMinutes && currentMinutes < item.endMinutes);
+    const timeEl = document.querySelector('#currentTime');
+    if(timeEl) timeEl.innerHTML = currentTimeText;
 
-  if (activeItem) {
-    if (DOM.currentActivity) DOM.currentActivity.textContent = activeItem.activity;
-    if (DOM.currentActivityFrom) DOM.currentActivityFrom.textContent = activeItem.startTime;
-    if (DOM.currentActivityTo) DOM.currentActivityTo.textContent = activeItem.endTime;
-  } else {
-    if (DOM.currentActivity) DOM.currentActivity.textContent = "Slapen / Vrije tijd";
-    if (DOM.currentActivityFrom) DOM.currentActivityFrom.textContent = "22:30";
-    if (DOM.currentActivityTo) DOM.currentActivityTo.textContent = "08:15";
-  }
+    let activeFound = false;
+    betterschedule.forEach(function (item) {
+        if (currentMinutes >= item.startMinutes && currentMinutes < item.endMinutes) {
+            if(document.querySelector("#currentActivity")) document.querySelector("#currentActivity").innerHTML = item.activity;
+            if(document.querySelector("#currentActivityFrom")) document.querySelector("#currentActivityFrom").innerHTML = item.startTime;
+            if(document.querySelector("#currentActivityTo")) document.querySelector("#currentActivityTo").innerHTML = item.endTime;
+            activeFound = true;
+        }
+    });
+
+    if (!activeFound) {
+        if(document.querySelector("#currentActivity")) document.querySelector("#currentActivity").innerHTML = "Slapen / Vrije tijd";
+        if(document.querySelector("#currentActivityFrom")) document.querySelector("#currentActivityFrom").innerHTML = "22:30";
+        if(document.querySelector("#currentActivityTo")) document.querySelector("#currentActivityTo").innerHTML = "08:15";
+    }
 }
 
-// Navigatie schermen en tabs
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(err => console.log("SW error:", err));
+}
+
+createTable();
+highlightCurrentTime();
+setInterval(highlightCurrentTime, 30000);
+setInterval(updateCurrentTime, 1000);
+updateCurrentTime();
+
 function switchScreen(screenId) {
-  document.querySelectorAll('.screen-section').forEach(screen => {
-    screen.classList.remove('active-screen');
-  });
-  const targetScreen = document.getElementById(screenId);
-  if (targetScreen) targetScreen.classList.add('active-screen');
+    document.querySelectorAll('.screen-section').forEach(screen => {
+        screen.classList.remove('active-screen');
+    });
+
+    const targetScreen = document.getElementById(screenId);
+    if (targetScreen) {
+        targetScreen.classList.add('active-screen');
+    }
 }
 
 function switchTab(targetTab) {
-  if (targetTab === 'moni') {
-    openCodeModal();
-    return;
-  }
-  executeTabSwitch(targetTab);
+    if (targetTab === 'moni') {
+        openCodeModal();
+        return; 
+    }
+    executeTabSwitch(targetTab);
 }
 
 function executeTabSwitch(targetTab) {
-  ['deelnemers', 'game', 'moni'].forEach(tab => {
-    const tabEl = document.getElementById(`tab-${tab}`);
-    const contentEl = document.getElementById(`content-${tab}`);
+    const tabDeelnemers = document.getElementById('tab-deelnemers');
+    const tabGame = document.getElementById('tab-game');
+    const tabMoni = document.getElementById('tab-moni');
     
-    if (tabEl) tabEl.classList.toggle('active', tab === targetTab);
-    if (contentEl) contentEl.classList.toggle('hidden-tab-content', tab !== targetTab);
-  });
+    if (tabDeelnemers) tabDeelnemers.classList.remove('active');
+    if (tabGame) tabGame.classList.remove('active');
+    if (tabMoni) tabMoni.classList.remove('active');
+    
+    const activeTabEl = document.getElementById(`tab-${targetTab}`);
+    if (activeTabEl) {
+        activeTabEl.classList.add('active');
+    }
 
-  if (targetTab !== 'game') {
-    switchScreen('main-menu');
-  }
+    if (targetTab !== 'game') {
+        switchScreen('main-menu');
+    }
+
+    const gameContent = document.getElementById('content-game');
+    const deelnemersContent = document.getElementById('content-deelnemers');
+    const moniContent = document.getElementById('content-moni');
+
+    if (gameContent) gameContent.classList.add('hidden-tab-content');
+    if (deelnemersContent) deelnemersContent.classList.add('hidden-tab-content');
+    if (moniContent) moniContent.classList.add('hidden-tab-content');
+
+    if (targetTab === 'game' && gameContent) {
+        gameContent.classList.remove('hidden-tab-content');
+    } else if (targetTab === 'deelnemers' && deelnemersContent) {
+        deelnemersContent.classList.remove('hidden-tab-content');
+    } else if (targetTab === 'moni' && moniContent) {
+        moniContent.classList.remove('hidden-tab-content');
+    }
 }
 
-// Modal functionaliteit
 function openCodeModal() {
-  if (DOM.codeModal) DOM.codeModal.classList.remove('hidden');
-  if (DOM.modalCodeInput) {
-    DOM.modalCodeInput.value = '';
-    DOM.modalCodeInput.focus();
-  }
+    const modal = document.getElementById('codeModal');
+    const input = document.getElementById('modalCodeInput');
+    if (modal) modal.classList.remove('hidden');
+    if (input) {
+        input.value = ''; 
+        input.focus();    
+    }
 }
 
 function closeCodeModal() {
-  if (DOM.codeModal) DOM.codeModal.classList.add('hidden');
-  executeTabSwitch('deelnemers');
+    const modal = document.getElementById('codeModal');
+    if (modal) modal.classList.add('hidden');
+    executeTabSwitch('deelnemers');
 }
 
-// ==========================================
-// 5. FIREBASE ACTIES & EVENT HANDLERS
-// ==========================================
 async function submitMoniCode() {
-  if (!DOM.modalCodeInput || !DOM.codeModal) return;
-  const enteredCode = DOM.modalCodeInput.value;
+    const input = document.getElementById('modalCodeInput');
+    const modal = document.getElementById('codeModal');
+    const enteredCode = input.value;
 
-  try {
-    const snapshot = await database.ref('settings/moniCode').once('value');
-    const correctCode = snapshot.val();
+    const db = firebase.database();
+    const codeRef = db.ref('settings/moniCode');
+    
+    codeRef.once('value').then((snapshot) => {
+        const correctCode = snapshot.val();
 
-    if (enteredCode == correctCode) {
-      DOM.codeModal.classList.add('hidden');
-      DOM.modalCodeInput.value = '';
-      executeTabSwitch('moni');
-    } else {
-      DOM.modalCodeInput.style.borderColor = '#ff4a4a';
-      DOM.modalCodeInput.value = '';
-      DOM.modalCodeInput.placeholder = "Onjuiste code!";
-      DOM.modalCodeInput.focus();
-      setTimeout(() => { DOM.modalCodeInput.style.borderColor = ''; }, 2000);
-    }
-  } catch (error) {
-    console.error("Fout bij ophalen uit database: ", error);
-    alert("Er ging iets mis met de verbinding. Probeer het later opnieuw.");
-  }
+        if (enteredCode == correctCode) {
+            modal.classList.add('hidden');
+            input.value = ''; 
+            executeTabSwitch('moni'); 
+        } else {
+            input.style.borderColor = '#ff4a4a';
+            input.value = '';
+            input.placeholder = "Onjuiste code!";
+            input.focus();
+            setTimeout(() => { input.style.borderColor = ''; }, 2000);
+        }
+    }).catch((error) => {
+        console.error("Fout bij ophalen uit database: ", error);
+        alert("Er ging iets mis met de verbinding. Probeer het later opnieuw.");
+    });
 }
 
-// Real-time luisteraar voor teams
+let alleTeams = {};
+let huidigTeam = localStorage.getItem('huidigKampTeam') || null;
+
 database.ref('teams').on('value', (snapshot) => {
-  alleTeams = snapshot.val() || {};
-
-  if (huidigTeam && !alleTeams[huidigTeam]) {
-    localStorage.removeItem('huidigKampTeam');
-    huidigTeam = null;
-    alert("Je team is verwijderd door een monitor.");
-    location.reload();
-    return;
-  }
-
-  renderLeaderboard();
-  updateGameUI();
+    alleTeams = snapshot.val() || {};
+    
+    // CONTROLE: Bestaat ons team nog wel?
+    if (huidigTeam && (!alleTeams || !alleTeams[huidigTeam])) {
+        // Het team is uit de database verwijderd!
+        localStorage.removeItem('huidigKampTeam');
+        huidigTeam = null;
+        alert("Je team is verwijderd door een monitor.");
+        location.reload(); // Herlaad de pagina zodat de gebruiker weer moet inloggen
+        return; // Stop de functie hier
+    }
+    
+    renderLeaderboard();
+    updateGameUI();
 });
 
 function loginTeam() {
-  if (!DOM.teamNameInput) return;
-  const teamNaam = DOM.teamNameInput.value.trim();
-  if (teamNaam === "") return alert("Vul eerst een geldige teamnaam in!");
+    const input = document.getElementById('team-name-input');
+    if (!input || input.value.trim() === "") return alert("Vul eerst een geldige teamnaam in!");
 
-  if (!alleTeams[teamNaam]) {
-    database.ref('teams/' + teamNaam).set({
-      score: 0,
-      opgelost: ["init"]
-    });
-  }
+    const teamNaam = input.value.trim();
 
-  huidigTeam = teamNaam;
-  localStorage.setItem('huidigKampTeam', teamNaam);
-  updateGameUI();
+    if (!alleTeams[teamNaam]) {
+        database.ref('teams/' + teamNaam).set({
+            score: 0,
+            opgelost: ["init"]
+        });
+    }
+
+    huidigTeam = teamNaam;
+    localStorage.setItem('huidigKampTeam', teamNaam);
+    updateGameUI();
 }
-
 async function submitAnswer() {
-  if (!DOM.rebusAnswerInput) return;
-  const antwoord = DOM.rebusAnswerInput.value.toLowerCase().trim();
+    const input = document.getElementById('rebus-answer-input');
+    const antwoord = input.value.toLowerCase().trim();
+    
+    if (!antwoord) return;
+    if (!huidigTeam) return alert("Log eerst in met een teamnaam!");
 
-  if (!antwoord) return;
-  if (!huidigTeam) return alert("Log eerst in met een teamnaam!");
-
-  try {
-    const rebusSnapshot = await database.ref('rebus/' + antwoord).once('value');
-
+    const db = firebase.database();
+    
+    const rebusSnapshot = await db.ref('rebus/' + antwoord).once('value');
+    
     if (!rebusSnapshot.exists()) {
-      alert("Helaas, dat is niet de juiste code.");
-      DOM.rebusAnswerInput.value = '';
-      return;
+        alert("Helaas, dat is niet de juiste code.");
+        input.value = '';
+        return;
     }
 
     const punten = rebusSnapshot.val();
-    const teamRef = database.ref('teams/' + huidigTeam);
+    
+    const teamRef = db.ref('teams/' + huidigTeam);
     const teamSnapshot = await teamRef.once('value');
-    const teamData = teamSnapshot.val() || {};
-
+    const teamData = teamSnapshot.val();
+    
     if (teamData.opgelost && teamData.opgelost.includes(antwoord)) {
-      alert("Dit team heeft deze code al ingevoerd!");
-      DOM.rebusAnswerInput.value = '';
-      return;
+        alert("Dit team heeft deze code al ingevoerd!");
+        input.value = '';
+        return;
     }
 
     const nieuweScore = (teamData.score || 0) + punten;
     const nieuweOpgelostLijst = teamData.opgelost ? [...teamData.opgelost, antwoord] : [antwoord];
 
-    await teamRef.update({
-      score: nieuweScore,
-      opgelost: nieuweOpgelostLijst
-    });
-
-    alert(`Goed zo! Je hebt ${punten} punten verdiend.`);
-    DOM.rebusAnswerInput.value = '';
-  } catch (error) {
-    console.error("Fout bij updaten score:", error);
-    alert("Er ging iets mis bij het opslaan van je punten.");
-  }
+    try {
+        await teamRef.update({
+            score: nieuweScore,
+            opgelost: nieuweOpgelostLijst
+        });
+        alert("Goed zo! Je hebt " + punten + " punten verdiend.");
+        input.value = '';
+    } catch (error) {
+        console.error("Fout bij updaten score:", error);
+        alert("Er ging iets mis bij het opslaan van je punten.");
+    }
 }
 
 function updateGameUI() {
-  if (!huidigTeam) return;
+    if (!huidigTeam) return;
+    
+    const loginView = document.getElementById('game-login-view');
+    const playView = document.getElementById('game-play-view');
+    
+    if(loginView) loginView.classList.add('hidden');
+    if(playView) playView.classList.remove('hidden');
 
-  if (DOM.gameLoginView) DOM.gameLoginView.classList.add('hidden');
-  if (DOM.gamePlayView) DOM.gamePlayView.classList.remove('hidden');
-
-  const mijnTeamData = alleTeams[huidigTeam] || { score: 0 };
-  if (DOM.activeTeamDisplay) DOM.activeTeamDisplay.textContent = `Team: ${huidigTeam}`;
-  if (DOM.activeScoreDisplay) DOM.activeScoreDisplay.textContent = `${mijnTeamData.score} pts`;
+    const mijnTeamData = alleTeams[huidigTeam] || { score: 0 };
+    if(document.getElementById('active-team-display')) document.getElementById('active-team-display').textContent = `Team: ${huidigTeam}`;
+    if(document.getElementById('active-score-display')) document.getElementById('active-score-display').textContent = `${mijnTeamData.score} pts`;
 }
 
 function renderLeaderboard() {
-  if (!DOM.leaderboardRows) return;
-  DOM.leaderboardRows.innerHTML = '';
+    const container = document.getElementById('leaderboard-rows');
+    if (!container) return;
+    container.innerHTML = '';
 
-  const sorteerbareTeams = Object.keys(alleTeams).map(name => ({
-    naam: name,
-    score: alleTeams[name].score || 0
-  })).sort((a, b) => b.score - a.score);
+    let sorteerbareTeams = [];
+    for (let team in alleTeams) {
+        sorteerbareTeams.push({ naam: team, score: alleTeams[team].score });
+    }
 
-  if (sorteerbareTeams.length === 0) {
-    DOM.leaderboardRows.innerHTML = '<div class="leaderboard-row" style="font-style: italic; opacity: 0.6; justify-content: center;">Nog geen teams actief...</div>';
-    return;
-  }
+    sorteerbareTeams.sort((a, b) => b.score - a.score);
 
-  sorteerbareTeams.forEach((team, index) => {
-    const row = document.createElement('div');
-    row.classList.add('leaderboard-row');
-    row.innerHTML = `<span>${index + 1}. ${team.naam}</span> <strong>${team.score} pts</strong>`;
-    DOM.leaderboardRows.appendChild(row);
-  });
+    if (sorteerbareTeams.length === 0) {
+        container.innerHTML = '<div class="leaderboard-row" style="font-style: italic; opacity: 0.6; justify-content: center;">Nog geen teams actief...</div>';
+        return;
+    }
+
+    sorteerbareTeams.forEach((team, index) => {
+        const row = document.createElement('div');
+        row.classList.add('leaderboard-row');
+        row.innerHTML = `<span>${index + 1}. ${team.naam}</span> <strong>${team.score} pts</strong>`;
+        container.appendChild(row);
+    });
 }
 
-function toggleChatPopup() {
-  if (DOM.chatPopup) DOM.chatPopup.classList.toggle('hidden');
-}
-
-async function sendSuggestion() {
-  if (!DOM.chatMessageInput) return;
-  const message = DOM.chatMessageInput.value.trim();
-
-  if (message === "") {
-    alert("Typ eerst even een berichtje voor je het verstuurt! 😉");
-    return;
-  }
-
-  const afzender = huidigTeam ? `Team: ${huidigTeam}` : "Anoniem (Deelnemer/Moni)";
-  const timestamp = new Date().toLocaleString("nl-BE");
-
-  const suggestionData = {
-    wie: afzender,
-    bericht: message,
-    tijd: timestamp
-  };
-
-  try {
-    await database.ref('suggesties').push(suggestionData);
-    alert("Super! Je idee of melding is succesvol verstuurd naar de database. 🎉");
-    DOM.chatMessageInput.value = "";
-    toggleChatPopup();
-  } catch (error) {
-    console.error("Firebase chat fout:", error);
-    alert("Er ging iets mis bij het versturen. Probeer het opnieuw!");
-  }
-}
-
-// ==========================================
-// 6. INITIALISATIE & RUN
-// ==========================================
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js').catch(err => console.log("SW error:", err));
-}
-
-// Start de applicatie
-createTable();
-highlightCurrentTime();
-updateCurrentTime();
-
-// Start Timers
-setInterval(highlightCurrentTime, 30000);
-setInterval(updateCurrentTime, 1000);
-
-if (huidigTeam) {
-  updateGameUI();
+if(huidigTeam) {
+    updateGameUI();
 }
 
 executeTabSwitch('game');
+
+function toggleChatPopup() {
+    const popup = document.getElementById('chat-popup');
+    if (popup) {
+        popup.classList.toggle('hidden');
+    }
+}
+
+function sendSuggestion() {
+    const inputEl = document.getElementById('chat-message-input');
+    if (!inputEl) return;
+    
+    const message = inputEl.value.trim();
+
+    if (message === "") {
+        alert("Typ eerst even een berichtje voor je het verstuurt! 😉");
+        return;
+    }
+
+    let afzender = "Anoniem (Deelnemer/Moni)";
+    if (huidigTeam) {
+        afzender = "Team: " + huidigTeam;
+    }
+
+    const timestamp = new Date().toLocaleString("nl-BE");
+
+    const suggestionData = {
+        wie: afzender,
+        bericht: message,
+        tijd: timestamp
+    };
+
+    database.ref('suggesties').push(suggestionData)
+    .then(() => {
+        alert("Super! Je idee of melding is succesvol verstuurd naar de database. 🎉");
+        inputEl.value = ""; 
+        toggleChatPopup();  
+    })
+    .catch((error) => {
+        console.error("Firebase chat fout:", error);
+        alert("Er ging iets mis bij het versturen. Probeer het opnieuw!");
+    });
+}
